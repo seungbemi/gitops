@@ -1,0 +1,11 @@
+apiVersion: v2
+name: adguard
+description: A Helm chart for adguard
+
+type: application
+
+version: 0.0.1
+# https://github.com/AdguardTeam/AdGuardHome/releases
+appVersion: v0.107.6
+
+dependencies: []

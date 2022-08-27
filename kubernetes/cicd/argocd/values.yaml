@@ -1,0 +1,46 @@
+apps:
+  - name: applications
+    namespace: cicd
+    path: kubernetes/cicd/applications
+    sync: true
+
+# https://github.com/argoproj/argo-helm/blob/argo-cd-4.0.0/charts/argo-cd/values.yaml
+argo-cd:
+  controller:
+    enableStatefulSet: true
+    args:
+      # -- define the application controller `--status-processors`
+      statusProcessors: "40"
+      # -- define the application controller `--operation-processors`
+      operationProcessors: "20"
+      # -- define the application controller `--repo-server-timeout-seconds`
+      repoServerTimeoutSeconds: "300"
+
+  server:
+    extraArgs:
+      - --insecure
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+    resources: 
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+    config:
+      admin.enabled: "false"
+      accounts.seungbemi: apiKey, login
+    rbacConfig:
+      policy.default: role:readonly
+      policy.csv: |
+        g, seungbemi, role:admin
+    secret:
+      createSecret: false
+
+  dex:
+    enabled: false
+
+  repoServer:
+    replicas: 2

@@ -1,0 +1,31 @@
+apps:
+  - name: cicd
+    namespace: cicd
+    path: kubernetes/cicd/argocd
+    sync: true
+
+  - name: monitoring
+    namespace: monitoring
+    path: kubernetes/monitoring/_project
+    sync: true
+  
+  - name: ingress
+    namespace: ingress
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/ingress/_project
+    sync: true
+
+  - name: persistence
+    namespace: persistence
+    path: kubernetes/persistence/_project
+    sync: true
+
+  - name: kube-system
+    namespace: kube-system
+    path: kubernetes/kube-system/_project
+    sync: true
+
+  - name: services
+    namespace: services
+    path: kubernetes/services/_project
+    sync: true

@@ -1,0 +1,24 @@
+{{- range .Values.webServices }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}-service
+spec:
+  ports:
+    - name: {{ .name }}
+      protocol: TCP
+      port: {{ .port }}
+      targetPort: {{ .port }}
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ .name }}-service
+subsets:
+  - addresses:
+      - ip: {{ $.Values.defaultIP }}
+    ports:
+      - name: {{ .name }}
+        port: {{ .port }}
+{{- end }}

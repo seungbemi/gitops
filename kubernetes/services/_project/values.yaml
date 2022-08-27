@@ -1,0 +1,21 @@
+apps:
+  - name: wireguard
+    namespace: services
+    path: kubernetes/services/wireguard
+    sync: true
+
+  - name: diskstation
+    namespace: services
+    path: kubernetes/services/diskstation
+    sync: true
+
+  - name: adguard
+    namespace: services
+    path: kubernetes/services/adguard
+    sync: true
+
+  - name: service-secrets
+    namespace: services
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/services
+    sync: true

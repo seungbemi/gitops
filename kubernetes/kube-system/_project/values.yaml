@@ -1,0 +1,10 @@
+apps:
+  - name: metrics-server
+    namespace: kube-system
+    path: kubernetes/kube-system/metrics-server
+    sync: true
+
+  - name: kube-network
+    namespace: kube-system
+    path: kubernetes/kube-system/kube-network
+    sync: true

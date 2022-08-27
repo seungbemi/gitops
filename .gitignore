@@ -1,0 +1,5 @@
+charts/
+Chart.lock
+secrets
+scripts/wireguard-config/.env
+scripts/wireguard-config/output

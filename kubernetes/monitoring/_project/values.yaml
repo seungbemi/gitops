@@ -1,0 +1,25 @@
+apps:
+  - name: loki
+    namespace: monitoring
+    path: kubernetes/monitoring/loki
+    sync: true
+
+  - name: prometheus
+    namespace: monitoring
+    path: kubernetes/monitoring/prometheus
+    skipCrds: true
+    sync: true
+
+  - name: promethues-crds
+    repoURL: https://github.com/prometheus-community/helm-charts.git
+    path: charts/kube-prometheus-stack/crds/
+    targetRevision: kube-prometheus-stack-34.10.0
+    sync: true
+    syncOptions:
+      - Replace=true
+
+  - name: monitoring-secrets
+    namespace: monitoring
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/monitoring
+    sync: true

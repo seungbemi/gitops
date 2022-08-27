@@ -1,0 +1,99 @@
+# https://github.com/prometheus-community/helm-charts/blob/kube-prometheus-stack-34.10.0/charts/kube-prometheus-stack/values.yaml
+kube-prometheus-stack:
+  fullnameOverride: prometheus
+  defaultRules:
+    create: true
+    rules:
+      alertmanager: true
+      etcd: false
+      configReloaders: true
+      general: true
+      k8s: true
+      kubeApiserver: true
+      kubeApiserverAvailability: true
+      kubeApiserverSlos: true
+      kubelet: true
+      kubeProxy: false
+      kubePrometheusGeneral: true
+      kubePrometheusNodeRecording: true
+      kubernetesApps: true
+      kubernetesResources: true
+      kubernetesStorage: true
+      kubernetesSystem: true
+      kubeScheduler: false
+      kubeStateMetrics: true
+      network: true
+      node: true
+      nodeExporterAlerting: true
+      nodeExporterRecording: true
+      prometheus: true
+      prometheusOperator: true
+  kubeControllerManager:
+    enabled: false
+    service:
+      enabled: true
+      port: 10252
+      targetPort: 10252
+      selector:
+        component: kube-controller-manager
+  kubeEtcd:
+    service:
+      enabled: false
+      port: 2381
+      targetPort: 2381
+      selector:
+        component: etcd
+  kubeScheduler:
+    service:
+      enabled: false
+      port: 10251
+      targetPort: 10251
+      selector:
+        component: kube-scheduler
+  kubeProxy:
+    enabled: false
+    service:
+      enabled: true
+      port: 10249
+      targetPort: 10249
+      selector:
+        k8s-app: kube-proxy
+  
+  prometheus:
+    prometheusSpec:
+      ruleSelectorNilUsesHelmValues: false
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: nfs-client
+            resources:
+              requests:
+                storage: 10Gi
+  alertmanager:
+    alertmanagerSpec:
+      useExistingSecret: true
+      configSecret: alertmanager-secret-config
+      alertmanagerConfigSelector:
+        matchLabels:
+          role: alertmanager-config
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: nfs-client
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 100Mi
+
+  # https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+  grafana:
+    admin:
+      existingSecret: grafana-dashboard
+      userKey: admin-user
+      passwordKey: admin-password
+    sidecar:
+      notifiers:
+        enabled: true
+        label: grafana_notifier

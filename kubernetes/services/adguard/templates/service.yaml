@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguardhome
+  labels:
+    app: adguardhome
+spec:
+  type: ClusterIP
+  clusterIP: 10.99.99.99
+  selector:
+    app: adguardhome
+  ports:
+  - name: dashboard
+    port: 3000
+    targetPort: 3000
+    protocol: TCP
+  - name: dns
+    port: 53
+    targetPort: 53
+    protocol: UDP

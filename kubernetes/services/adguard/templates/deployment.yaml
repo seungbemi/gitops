@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguardhome
+  labels:
+    app: adguardhome
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  selector:
+    matchLabels:
+      app: adguardhome
+  template:
+    metadata:
+      labels:
+        app: adguardhome
+    spec:
+      containers:
+      - name: adguardhome
+        image: adguard/adguardhome:v0.107.6
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        - containerPort: 53
+          protocol: UDP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+          limits:
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+        volumeMounts:
+        - name: adguardhome-config
+          mountPath: /opt/adguardhome/conf
+        - name: adguardhome-logs
+          mountPath: /opt/adguardhome/work
+      volumes:
+      - name: adguardhome-config
+        persistentVolumeClaim:
+          claimName: adguardhome
+      - name: adguardhome-logs
+        emptyDir: {}

@@ -1,0 +1,6 @@
+# https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/blob/nfs-subdir-external-provisioner-4.0.16/charts/nfs-subdir-external-provisioner/values.yaml
+nfs-subdir-external-provisioner:
+  nfs:
+    server: 192.168.50.195
+    path: /volume1/LTS
+    volumeName: nfs-provisioner-root

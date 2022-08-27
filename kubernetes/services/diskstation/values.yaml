@@ -1,0 +1,18 @@
+defaultIP: "192.168.50.195"
+homeAssistantIP: "192.168.50.135"
+
+webServices:
+- name: dsm
+  port: 7080
+- name: audio
+  port: 7700
+- name: download
+  port: 7710
+- name: drive
+  port: 7720
+- name: video
+  port: 7730
+- name: file
+  port: 7740
+- name: photo
+  port: 7760

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wg-configmap
+  labels:
+    app: wireguard
+data:
+  wg0.conf: |
+    [Interface]
+    Address = 10.33.0.1/24
+    ListenPort = 51820
+    PostUp = wg set wg0 private-key /etc/wireguard/privatekey && iptables -t nat -A POSTROUTING -s 10.33.0.0/24 -o eth0 -j MASQUERADE
+    PostDown = iptables -t nat -D POSTROUTING -s 10.33.0.0/24 -o eth0 -j MASQUERADE
+    SaveConfig = false
+
+    [Peer]
+    PublicKey = +E+aSS3wCOdA9MKLNz0Q6dKbyKEEL0dYhwFrLLfJBRg=
+    AllowedIPs = 10.33.0.2/32
+
+    [Peer]
+    PublicKey = sRD8kx6M95/JHA0ia9XyL0owM7quL432Yejc/b9b3gs=
+    AllowedIPs = 10.33.0.3/32
+    
+    [Peer]
+    PublicKey = pSR03RrkGoKtU3wSzK2QHP5izh7EXInRC/May4EIRjY=
+    AllowedIPs = 10.33.0.4/32

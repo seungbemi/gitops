@@ -1,0 +1,80 @@
+# https://github.com/rook/rook/blob/v1.8.7/deploy/charts/rook-ceph/values.yaml
+rook-ceph:
+  monitoring:
+    enabled: true
+  resources:
+    limits:
+      cpu: 1
+      memory: 256Mi
+    requests:
+      cpu: 250m
+      memory: 128Mi
+
+# https://github.com/rook/rook/blob/v1.8.7/deploy/charts/rook-ceph-cluster/values.yaml
+rook-ceph-cluster:
+  operatorNamespace: persistence
+  monitoring:
+    enabled: true
+  cephClusterSpec:
+    mon:
+      count: 3
+      allowMultiplePerNode: false
+    mgr:
+      count: 2
+    dashboard:
+      enabled: true
+      ssl: false
+  cephBlockPools:
+  - name: ceph-blockpool
+    spec:
+      failureDomain: host
+      replicated:
+        size: 3
+    storageClass:
+      enabled: true
+      name: ceph-block
+      isDefault: true
+      reclaimPolicy: Delete
+      allowVolumeExpansion: true
+      mountOptions: []
+      parameters:
+        imageFormat: "2"
+        imageFeatures: layering
+        csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+        csi.storage.k8s.io/provisioner-secret-namespace: persistence
+        csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+        csi.storage.k8s.io/controller-expand-secret-namespace: persistence
+        csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+        csi.storage.k8s.io/node-stage-secret-namespace: persistence
+        csi.storage.k8s.io/fstype: ext4
+  cephFileSystems:
+  - name: ceph-filesystem
+    # see https://github.com/rook/rook/blob/master/Documentation/ceph-filesystem-crd.md#filesystem-settings for available configuration
+    spec:
+      metadataPool:
+        replicated:
+          size: 3
+      dataPools:
+        - failureDomain: host
+          replicated:
+            size: 3
+          name: data0
+      metadataServer:
+        activeCount: 1
+        activeStandby: true
+    storageClass:
+      enabled: true
+      isDefault: false
+      name: ceph-filesystem
+      pool: data0
+      reclaimPolicy: Delete
+      allowVolumeExpansion: true
+      mountOptions: []
+      parameters:
+        csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+        csi.storage.k8s.io/provisioner-secret-namespace: persistence
+        csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+        csi.storage.k8s.io/controller-expand-secret-namespace: persistence
+        csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+        csi.storage.k8s.io/node-stage-secret-namespace: persistence
+        csi.storage.k8s.io/fstype: ext4
