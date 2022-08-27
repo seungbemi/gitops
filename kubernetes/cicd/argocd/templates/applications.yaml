@@ -18,7 +18,7 @@ spec:
     {{- if .repoURL }}
     repoURL: {{ .repoURL }}
     {{- else }}
-    repoURL: git@github.com:seungbemi/gitops.git
+    repoURL: https://github.com/seungbemi/gitops.git
     {{- end }}
     {{- if .targetRevision }}
     targetRevision: {{ .targetRevision }}
