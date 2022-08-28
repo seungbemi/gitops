@@ -14,6 +14,11 @@ apps:
     path: kubernetes/services/adguard
     sync: true
 
+  - name: home-assistant
+    namespace: services
+    path: kubernetes/services/home-assistant
+    sync: true
+
   - name: service-secrets
     namespace: services
     repoURL: git@github.com:seungbemi/gitops-secrets.git
