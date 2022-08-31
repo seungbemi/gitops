@@ -10,7 +10,7 @@ rook-ceph:
       cpu: 250m
       memory: 128Mi
   nodeSelector:
-    ceph-support: "true"
+    ceph-node: "true"
 
 # https://github.com/rook/rook/blob/v1.8.7/deploy/charts/rook-ceph-cluster/values.yaml
 rook-ceph-cluster:
