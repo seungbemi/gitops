@@ -10,8 +10,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: home-assistant
   endpoints:
-    - targetPort: 8123
+    - port: http
       path: /api/prometheus
-    - bearerTokenSecret:
+      bearerTokenSecret:
         key: token
         name: ha-prometheus
