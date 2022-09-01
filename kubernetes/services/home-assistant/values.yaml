@@ -1,0 +1,117 @@
+# https://github.com/k8s-at-home/charts/tree/home-assistant-13.4.2/charts/stable/home-assistant
+home-assistant:
+  image:
+    repository: homeassistant/home-assistant
+    tag: 2022.8.7
+  env:
+    TZ: "Europe/Helsinki"
+  # hostNetwork: true
+  # dnsPolicy: ClusterFirstWithHostNet
+  prometheus:
+    serviceMonitor:
+      enabled: false
+  probes:
+    liveness:
+      enabled: false
+    readiness:
+      enabled: false
+    startup:
+      enabled: true
+  persistence:
+    config:
+      enabled: true
+      storageClass: ceph-block
+      accessMode: ReadWriteOnce
+      size: "10Gi"
+  podAnnotations:
+    backup.velero.io/backup-volumes: config
+  addons:
+    codeserver:
+      enabled: true
+      image:
+        repository: codercom/code-server
+        tag: 4.6.0
+      workingDir: "/config"
+      args:
+        - --user-data-dir
+        - "/config/.vscode"
+        - --auth
+        - "none"
+      ingress:
+        enabled: false
+      volumeMounts:
+      - name: config
+        mountPath: /config
+  resources:
+    limits:
+      memory: 3000Mi
+    requests:
+      cpu: 100m
+      memory: 1000Mi
+  postgresql:
+    enabled: true
+    image:
+      repository: postgres
+      tag: '14.1'
+    auth:
+      enablePostgresUser: false
+      username: homeassistant
+      database: homeassistant
+      existingSecret: postgres-secrets
+    shmVolume:
+      enabled: false
+    volumePermissions:
+      enabled: false
+    primary:
+      persistence:
+        enabled: true
+        storageClass: ceph-block
+        size: 8Gi
+      podAnnotations:
+        backup.velero.io/backup-volumes: data
+
+# https://github.com/k8s-at-home/charts/blob/deconz-6.5.2/charts/stable/deconz/values.yaml
+deconz:
+  env:
+    # -- Set the container timezone
+    TZ: Europe/Helsinki
+    # -- Override the location where deCONZ looks for the RaspBee/Conbee device.
+    DECONZ_DEVICE:  /dev/ttyUSB0
+    # -- Enable VNC access to the container to view the deCONZ ZigBee mesh
+    DECONZ_VNC_MODE: 1
+    # -- Web UI listen port
+    DECONZ_WEB_PORT: 80
+    # -- Websocket listen port
+    DECONZ_WS_PORT: 443
+    # -- VNC server listen port
+    DECONZ_VNC_PORT: 5900
+    # -- If VNC is enabled (DECONZ_VNC_MODE=1) you can change the default password "changeme" using a Secret.
+    DECONZ_VNC_PASSWORD:
+      secretKeyRef:
+        name: deconz
+        key: password
+  
+  securityContext:
+    privileged:  true
+
+  persistence:
+    config:
+      enabled: true
+      storageClass: ceph-block
+      accessMode: ReadWriteOnce
+      size: "100Mi"
+    usb:
+      enabled: true
+      type: hostPath
+      hostPath: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
+      mountPath: /dev/ttyUSB0
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: zigbee-node
+            operator: In
+            values:
+            - "true"

@@ -1,0 +1,17 @@
+apiVersion: v2
+name: home-assistant
+description: A Helm chart for home-assistant
+
+type: application
+
+version: v13.4.2
+appVersion: 2022.8.7
+
+dependencies:
+- name: home-assistant
+  version: 13.4.2
+  repository: https://k8s-at-home.com/charts/
+
+- name: deconz
+  version: 6.5.2
+  repository: https://k8s-at-home.com/charts/

@@ -16,7 +16,6 @@ apps:
 
   - name: home-assistant
     namespace: services
-    repoURL: git@github.com:seungbemi/gitops-secrets.git
     path: kubernetes/services/home-assistant
     sync: true
 
