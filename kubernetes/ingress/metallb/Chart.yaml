@@ -1,0 +1,13 @@
+apiVersion: v2
+name: metallb
+description: A network load-balancer implementation for Kubernetes using standard routing protocols
+
+type: application
+
+version: 2.6.2
+appVersion: v0.12.1
+
+dependencies:
+- name: metallb
+  version: 2.6.2
+  repository: https://charts.bitnami.com/bitnami

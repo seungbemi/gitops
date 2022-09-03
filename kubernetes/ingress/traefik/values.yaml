@@ -1,0 +1,47 @@
+# https://github.com/traefik/traefik-helm-chart/blob/v10.15.0/traefik/values.yaml
+traefik:
+  logs:
+    # Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
+    general:
+      # By default, the logs use a text format (common), but you can
+      # also ask for the json format in the format option
+      # format: json
+      # By default, the level is set to ERROR. Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+      level: INFO
+  deployment:
+    podLabels:
+      app: traefik
+      metrics: enabled
+  ingressRoute:
+    dashboard:
+      enabled: false
+  additionalArguments:
+    - "--certificatesresolvers.le.acme.storage=/data/acme.json"
+  globalArguments:
+    - "--global.checknewversion"
+  ports:
+    external:
+      port: 7443
+      expose: true
+      exposedPort: 8443
+      protocol: TCP
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "250Mi"
+    limits:
+      cpu: "300m"
+      memory: "500Mi"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    metrics:
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60  

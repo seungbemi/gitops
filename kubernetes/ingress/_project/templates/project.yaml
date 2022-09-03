@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  labels:
+    project: ingress
+  name: ingress
+  namespace: cicd
+spec:
+  description: Ingress Project
+  sourceRepos:
+  - '*'
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'

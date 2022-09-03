@@ -1,0 +1,13 @@
+apiVersion: v2
+name: traefik
+description: A Traefik based Kubernetes ingress controller
+
+type: application
+
+version: 10.15.0
+appVersion: "2.6.1"
+
+dependencies:
+- name: traefik
+  version: 10.15.0
+  repository: https://helm.traefik.io/traefik

@@ -21,5 +21,5 @@ apps:
   - name: monitoring-secrets
     namespace: monitoring
     repoURL: git@github.com:seungbemi/gitops-secrets.git
-    path: kubernetes/monitoring
+    path: kubernetes/monitoring/secrets
     sync: true

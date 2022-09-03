@@ -1,0 +1,11 @@
+# https://github.com/cert-manager/cert-manager/blob/v1.7.1/deploy/charts/cert-manager/values.yaml
+cert-manager: 
+  installCRDs: true
+  prometheus:
+    enabled: true
+    servicemonitor:
+      enabled: true
+      interval: 1m
+  webhook:
+    hostNetwork: true
+    securePort: 10255

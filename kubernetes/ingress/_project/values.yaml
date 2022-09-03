@@ -1,0 +1,27 @@
+apps:
+  - name: traefik
+    namespace: ingress
+    path: kubernetes/ingress/traefik
+    sync: true
+
+  - name: metallb
+    namespace: ingress
+    path: kubernetes/ingress/metallb
+    sync: true
+
+  - name: cert-manager
+    namespace: ingress
+    path: kubernetes/ingress/cert-manager
+    sync: true
+
+  - name: routes
+    namespace: ingress
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/ingress/routes
+    sync: true
+  
+  - name: secrets
+    namespace: ingress
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/ingress/scerets
+    sync: true
