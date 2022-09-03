@@ -23,5 +23,5 @@ apps:
   - name: secrets
     namespace: ingress
     repoURL: git@github.com:seungbemi/gitops-secrets.git
-    path: kubernetes/ingress/scerets
+    path: kubernetes/ingress/secrets
     sync: true
