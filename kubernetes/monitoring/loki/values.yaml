@@ -1,6 +1,6 @@
-# https://github.com/grafana/helm-charts/blob/loki-stack-2.6.1/charts/loki-stack/values.yaml
+# https://github.com/grafana/helm-charts/blob/loki-stack-2.8.2/charts/loki-stack/values.yaml
 loki-stack:
-  # https://github.com/grafana/helm-charts/blob/loki-stack-2.6.1/charts/loki/values.yaml
+  # https://github.com/grafana/helm-charts/blob/loki-stack-2.8.2/charts/loki/values.yaml
   loki:
     persistence:
       enabled: true
@@ -8,5 +8,5 @@ loki-stack:
     serviceMonitor:
       enabled: true
       interval: 1m
-  # https://github.com/grafana/helm-charts/blob/loki-stack-2.6.1/charts/promtail/values.yaml
+  # https://github.com/grafana/helm-charts/blob/loki-stack-2.8.2/charts/promtail/values.yaml
   # promtail:
