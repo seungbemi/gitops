@@ -1,17 +1,17 @@
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: ha-service-monitor
-spec:
-  namespaceSelector:
-    matchNames:
-      - services
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: home-assistant
-  endpoints:
-    - port: http
-      path: /api/prometheus
-      bearerTokenSecret:
-        key: token
-        name: ha-prometheus
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: ha-service-monitor
+# spec:
+#   namespaceSelector:
+#     matchNames:
+#       - services
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/name: home-assistant
+#   endpoints:
+#     - port: http
+#       path: /api/prometheus
+#       bearerTokenSecret:
+#         key: token
+#         name: ha-prometheus
