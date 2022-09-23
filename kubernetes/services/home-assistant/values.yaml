@@ -90,7 +90,6 @@ zigbee2mqtt:
       enabled: true
       type: hostPath
       hostPath: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
-      mountPath: /dev/ttyUSB0
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -118,7 +117,7 @@ zigbee2mqtt:
       # Optional: Include device information to mqtt messages (default: false)
       include_device_information: true
     serial:
-      port: /dev/ttyUSB0
+      port: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
 
 
 # https://github.com/k8s-at-home/charts/blob/deconz-6.5.2/charts/stable/deconz/values.yaml
