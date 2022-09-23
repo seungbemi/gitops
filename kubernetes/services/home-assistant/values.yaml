@@ -70,6 +70,57 @@ home-assistant:
       podAnnotations:
         backup.velero.io/backup-volumes: data
 
+# https://github.com/k8s-at-home/charts/blob/zigbee2mqtt-9.4.2/charts/stable/zigbee2mqtt/values.yaml
+zigbee2mqtt:
+  env:
+    TZ: Europe/Helsinki
+    # -- Set the data folder for Zigbee2MQTT.
+    ZIGBEE2MQTT_DATA: /data
+
+  securityContext:
+    privileged:  true
+  persistence:
+    data:
+      enabled: true
+      mountPath: /data
+      storageClass: ceph-block
+      accessMode: ReadWriteOnce
+      size: "100Mi"
+    usb:
+      enabled: true
+      type: hostPath
+      hostPath: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
+      mountPath: /dev/ttyUSB0
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: zigbee-node
+            operator: In
+            values:
+            - "true"
+  config:
+    homeassistant: true
+    permit_join: true
+    mqtt:
+      # MQTT base topic for zigbee2mqtt MQTT messages
+      base_topic: zigbee2mqtt
+      # MQTT server URL
+      server: "mqtt://mosquitto:1883"
+      # MQTT server authentication, uncomment if required:
+      # user: my_user
+      # password: my_password
+      # client_id: my_id
+      # Alternatively, credentials may be put into a separate file, managed through a secret:
+      # password: '!secret password'
+
+      # Optional: Include device information to mqtt messages (default: false)
+      include_device_information: true
+    serial:
+      port: /dev/ttyUSB0
+
+
 # https://github.com/k8s-at-home/charts/blob/deconz-6.5.2/charts/stable/deconz/values.yaml
 deconz:
   env:
