@@ -118,7 +118,7 @@ zigbee2mqtt:
       include_device_information: true
     serial:
       port: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
-
+      adapter: deconz
 
 # https://github.com/k8s-at-home/charts/blob/deconz-6.5.2/charts/stable/deconz/values.yaml
 deconz:
