@@ -74,7 +74,15 @@ home-assistant:
         size: 8Gi
       podAnnotations:
         backup.velero.io/backup-volumes: data
-
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: zigbee-node
+            operator: In
+            values:
+            - "true"
 # https://github.com/k8s-at-home/charts/blob/deconz-6.5.2/charts/stable/deconz/values.yaml
 deconz:
   env:
