@@ -18,6 +18,11 @@ apps:
     namespace: services
     path: kubernetes/services/home-assistant
     sync: true
+  
+  - name: mosquitto
+    namespace: services
+    path: kubernetes/services/mosquitto
+    sync: true
 
   - name: service-secrets
     namespace: services
