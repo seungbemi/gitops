@@ -1,4 +1,4 @@
-# https://github.com/k8s-at-home/charts/tree/home-assistant-13.4.2/charts/stable/home-assistant
+# https://github.com/k8s-at-home/charts/blob/home-assistant-13.4.2/charts/stable/home-assistant/values.yaml
 home-assistant:
   image:
     repository: homeassistant/home-assistant
@@ -17,6 +17,8 @@ home-assistant:
       enabled: false
     startup:
       enabled: true
+  securityContext:
+    privileged:  true
   persistence:
     config:
       enabled: true
