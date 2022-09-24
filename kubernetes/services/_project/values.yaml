@@ -19,6 +19,11 @@ apps:
     path: kubernetes/services/home-assistant
     sync: true
 
+  - name: paperless
+    namespace: services
+    path: kubernetes/services/paperless
+    sync: true
+
   - name: service-secrets
     namespace: services
     repoURL: git@github.com:seungbemi/gitops-secrets.git
