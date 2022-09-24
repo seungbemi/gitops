@@ -7,13 +7,13 @@ paperless:
     pullPolicy: IfNotPresent
     # -- image tag
     # @default -- chart.appVersion
-    tag: 1.8
+    tag: 1.8.0
   env:
     TZ: "Europe/Helsinki"
     # -- Project name
     COMPOSE_PROJECT_NAME: paperless
     # -- Redis to use
-    PAPERLESS_REDIS: 
+    PAPERLESS_REDIS: redis://paperless-redis-headless:6379
     # -- OCR languages to install
     PAPERLESS_OCR_LANGUAGE: eng+kor
     # USERMAP_UID: 1000
@@ -63,5 +63,7 @@ paperless:
   # @default -- See values.yaml
   redis:
     enabled: true
+    global:
+      storageClass: nfs-client
     auth:
       enabled: false
