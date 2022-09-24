@@ -4,3 +4,7 @@ nfs-subdir-external-provisioner:
     server: 192.168.50.195
     path: /volume1/LTS
     volumeName: nfs-provisioner-root
+    mountOptions:
+      - hard
+      - nfsvers=4.1
+
