@@ -22,7 +22,7 @@ paperless:
     # -- Database host to use
     PAPERLESS_DBHOST: postgresql
     # -- Port to use
-    PAPERLESS_PORT: 8080
+    PAPERLESS_PORT: 8000
     # -- Username for the root user
     # PAPERLESS_ADMIN_USER: admin
     # -- Password for the root user
