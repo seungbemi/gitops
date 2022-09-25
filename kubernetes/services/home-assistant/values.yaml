@@ -55,27 +55,6 @@ home-assistant:
     requests:
       cpu: 100m
       memory: 1000Mi
-  postgresql:
-    enabled: true
-    image:
-      repository: postgres
-      tag: '14.1'
-    auth:
-      enablePostgresUser: false
-      username: homeassistant
-      database: homeassistant
-      existingSecret: postgres-secrets
-    shmVolume:
-      enabled: false
-    volumePermissions:
-      enabled: false
-    primary:
-      persistence:
-        enabled: true
-        storageClass: ceph-block
-        size: 8Gi
-      podAnnotations:
-        backup.velero.io/backup-volumes: data
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
