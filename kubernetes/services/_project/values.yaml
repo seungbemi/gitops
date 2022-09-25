@@ -29,6 +29,11 @@ apps:
     path: kubernetes/services/redis
     sync: true
 
+  - name: postgresql
+    namespace: services
+    path: kubernetes/services/postgresql
+    sync: true
+
   - name: service-secrets
     namespace: services
     repoURL: git@github.com:seungbemi/gitops-secrets.git
