@@ -20,14 +20,17 @@ paperless:
     # USERMAP_GID: 1000
     PAPERLESS_TIME_ZONE: Europe/Helsinki
     # -- Database host to use
-    # PAPERLESS_DBHOST: 
+    # PAPERLESS_DBHOST:
     # -- Port to use
-    PAPERLESS_PORT: 8000
+    PAPERLESS_PORT: 8080
     # -- Username for the root user
-    PAPERLESS_ADMIN_USER: admin
+    # PAPERLESS_ADMIN_USER: admin
     # -- Password for the root user
-    PAPERLESS_ADMIN_PASSWORD: admin
+    # PAPERLESS_ADMIN_PASSWORD: admin
     # PAPERLESS_URL: <set to main ingress by default>
+  envFrom:
+    - secretRef:
+        name: paperless-secrets
   persistence:
     data:
       enabled: true
