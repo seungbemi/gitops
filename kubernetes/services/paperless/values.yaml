@@ -20,7 +20,7 @@ paperless:
     # USERMAP_GID: 1000
     PAPERLESS_TIME_ZONE: Europe/Helsinki
     # -- Database host to use
-    # PAPERLESS_DBHOST:
+    PAPERLESS_DBHOST: postgresql
     # -- Port to use
     PAPERLESS_PORT: 8080
     # -- Username for the root user
