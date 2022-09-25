@@ -2,6 +2,7 @@
 loki-stack:
   # https://github.com/grafana/helm-charts/blob/loki-stack-2.8.2/charts/loki/values.yaml
   loki:
+    isDefault: false
     persistence:
       enabled: true
       existingClaim: pv-claim-loki
