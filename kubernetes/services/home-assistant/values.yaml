@@ -2,7 +2,7 @@
 home-assistant:
   image:
     repository: homeassistant/home-assistant
-    tag: 2022.9.0
+    tag: 2022.10.4
   env:
     TZ: "Europe/Helsinki"
   # hostNetwork: true
