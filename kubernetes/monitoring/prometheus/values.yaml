@@ -61,6 +61,7 @@ kube-prometheus-stack:
   
   prometheus:
     prometheusSpec:
+      retention: 3y
       ruleSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
       podMonitorSelectorNilUsesHelmValues: false
