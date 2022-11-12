@@ -1,1748 +1,1801 @@
 {
-    "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": {
-            "type": "grafana",
-            "uid": "-- Grafana --"
-          },
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "target": {
-            "limit": 100,
-            "matchAny": false,
-            "tags": [],
-            "type": "dashboard"
-          },
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
           "type": "dashboard"
-        }
-      ]
-    },
-    "editable": false,
-    "fiscalYearStartMonth": 0,
-    "graphTooltip": 0,
-    "id": 29,
-    "links": [],
-    "liveNow": false,
-    "panels": [
-      {
-        "collapsed": false,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 0
         },
-        "id": 7,
-        "panels": [],
-        "title": "Overview",
-        "type": "row"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "max": 28,
-            "min": 16,
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "dark-blue",
-                  "value": null
-                },
-                {
-                  "color": "semi-dark-green",
-                  "value": 20
-                },
-                {
-                  "color": "semi-dark-orange",
-                  "value": 25
-                }
-              ]
-            },
-            "unit": "celsius"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bedroom_temperature"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Bedroom"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.living_room_temperature"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Living Room"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.seri_room_temperature"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Kids Room"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 8,
-          "x": 0,
-          "y": 1
-        },
-        "id": 9,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "exemplar": false,
-            "expr": "sum by(entity) (ha_temperature_c{service=\"home-assistant\", entity!~\"sensor.bekgomds_deuraibeu_1_temperature|sensor.bekgomds_deuraibeu_2_temperature|sensor.bekgomds_temperature\"})",
-            "instant": false,
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Temperature (°C)",
-        "type": "gauge"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "max": 100,
-            "min": 0,
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "yellow",
-                  "value": null
-                },
-                {
-                  "color": "green",
-                  "value": 30
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            },
-            "unit": "humidity"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bedroom_humidity"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Bedroom"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.living_room_humidity"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Living Room"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.seri_room_humidity"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Kids Room"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 8,
-          "x": 8,
-          "y": 1
-        },
-        "id": 13,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_humidity_percent{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Humidity (%)",
-        "type": "gauge"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "pressurehpa"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bedroom_pressure"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Bedroom"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.living_room_pressure"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Living Room"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.seri_room_pressure"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Kids room"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 5,
-          "w": 8,
-          "x": 16,
-          "y": 1
-        },
-        "id": 17,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "exemplar": false,
-            "expr": "sum by(entity) (ha_pressure_hPa{service=\"home-assistant\"})",
-            "format": "time_series",
-            "instant": true,
-            "interval": "",
-            "legendFormat": "{{friendly_name}}",
-            "range": false,
-            "refId": "A"
-          }
-        ],
-        "title": "Pressure (hPa)",
-        "type": "gauge"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "continuous-GrYlRd"
-            },
-            "mappings": [],
-            "noValue": "-1",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "watt"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.server_plug_electricalmeasurement"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Home Servers"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.zigbee_plug_electricalmeasurement"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Desk Equipments"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.sp3s_16a_current_power"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "sp3s"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.zigbee_plug2_electricalmeasurement"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "zigbee plug"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 6,
-          "w": 11,
-          "x": 0,
-          "y": 6
-        },
-        "id": 19,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_sensor_power_w{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Power Consumption (W)",
-        "type": "gauge"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "continuous-GrYlRd"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "Mbits"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.192_168_50_1_download_speed"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Download"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.192_168_50_1_upload_speed"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Upload"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 6,
-          "w": 13,
-          "x": 11,
-          "y": 6
-        },
-        "id": 26,
-        "options": {
-          "displayMode": "lcd",
-          "minVizHeight": 10,
-          "minVizWidth": 0,
-          "orientation": "horizontal",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showUnfilled": true
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_sensor_unit_mbit_per_s{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Router Network Speed",
-        "type": "bargauge"
-      },
-      {
-        "collapsed": false,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 12
-        },
-        "id": 3,
-        "panels": [],
-        "title": "Timeline",
-        "type": "row"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineStyle": {
-                "fill": "solid"
-              },
-              "lineWidth": 2,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "area"
-              }
-            },
-            "mappings": [],
-            "max": 26,
-            "min": 17,
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "blue",
-                  "value": null
-                },
-                {
-                  "color": "green",
-                  "value": 20
-                },
-                {
-                  "color": "red",
-                  "value": 24
-                }
-              ]
-            },
-            "unit": "celsius"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bedroom_temperature"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Bedroom"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.living_room_temperature"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Living Room"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.seri_room_temperature"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Kids Room"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 8,
-          "x": 0,
-          "y": 13
-        },
-        "id": 1,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "exemplar": false,
-            "expr": "sum by(entity) (ha_temperature_c{service=\"home-assistant\", entity!~\"sensor.bekgomds_deuraibeu_1_temperature|sensor.bekgomds_deuraibeu_2_temperature|sensor.bekgomds_temperature\"})",
-            "instant": false,
-            "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Temperature (°C)",
-        "type": "timeseries"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "smooth",
-              "lineWidth": 2,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "line"
-              }
-            },
-            "mappings": [],
-            "max": 100,
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "dark-blue",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "percent"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bedroom_humidity"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Bedroom"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.living_room_humidity"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Living Room"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.seri_room_humidity"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Kids Room"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 8,
-          "x": 8,
-          "y": 13
-        },
-        "id": 4,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "exemplar": false,
-            "expr": "sum by(entity) (ha_humidity_percent{service=\"home-assistant\"})",
-            "instant": false,
-            "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Humidity (%)",
-        "type": "timeseries"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "smooth",
-              "lineWidth": 2,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "line"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "dark-blue",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "pressurehpa"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bedroom_pressure"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Bedroom"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.living_room_pressure"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Living Room"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.seri_room_pressure"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Kids Room"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 8,
-          "x": 16,
-          "y": 13
-        },
-        "id": 5,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "exemplar": false,
-            "expr": "sum by(entity) (ha_pressure_hPa{service=\"home-assistant\"})",
-            "instant": false,
-            "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Pressure (hPa)",
-        "type": "timeseries"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "noValue": "-1",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                }
-              ]
-            },
-            "unit": "watt"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.server_plug_electricalmeasurement"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Home Servers"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.zigbee_plug_electricalmeasurement"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Desk Equipments"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.sp3s_16a_current_power"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "sp3s"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.zigbee_plug2_electricalmeasurement"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "zigbee plug"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 21
-        },
-        "id": 20,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_sensor_power_w{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Power Consumption (W)",
-        "type": "timeseries"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineStyle": {
-                "fill": "solid"
-              },
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            },
-            "unit": "Mbits"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.192_168_50_1_download_speed"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Download"
-                },
-                {
-                  "id": "color",
-                  "value": {
-                    "fixedColor": "dark-blue",
-                    "mode": "fixed"
-                  }
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.192_168_50_1_upload_speed"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Upload"
-                },
-                {
-                  "id": "color",
-                  "value": {
-                    "fixedColor": "orange",
-                    "mode": "fixed"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 12,
-          "y": 21
-        },
-        "id": 27,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_sensor_unit_mbit_per_s{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Router Network",
-        "type": "timeseries"
-      },
-      {
-        "collapsed": false,
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 29
-        },
-        "id": 24,
-        "panels": [],
-        "title": "NAS",
-        "type": "row"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "mappings": [],
-            "thresholds": {
-              "mode": "percentage",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "orange",
-                  "value": 70
-                },
-                {
-                  "color": "red",
-                  "value": 85
-                }
-              ]
-            },
-            "unit": "percent"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_cpu_utilization_total"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "CPU Total"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_cpu_utilization_user"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "CPU User"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_memory_usage_real"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Memory"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_volume_1_volume_used"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Volume 1"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_volume_2_volume_used"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Volume 2"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 4,
-          "w": 12,
-          "x": 0,
-          "y": 30
-        },
-        "id": 22,
-        "options": {
-          "orientation": "auto",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showThresholdLabels": false,
-          "showThresholdMarkers": true
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_sensor_unit_percent{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Usage (%)",
-        "type": "gauge"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "continuous-GrYlRd"
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            },
-            "unit": "Kbits"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_download_throughput"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Download"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_upload_throughput"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Upload"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 4,
-          "w": 12,
-          "x": 12,
-          "y": 30
-        },
-        "id": 29,
-        "options": {
-          "displayMode": "lcd",
-          "minVizHeight": 10,
-          "minVizWidth": 0,
-          "orientation": "horizontal",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showUnfilled": true
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_sensor_unit_kb_per_s{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Network Speed",
-        "type": "bargauge"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            },
-            "unit": "percent"
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_cpu_utilization_total"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "CPU Total"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_cpu_utilization_user"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "CPU User"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_memory_usage_real"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Memory"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_volume_1_volume_used"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Volume 1"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_volume_2_volume_used"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Volume 2"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 7,
-          "w": 12,
-          "x": 0,
-          "y": 34
-        },
-        "id": 30,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_sensor_unit_percent{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "type": "timeseries"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_download_throughput"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Download"
-                }
-              ]
-            },
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "sensor.bekgomds_upload_throughput"
-              },
-              "properties": [
-                {
-                  "id": "displayName",
-                  "value": "Upload"
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 7,
-          "w": 12,
-          "x": 12,
-          "y": 34
-        },
-        "id": 31,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom"
-          },
-          "tooltip": {
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "pluginVersion": "9.0.5",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "prometheus"
-            },
-            "editorMode": "builder",
-            "expr": "sum by(entity) (ha_sensor_unit_kb_per_s{service=\"home-assistant\"})",
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A"
-          }
-        ],
-        "title": "Network Speed",
-        "type": "timeseries"
+        "type": "dashboard"
       }
-    ],
-    "schemaVersion": 36,
-    "style": "dark",
-    "tags": [],
-    "templating": {
-      "list": []
+    ]
+  },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 29,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "panels": [],
+      "title": "Overview",
+      "type": "row"
     },
-    "time": {
-      "from": "now-2d",
-      "to": "now"
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 28,
+          "min": 16,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 20
+              },
+              {
+                "color": "semi-dark-orange",
+                "value": 25
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_temperature_c\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.bedroom_temperature\", friendly_name=\"BedroomMultiSensor Temperature\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bedroom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_temperature_c\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.living_room_temperature\", friendly_name=\"LivingRoomMultiSensor Temperature\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Living Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_temperature_c\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.seri_room_temperature\", friendly_name=\"SeriRoomMultiSensor Temperature\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Kids Room"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      },
+      "id": 9,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "ha_temperature_c{service=\"home-assistant\", entity!~\"sensor.bekgomds_deuraibeu_1_temperature|sensor.bekgomds_deuraibeu_2_temperature|sensor.bekgomds_temperature\"}",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Temperature (°C)",
+      "type": "gauge"
     },
-    "timepicker": {},
-    "timezone": "",
-    "title": "Home Assistant",
-    "uid": "vYzWqUD4k",
-    "version": 9,
-    "weekStart": ""
-  }
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "yellow",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "humidity"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_humidity_percent\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.bedroom_humidity\", friendly_name=\"BedroomMultiSensor Humidity\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bedroom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_humidity_percent\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.living_room_humidity\", friendly_name=\"LivingRoomMultiSensor Humidity\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Living Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_humidity_percent\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.seri_room_humidity\", friendly_name=\"SeriRoomMultiSensor Humidity\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Kids Room"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      },
+      "id": 13,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "ha_humidity_percent{service=\"home-assistant\"}",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Humidity (%)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "pressurehpa"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "BedroomMultiSensor Pressure"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bedroom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LivingRoomMultiSensor Pressure"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Living Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SeriRoomMultiSensor Pressure"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Kids room"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "id": 17,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "ha_pressure_hPa{service=\"home-assistant\"}",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{friendly_name}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Pressure (hPa)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "-1",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_sensor_power_w\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.server_plug_electricalmeasurement\", friendly_name=\"Server Plug Electricalmeasurement\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Home Servers"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 70
+                    },
+                    {
+                      "color": "dark-red",
+                      "value": 100
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 120
+              },
+              {
+                "id": "min",
+                "value": 40
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_sensor_power_w\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.zigbee_plug_electricalmeasurement\", friendly_name=\"Full Desk Plug Electricalmeasurement\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Desk Equipments"
+              },
+              {
+                "id": "max",
+                "value": 300
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "semi-dark-orange",
+                      "value": 100
+                    },
+                    {
+                      "color": "red",
+                      "value": 200
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_sensor_power_w\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.zigbee_plug2_electricalmeasurement\", friendly_name=\"Zigbee Plug 2 Electricalmeasurement\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "zigbee plug"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 11,
+        "x": 0,
+        "y": 6
+      },
+      "id": 19,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "ha_sensor_power_w{service=\"home-assistant\"}",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Power Consumption (W)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "Mbits"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_sensor_unit_mbit_per_s\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.192_168_50_1_download_speed\", friendly_name=\"192.168.50.1 Download Speed\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Download"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_sensor_unit_mbit_per_s\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.192_168_50_1_upload_speed\", friendly_name=\"192.168.50.1 Upload Speed\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Upload"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 13,
+        "x": 11,
+        "y": 6
+      },
+      "id": 26,
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "ha_sensor_unit_mbit_per_s{service=\"home-assistant\"}",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Router Network Speed",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 3,
+      "panels": [],
+      "title": "Timeline",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "mappings": [],
+          "max": 26,
+          "min": 17,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 20
+              },
+              {
+                "color": "red",
+                "value": 24
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bedroom_temperature"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bedroom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.living_room_temperature"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Living Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.seri_room_temperature"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Kids Room"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 13
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(entity) (ha_temperature_c{service=\"home-assistant\", entity!~\"sensor.bekgomds_deuraibeu_1_temperature|sensor.bekgomds_deuraibeu_2_temperature|sensor.bekgomds_temperature\"})",
+          "instant": false,
+          "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Temperature (°C)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bedroom_humidity"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bedroom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.living_room_humidity"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Living Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.seri_room_humidity"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Kids Room"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 13
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(entity) (ha_humidity_percent{service=\"home-assistant\"})",
+          "instant": false,
+          "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Humidity (%)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "pressurehpa"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bedroom_pressure"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bedroom"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.living_room_pressure"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Living Room"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.seri_room_pressure"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Kids Room"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 13
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(entity) (ha_pressure_hPa{service=\"home-assistant\"})",
+          "instant": false,
+          "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Pressure (hPa)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "noValue": "-1",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.server_plug_electricalmeasurement"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Home Servers"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.zigbee_plug_electricalmeasurement"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Desk Equipments"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.sp3s_16a_current_power"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "sp3s"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.zigbee_plug2_electricalmeasurement"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "zigbee plug"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 20,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "expr": "sum by(entity) (ha_sensor_power_w{service=\"home-assistant\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Power Consumption (W)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Mbits"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.192_168_50_1_download_speed"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Download"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.192_168_50_1_upload_speed"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Upload"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 27,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "expr": "sum by(entity) (ha_sensor_unit_mbit_per_s{service=\"home-assistant\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Router Network",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 24,
+      "panels": [],
+      "title": "NAS",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_cpu_utilization_total"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPU Total"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_cpu_utilization_user"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPU User"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_memory_usage_real"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Memory"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_volume_1_volume_used"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Volume 1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_volume_2_volume_used"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Volume 2"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 22,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(entity) (ha_sensor_unit_percent{service=\"home-assistant\"})",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Usage (%)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Kbits"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_sensor_unit_kb_per_s\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.bekgomds_download_throughput\", friendly_name=\"FunServiceDS Download Throughput\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Download"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{__name__=\"ha_sensor_unit_kb_per_s\", container=\"home-assistant\", domain=\"sensor\", endpoint=\"http\", entity=\"sensor.bekgomds_upload_throughput\", friendly_name=\"FunServiceDS Upload Throughput\", instance=\"10.1.17.172:8123\", job=\"home-assistant\", namespace=\"services\", pod=\"home-assistant-5d4776c8fc-mxlgz\", service=\"home-assistant\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Upload"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "id": 29,
+      "options": {
+        "displayMode": "lcd",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "ha_sensor_unit_kb_per_s{service=\"home-assistant\"}",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Network Speed",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_cpu_utilization_total"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPU Total"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_cpu_utilization_user"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "CPU User"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_memory_usage_real"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Memory"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_volume_1_volume_used"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Volume 1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_volume_2_volume_used"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Volume 2"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 34
+      },
+      "id": 30,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "expr": "sum by(entity) (ha_sensor_unit_percent{service=\"home-assistant\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_download_throughput"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Download"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sensor.bekgomds_upload_throughput"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Upload"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 34
+      },
+      "id": 31,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "expr": "sum by(entity) (ha_sensor_unit_kb_per_s{service=\"home-assistant\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Network Speed",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [
+    "service",
+    "home-assistant"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Home Assistant",
+  "uid": "vYzWqUD4k",
+  "version": 9,
+  "weekStart": ""
+}
