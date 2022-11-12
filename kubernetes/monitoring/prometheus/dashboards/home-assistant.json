@@ -141,7 +141,7 @@
             },
             "editorMode": "builder",
             "exemplar": false,
-            "expr": "avg by(entity) (ha_temperature_c{service=\"home-assistant\", entity!~\"sensor.bekgomds_deuraibeu_1_temperature|sensor.bekgomds_deuraibeu_2_temperature|sensor.bekgomds_temperature\"})",
+            "expr": "sum by(entity) (ha_temperature_c{service=\"home-assistant\", entity!~\"sensor.bekgomds_deuraibeu_1_temperature|sensor.bekgomds_deuraibeu_2_temperature|sensor.bekgomds_temperature\"})",
             "instant": false,
             "legendFormat": "__auto",
             "range": true,
@@ -249,7 +249,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_humidity_percent{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_humidity_percent{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -347,7 +347,7 @@
             },
             "editorMode": "builder",
             "exemplar": false,
-            "expr": "avg by(entity) (ha_pressure_hPa{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_pressure_hPa{service=\"home-assistant\"})",
             "format": "time_series",
             "instant": true,
             "interval": "",
@@ -460,7 +460,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_sensor_power_w{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_sensor_power_w{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -547,7 +547,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_sensor_unit_mbit_per_s{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_sensor_unit_mbit_per_s{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -636,7 +636,7 @@
             {
               "matcher": {
                 "id": "byName",
-                "options": "BedroomMultiSensor Temperature"
+                "options": "sensor.bedroom_temperature"
               },
               "properties": [
                 {
@@ -648,7 +648,7 @@
             {
               "matcher": {
                 "id": "byName",
-                "options": "LivingRoomMultiSensor Temperature"
+                "options": "sensor.living_room_temperature"
               },
               "properties": [
                 {
@@ -660,7 +660,7 @@
             {
               "matcher": {
                 "id": "byName",
-                "options": "SeriRoomMultiSensor Temperature"
+                "options": "sensor.seri_room_temperature"
               },
               "properties": [
                 {
@@ -697,7 +697,7 @@
             },
             "editorMode": "builder",
             "exemplar": false,
-            "expr": "avg by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity!~\"sensor.bekgomds_deuraibeu_1_temperature|sensor.bekgomds_deuraibeu_2_temperature|sensor.bekgomds_temperature\"})",
+            "expr": "sum by(entity) (ha_temperature_c{service=\"home-assistant\", entity!~\"sensor.bekgomds_deuraibeu_1_temperature|sensor.bekgomds_deuraibeu_2_temperature|sensor.bekgomds_temperature\"})",
             "instant": false,
             "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
             "legendFormat": "__auto",
@@ -824,7 +824,7 @@
             },
             "editorMode": "builder",
             "exemplar": false,
-            "expr": "avg by(entity) (ha_humidity_percent{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_humidity_percent{service=\"home-assistant\"})",
             "instant": false,
             "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
             "legendFormat": "__auto",
@@ -890,7 +890,7 @@
             {
               "matcher": {
                 "id": "byName",
-                "options": "BedroomMultiSensor Pressure"
+                "options": "sensor.bedroom_pressure"
               },
               "properties": [
                 {
@@ -902,7 +902,7 @@
             {
               "matcher": {
                 "id": "byName",
-                "options": "LivingRoomMultiSensor Pressure"
+                "options": "sensor.living_room_pressure"
               },
               "properties": [
                 {
@@ -914,7 +914,7 @@
             {
               "matcher": {
                 "id": "byName",
-                "options": "SeriRoomMultiSensor Pressure"
+                "options": "sensor.seri_room_pressure"
               },
               "properties": [
                 {
@@ -951,7 +951,7 @@
             },
             "editorMode": "builder",
             "exemplar": false,
-            "expr": "avg by(friendly_name) (ha_pressure_hPa{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_pressure_hPa{service=\"home-assistant\"})",
             "instant": false,
             "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
             "legendFormat": "__auto",
@@ -1090,7 +1090,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_sensor_power_w{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_sensor_power_w{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -1223,7 +1223,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_sensor_unit_mbit_per_s{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_sensor_unit_mbit_per_s{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -1362,7 +1362,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_sensor_unit_percent{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_sensor_unit_percent{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -1453,7 +1453,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_sensor_unit_kb_per_s{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_sensor_unit_kb_per_s{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -1605,7 +1605,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_sensor_unit_percent{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_sensor_unit_percent{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -1719,7 +1719,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "avg by(entity) (ha_sensor_unit_kb_per_s{service=\"home-assistant\"})",
+            "expr": "sum by(entity) (ha_sensor_unit_kb_per_s{service=\"home-assistant\"})",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -1736,13 +1736,13 @@
       "list": []
     },
     "time": {
-      "from": "now-24h",
+      "from": "now-2d",
       "to": "now"
     },
     "timepicker": {},
     "timezone": "",
     "title": "Home Assistant",
     "uid": "vYzWqUD4k",
-    "version": 8,
+    "version": 9,
     "weekStart": ""
   }
