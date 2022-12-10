@@ -27,10 +27,10 @@ traefik:
       protocol: TCP
   resources:
     requests:
-      cpu: "100m"
+      cpu: "300m"
       memory: "250Mi"
     limits:
-      cpu: "300m"
+      cpu: "600m"
       memory: "500Mi"
   autoscaling:
     enabled: true
