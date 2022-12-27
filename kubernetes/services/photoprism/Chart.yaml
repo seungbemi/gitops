@@ -1,0 +1,10 @@
+apiVersion: v2
+name: photoprism
+description: A Helm chart for photoprism
+
+type: application
+
+version: 1.0.0
+appVersion: v1.0.0
+
+dependencies: []

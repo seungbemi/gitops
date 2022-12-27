@@ -23,6 +23,11 @@ apps:
     namespace: services
     path: kubernetes/services/paperless
     sync: true
+  
+  - name: photoprism
+    namespace: services
+    path: kubernetes/services/photoprism
+    sync: true
 
   - name: redis
     namespace: services
