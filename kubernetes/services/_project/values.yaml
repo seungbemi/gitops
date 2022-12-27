@@ -33,6 +33,11 @@ apps:
     namespace: services
     path: kubernetes/services/postgresql
     sync: true
+  
+  - name: mariadb
+    namespace: services
+    path: kubernetes/services/mariadb
+    sync: true
 
   - name: service-secrets
     namespace: services
