@@ -17,6 +17,8 @@ spec:
       - name: photoprism
         image: photoprism/photoprism:221118-jammy
         env:
+        - name: PHOTOPRISM_DEBUG
+          value: "true"
         - name: PHOTOPRISM_CACHE_PATH
           value: /assets/cache
         - name: PHOTOPRISM_IMPORT_PATH
