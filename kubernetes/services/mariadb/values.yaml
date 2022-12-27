@@ -7,6 +7,3 @@ mariadb:
   primary:
     persistence:
       storageClass: ceph-block
-  secondary:
-    persistence:
-      storageClass: nfs-client
