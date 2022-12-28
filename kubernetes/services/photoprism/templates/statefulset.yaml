@@ -63,5 +63,5 @@ spec:
           server: 192.168.50.195
       - name: photoprism
         nfs:
-          path: /volume1/Photoprism
+          path: /volume1/LTS/photoprism
           server: 192.168.50.195
