@@ -9,17 +9,17 @@ apps:
     path: kubernetes/persistence/rook-ceph
     sync: true
 
-  - name: redis
+  - name: p-redis
     namespace: persistence
     path: kubernetes/persistence/redis
     sync: true
 
-  - name: postgresql
+  - name: p-postgresql
     namespace: persistence
     path: kubernetes/persistence/postgresql
     sync: true
   
-  - name: mariadb
+  - name: p-mariadb
     namespace: persistence
     path: kubernetes/persistence/mariadb
     sync: true
