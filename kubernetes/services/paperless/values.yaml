@@ -13,14 +13,14 @@ paperless:
     # -- Project name
     COMPOSE_PROJECT_NAME: paperless
     # -- Redis to use
-    PAPERLESS_REDIS: redis://redis-master:6379
+    PAPERLESS_REDIS: redis://redis-master.persistence:6379
     # -- OCR languages to install
     PAPERLESS_OCR_LANGUAGE: eng
     USERMAP_UID: 1000
     USERMAP_GID: 1000
     PAPERLESS_TIME_ZONE: Europe/Helsinki
     # -- Database host to use
-    PAPERLESS_DBHOST: postgresql
+    PAPERLESS_DBHOST: postgresql.persistence
     # -- Port to use
     PAPERLESS_PORT: 8000
     PAPERLESS_CONSUMER_POLLING: 300
