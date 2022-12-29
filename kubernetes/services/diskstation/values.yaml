@@ -1,4 +1,4 @@
-defaultDomain: diskstation
+defaultDomain: diskstation.local
 
 webServices:
 - name: dsm

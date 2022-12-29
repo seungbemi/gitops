@@ -60,8 +60,8 @@ spec:
         nfs:
           path: /volume2/photo
           readOnly: true
-          server: diskstation
+          server: diskstation.local
       - name: photoprism
         nfs:
           path: /volume1/LTS/photoprism
-          server: diskstation
+          server: diskstation.local

@@ -1,6 +1,6 @@
 # https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/blob/nfs-subdir-external-provisioner-4.0.16/charts/nfs-subdir-external-provisioner/values.yaml
 nfs-subdir-external-provisioner:
   nfs:
-    server: diskstation
+    server: diskstation.local
     path: /volume1/LTS
     volumeName: nfs-provisioner-root
