@@ -1,0 +1,11 @@
+# https://github.com/bitnami/charts/blob/9e15346368a58970bfe079d242e8ea78bc2618ef/bitnami/redis/values.yaml
+redis:
+  auth:
+    enabled: false
+  master:
+    persistence:
+      storageClass: ceph-block
+  replica:
+    persistence:
+      storageClass: nfs-client
+

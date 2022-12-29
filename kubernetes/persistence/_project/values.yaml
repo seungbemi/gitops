@@ -9,3 +9,23 @@ apps:
     path: kubernetes/persistence/rook-ceph
     sync: true
 
+  - name: redis
+    namespace: persistence
+    path: kubernetes/persistence/redis
+    sync: true
+
+  - name: postgresql
+    namespace: persistence
+    path: kubernetes/persistence/postgresql
+    sync: true
+  
+  - name: mariadb
+    namespace: persistence
+    path: kubernetes/persistence/mariadb
+    sync: true
+
+  - name: persistence-secrets
+    namespace: persistence
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/persistence/secrets
+    sync: true

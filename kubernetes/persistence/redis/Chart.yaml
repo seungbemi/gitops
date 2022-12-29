@@ -1,0 +1,13 @@
+apiVersion: v2
+name: redis
+description: Redis(R) is an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
+
+type: application
+
+version: 17.2.0
+appVersion: 7.0.5
+
+dependencies:
+  - name: redis
+    version: 17.2.0
+    repository: https://charts.bitnami.com/bitnami
