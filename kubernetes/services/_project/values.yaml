@@ -28,6 +28,11 @@ apps:
     namespace: services
     path: kubernetes/services/photoprism
     sync: true
+  
+  - name: jellyfin
+    namespace: services
+    path: kubernetes/services/jellyfin
+    sync: true
 
   - name: service-secrets
     namespace: services
