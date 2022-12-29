@@ -11,14 +11,17 @@ spec:
       port: {{ .port }}
       targetPort: {{ .port }}
 ---
-apiVersion: v1
-kind: Endpoints
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
 metadata:
   name: {{ .name }}-service
-subsets:
+  labels:
+    kubernetes.io/service-name: {{ .name }}-service
+addressType: FQDN
+ports:
+  - name: {{ .name }}
+    port: {{ .port }}
+endpoints:
   - addresses:
-      - ip: {{ $.Values.defaultIP }}
-    ports:
-      - name: {{ .name }}
-        port: {{ .port }}
+      - {{ $.Values.defaultDomain }}
 {{- end }}
