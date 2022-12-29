@@ -52,6 +52,10 @@ spec:
         - mountPath: /data/music
           name: music
           readOnly: True
+        - mountPath: /data/transcodes
+          name: transcodes
+        - mountPath: /data/metadata
+          name: metadata
         - mountPath: /cache
           name: cache
         - mountPath: /config
@@ -71,6 +75,14 @@ spec:
       - name: cache
         nfs:
           path: /volume1/LTS/jellyfin/cache
+          server: diskstation.local
+      - name: metadata
+        nfs:
+          path: /volume1/LTS/jellyfin/metadata
+          server: diskstation.local
+      - name: transcodes
+        nfs:
+          path: /volume1/LTS/jellyfin/transcodes
           server: diskstation.local
       - name: jellyfin-config
         persistentVolumeClaim:
