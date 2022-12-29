@@ -37,7 +37,7 @@ spec:
         - name: JELLYFIN_CONFIG_DIR
           value: "/config"
         - name: JELLYFIN_CACHE_DIR
-          value: "/cache"
+          value: "/jellyfin/cache"
         envFrom:
         - secretRef:
             name: jellyfin-secrets
@@ -52,11 +52,11 @@ spec:
         - mountPath: /data/music
           name: music
           readOnly: True
-        - mountPath: /data/transcodes
+        - mountPath: /jellyfin/transcodes
           name: transcodes
-        - mountPath: /data/metadata
+        - mountPath: /jellyfin/metadata
           name: metadata
-        - mountPath: /cache
+        - mountPath: /jellyfin/cache
           name: cache
         - mountPath: /config
           name: jellyfin-config
