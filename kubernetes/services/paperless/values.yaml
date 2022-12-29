@@ -36,28 +36,28 @@ paperless:
     data:
       enabled: true
       type: nfs
-      server: 192.168.50.195
+      server: diskstation
       path: /volume1/LTS/paperless/data
       mountPath: /usr/src/paperless/data
       accessMode: ReadWriteOnce
     media:
       enabled: true
       type: nfs
-      server: 192.168.50.195
+      server: diskstation
       path: /volume1/LTS/paperless/media
       mountPath: /usr/src/paperless/media
       accessMode: ReadWriteOnce
     consume:
       enabled: true
       type: nfs
-      server: 192.168.50.195
+      server: diskstation
       path: /volume1/LTS/paperless/consume
       mountPath: /usr/src/paperless/consume
       accessMode: ReadWriteOnce
     export:
       enabled: true
       type: nfs
-      server: 192.168.50.195
+      server: diskstation
       path: /volume1/LTS/paperless/export
       mountPath: /usr/src/paperless/export
       accessMode: ReadWriteOnce
