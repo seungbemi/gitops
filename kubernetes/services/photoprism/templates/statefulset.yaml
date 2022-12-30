@@ -17,12 +17,18 @@ spec:
       - name: photoprism
         image: photoprism/photoprism:221118-jammy
         env:
+        - name: PHOTOPRISM_READONLY
+          value: "true"
         - name: PHOTOPRISM_CACHE_PATH
           value: /assets/cache
         - name: PHOTOPRISM_IMPORT_PATH
           value: /assets/photos/import
         - name: PHOTOPRISM_EXPORT_PATH
           value: /assets/photos/export
+        - name: PHOTOPRISM_STORAGE_PATH
+          value: /assets/storage
+        - name: PHOTOPRISM_BACKUP_PATH
+          value: /assets/backup
         - name: PHOTOPRISM_ORIGINALS_PATH
           value: /assets/photos/originals
         - name: PHOTOPRISM_DATABASE_DRIVER
@@ -42,9 +48,16 @@ spec:
         volumeMounts:
         - mountPath: /assets/photos/originals
           name: originals
+          readOnly: true
         - mountPath: /assets/cache
           name: photoprism
           subPath: cache
+        - mountPath: /assets/storage
+          name: photoprism
+          subPath: storage
+        - mountPath: /assets/backup
+          name: photoprism
+          subPath: backup
         - mountPath: /assets/photos/import
           name: photoprism
           subPath: import
