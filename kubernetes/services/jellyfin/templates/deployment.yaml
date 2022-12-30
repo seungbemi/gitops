@@ -54,6 +54,9 @@ spec:
         - mountPath: /data/metadata
           name: jellyfin
           subPath: metadata
+        - mountPath: /data/plugins
+          name: jellyfin
+          subPath: plugins
         - mountPath: /cache
           name: jellyfin
           subPath: cache
