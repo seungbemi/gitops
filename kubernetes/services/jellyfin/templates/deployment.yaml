@@ -37,7 +37,7 @@ spec:
         - name: JELLYFIN_CONFIG_DIR
           value: "/config"
         - name: JELLYFIN_CACHE_DIR
-          value: "/jellyfin/cache"
+          value: "/cache"
         envFrom:
         - secretRef:
             name: jellyfin-secrets
@@ -46,20 +46,27 @@ spec:
         - containerPort: 8096
           protocol: TCP
         volumeMounts:
-        - mountPath: /data/video
-          name: video
-          readOnly: True
-        - mountPath: /data/music
-          name: music
-          readOnly: True
-        - mountPath: /jellyfin/transcodes
-          name: transcodes
-        - mountPath: /jellyfin/metadata
-          name: metadata
-        - mountPath: /jellyfin/cache
-          name: cache
+        - mountPath: /data/data
+          name: jellyfin-data
+        - mountPath: /data/transcodes
+          name: jellyfin
+          subPath: transcodes
+        - mountPath: /data/metadata
+          name: jellyfin
+          subPath: metadata
+        - mountPath: /cache
+          name: jellyfin
+          subPath: cache
         - mountPath: /config
-          name: jellyfin-config
+          name: jellyfin
+          subPath: config
+        - mountPath: /media/video
+          name: video
+          readOnly: true
+        - mountPath: /media/music
+          name: music
+          readOnly: true
+
       restartPolicy: Always
       volumes:
       - name: video
@@ -72,18 +79,10 @@ spec:
           path: /volume2/music
           readOnly: true
           server: diskstation.local
-      - name: cache
+      - name: jellyfin
         nfs:
-          path: /volume1/LTS/jellyfin/cache
+          path: /volume1/LTS/jellyfin
           server: diskstation.local
-      - name: metadata
-        nfs:
-          path: /volume1/LTS/jellyfin/metadata
-          server: diskstation.local
-      - name: transcodes
-        nfs:
-          path: /volume1/LTS/jellyfin/transcodes
-          server: diskstation.local
-      - name: jellyfin-config
+      - name: jellyfin-data
         persistentVolumeClaim:
-          claimName: jellyfin-config
+          claimName: jellyfin-data
