@@ -1,8 +1,1 @@
-# https://github.com/metallb/metallb/blob/main/charts/metallb/values.yaml
-metallb: 
-  configInline:
-    address-pools:
-    - name: default
-      protocol: layer2
-      addresses:
-      - 192.168.50.245-192.168.50.253
+# https://github.com/bitnami/charts/blob/196f2e6feea2fd589d23b0bb111cb86202a2cb36/bitnami/metallb/values.yaml
