@@ -31,22 +31,15 @@ spec:
         - containerPort: 8096
           protocol: TCP
         volumeMounts:
-        - mountPath: /data/data
-          name: jellyfin-data
-        - mountPath: /data/transcodes
+        - mountPath: /data
           name: jellyfin
-          subPath: transcodes
-        - mountPath: /data/metadata
-          name: jellyfin
-          subPath: metadata
-        - mountPath: /data/plugins
-          name: jellyfin
-          subPath: plugins
+          subPath: data
         - mountPath: /cache
           name: jellyfin
           subPath: cache
         - mountPath: /config
-          name: jellyfin-config
+          name: jellyfin
+          subPath: config
         - mountPath: /media/video
           name: video
           readOnly: true
@@ -70,9 +63,3 @@ spec:
         nfs:
           path: /volume1/LTS/jellyfin
           server: diskstation.local
-      - name: jellyfin-data
-        persistentVolumeClaim:
-          claimName: jellyfin-data
-      - name: jellyfin-config
-        persistentVolumeClaim:
-          claimName: jellyfin-config
