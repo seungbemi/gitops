@@ -61,8 +61,7 @@ spec:
           name: jellyfin
           subPath: cache
         - mountPath: /config
-          name: jellyfin
-          subPath: config
+          name: jellyfin-config
         - mountPath: /media/video
           name: video
           readOnly: true
@@ -89,3 +88,6 @@ spec:
       - name: jellyfin-data
         persistentVolumeClaim:
           claimName: jellyfin-data
+      - name: jellyfin-config
+        persistentVolumeClaim:
+          claimName: jellyfin-config
