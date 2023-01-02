@@ -7,7 +7,7 @@ paperless:
     pullPolicy: IfNotPresent
     # -- image tag
     # @default -- chart.appVersion
-    tag: 1.9.2
+    tag: 1.10.2
   env:
     TZ: "Europe/Helsinki"
     # -- Project name
