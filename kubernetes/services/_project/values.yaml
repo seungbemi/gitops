@@ -34,6 +34,11 @@ apps:
     path: kubernetes/services/jellyfin
     sync: true
 
+  - name: kavita
+    namespace: services
+    path: kubernetes/services/kavita
+    sync: true
+
   - name: service-secrets
     namespace: services
     repoURL: git@github.com:seungbemi/gitops-secrets.git
