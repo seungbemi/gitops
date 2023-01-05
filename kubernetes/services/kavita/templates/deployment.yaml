@@ -21,7 +21,7 @@ spec:
           value: Europe/Helsinki
 
         ports:
-        - containerPort: 8096
+        - containerPort: 5000
           protocol: TCP
         volumeMounts:
         - mountPath: /media/book
