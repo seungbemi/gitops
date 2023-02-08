@@ -1,4 +1,4 @@
-# https://github.com/traefik/traefik-helm-chart/blob/v10.15.0/traefik/values.yaml
+# https://github.com/traefik/traefik-helm-chart/blob/v20.8.0/traefik/values.yaml
 traefik:
   logs:
     # Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
@@ -7,7 +7,7 @@ traefik:
       # also ask for the json format in the format option
       # format: json
       # By default, the level is set to ERROR. Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
-      level: INFO
+      level: ERROR
   deployment:
     podLabels:
       app: traefik
@@ -17,8 +17,6 @@ traefik:
       enabled: false
   additionalArguments:
     - "--certificatesresolvers.le.acme.storage=/data/acme.json"
-  globalArguments:
-    - "--global.checknewversion"
   ports:
     external:
       port: 7443

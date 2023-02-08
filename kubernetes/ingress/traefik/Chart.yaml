@@ -4,10 +4,10 @@ description: A Traefik based Kubernetes ingress controller
 
 type: application
 
-version: 10.15.0
-appVersion: "2.6.1"
+version: 20.8.0
+appVersion: v2.9.6
 
 dependencies:
 - name: traefik
-  version: 10.15.0
+  version: 20.8.0
   repository: https://helm.traefik.io/traefik
