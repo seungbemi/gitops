@@ -2,7 +2,7 @@
 home-assistant:
   image:
     repository: homeassistant/home-assistant
-    tag: 2022.11.2
+    tag: 2023.2.3
   env:
     TZ: "Europe/Helsinki"
   # hostNetwork: true
