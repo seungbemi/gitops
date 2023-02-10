@@ -11,5 +11,6 @@ spec:
     port: 51820
     protocol: UDP
     targetPort: 51820
+  loadBalancerIP: "192.168.50.246"
   selector:
     app: wireguard
