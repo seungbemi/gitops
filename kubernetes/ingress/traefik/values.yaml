@@ -1,5 +1,8 @@
 # https://github.com/traefik/traefik-helm-chart/blob/v20.8.0/traefik/values.yaml
 traefik:
+  service:
+    spec:
+      loadBalancerIP: "192.168.50.245"
   logs:
     # Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
     general:
