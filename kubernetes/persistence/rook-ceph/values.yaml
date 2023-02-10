@@ -1,4 +1,4 @@
-# https://github.com/rook/rook/blob/v1.8.7/deploy/charts/rook-ceph/values.yaml
+# https://github.com/rook/rook/blob/v1.10.10/deploy/charts/rook-ceph/values.yaml
 rook-ceph:
   monitoring:
     enabled: true
@@ -12,7 +12,7 @@ rook-ceph:
   nodeSelector:
     ceph-node: "true"
 
-# https://github.com/rook/rook/blob/v1.8.7/deploy/charts/rook-ceph-cluster/values.yaml
+# https://github.com/rook/rook/blob/v1.10.10/deploy/charts/rook-ceph-cluster/values.yaml
 rook-ceph-cluster:
   operatorNamespace: persistence
   monitoring:
