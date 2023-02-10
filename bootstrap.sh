@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# install cni calico
+# install cni weave
 helm template -n kube-system kube-network ./kubernetes/kube-system/kube-network | kubectl apply -n kube-system -f -
 
 # argocd install
