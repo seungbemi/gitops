@@ -5,7 +5,12 @@ loki-stack:
     isDefault: false
     persistence:
       enabled: true
-      existingClaim: pv-claim-loki
+      accessModes:
+      - ReadWriteOnce
+      size: 15Gi
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: pv-loki
     serviceMonitor:
       enabled: true
       interval: 1m
