@@ -45,13 +45,15 @@ spec:
             path: /
             port: 3000
         volumeMounts:
-        - name: adguardhome-config
-          mountPath: /opt/adguardhome/conf
+        - mountPath: /opt/adguardhome/conf
+          name: adguardhome
+          subPath: config
         - name: adguardhome-logs
           mountPath: /opt/adguardhome/work
       volumes:
-      - name: adguardhome-config
-        persistentVolumeClaim:
-          claimName: adguardhome
+      - name: adguardhome
+        nfs:
+          path: /volume1/LTS/adguardhome
+          server: diskstation.local
       - name: adguardhome-logs
         emptyDir: {}
