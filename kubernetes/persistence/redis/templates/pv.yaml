@@ -11,4 +11,4 @@ spec:
   - ReadWriteOnce
   nfs:
     server: diskstation.local
-    path: /volume1/LTS/monitoring/redis-replica
+    path: /volume1/LTS/redis-replica
