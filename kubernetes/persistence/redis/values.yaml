@@ -7,5 +7,7 @@ redis:
       storageClass: ceph-block
   replica:
     persistence:
-      storageClass: nfs-client
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: pv-redis-replica
 
