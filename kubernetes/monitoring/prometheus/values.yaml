@@ -9,9 +9,11 @@ kube-prometheus-stack:
       configReloaders: true
       general: true
       k8s: true
-      kubeApiserver: true
       kubeApiserverAvailability: true
+      kubeApiserverBurnrate: true
+      kubeApiserverHistogram: true
       kubeApiserverSlos: true
+      kubeControllerManager: true
       kubelet: true
       kubeProxy: false
       kubePrometheusGeneral: true
@@ -20,7 +22,8 @@ kube-prometheus-stack:
       kubernetesResources: true
       kubernetesStorage: true
       kubernetesSystem: true
-      kubeScheduler: false
+      kubeSchedulerAlerting: false
+      kubeSchedulerRecording: true
       kubeStateMetrics: true
       network: true
       node: true
