@@ -68,10 +68,12 @@ kube-prometheus-stack:
       storageSpec:
         volumeClaimTemplate:
           spec:
-            storageClassName: nfs-client
+            selector:
+              matchLabels:
+                app.kubernetes.io/name: pv-prometheus
             resources:
               requests:
-                storage: 10Gi
+                storage: 50Gi
   alertmanager:
     alertmanagerSpec:
       useExistingSecret: true
@@ -82,8 +84,9 @@ kube-prometheus-stack:
       storage:
         volumeClaimTemplate:
           spec:
-            storageClassName: nfs-client
-            accessModes: ["ReadWriteOnce"]
+            selector:
+              matchLabels:
+                app.kubernetes.io/name: pv-alertmanager
             resources:
               requests:
                 storage: 100Mi

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-alertmanager
+  labels:
+    app.kubernetes.io/name: pv-alertmanager
+spec:
+  capacity:
+    storage: 100Mi
+  accessModes:
+  - ReadWriteOnce
+  nfs:
+    server: diskstation.local
+    path: /volume1/LTS/monitoring/alertmanager
