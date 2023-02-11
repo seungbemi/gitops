@@ -22,9 +22,11 @@ home-assistant:
   persistence:
     config:
       enabled: true
-      storageClass: ceph-block
+      type: nfs
+      server: diskstation.local
+      path: /volume1/LTS/home-assistant
       accessMode: ReadWriteOnce
-      size: "10Gi"
+      size: "1Gi"
     usb:
       enabled: true
       type: hostPath

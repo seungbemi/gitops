@@ -1,9 +1,4 @@
 apps:
-  - name: nfs-provisioner
-    namespace: persistence
-    path: kubernetes/persistence/nfs-provisioner
-    sync: false
-
   - name: rook-ceph
     namespace: persistence
     path: kubernetes/persistence/rook-ceph
@@ -12,17 +7,17 @@ apps:
   - name: redis
     namespace: persistence
     path: kubernetes/persistence/redis
-    sync: true
+    sync: false
 
   - name: postgresql
     namespace: persistence
     path: kubernetes/persistence/postgresql
-    sync: true
+    sync: false
   
   - name: mariadb
     namespace: persistence
     path: kubernetes/persistence/mariadb
-    sync: true
+    sync: false
 
   - name: persistence-secrets
     namespace: persistence
