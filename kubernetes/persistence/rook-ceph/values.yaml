@@ -2,13 +2,6 @@
 rook-ceph:
   monitoring:
     enabled: true
-  resources:
-    limits:
-      cpu: 1
-      memory: 256Mi
-    requests:
-      cpu: 250m
-      memory: 128Mi
   nodeSelector:
     ceph-node: "true"
 
