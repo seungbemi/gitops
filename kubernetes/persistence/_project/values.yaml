@@ -2,7 +2,7 @@ apps:
   - name: nfs-provisioner
     namespace: persistence
     path: kubernetes/persistence/nfs-provisioner
-    sync: true
+    sync: false
 
   - name: rook-ceph
     namespace: persistence
