@@ -3,14 +3,14 @@ name: rook-ceph
 description: File, Block, and Object Storage Services for your Cloud-Native Environment
 type: application
 
-appVersion: 1.10.10
-version: 1.10.10
+appVersion: 1.10.11
+version: 1.10.11
 
 dependencies:
   - name: rook-ceph
-    version: 1.10.10
+    version: 1.10.11
     repository: https://charts.rook.io/release
 
   - name: rook-ceph-cluster
-    version: 1.10.10
+    version: 1.10.11
     repository: https://charts.rook.io/release
