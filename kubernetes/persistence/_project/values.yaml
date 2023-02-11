@@ -2,7 +2,7 @@ apps:
   - name: rook-ceph
     namespace: persistence
     path: kubernetes/persistence/rook-ceph
-    sync: true
+    sync: false
 
   - name: redis
     namespace: persistence
