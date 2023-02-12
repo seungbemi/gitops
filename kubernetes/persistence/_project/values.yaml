@@ -2,22 +2,22 @@ apps:
   - name: rook-ceph
     namespace: persistence
     path: kubernetes/persistence/rook-ceph
-    sync: false
+    sync: true
 
   - name: redis
     namespace: persistence
     path: kubernetes/persistence/redis
-    sync: false
+    sync: true
 
   - name: postgresql
     namespace: persistence
     path: kubernetes/persistence/postgresql
-    sync: false
+    sync: true
   
   - name: mariadb
     namespace: persistence
     path: kubernetes/persistence/mariadb
-    sync: false
+    sync: true
 
   - name: persistence-secrets
     namespace: persistence
