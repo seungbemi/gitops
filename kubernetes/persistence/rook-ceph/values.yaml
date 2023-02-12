@@ -21,6 +21,8 @@ rook-ceph-cluster:
       ssl: false
     crashCollector:
       disable: true
+    logCollector:
+      enabled: false
   cephBlockPools:
   - name: ceph-blockpool
     spec:
