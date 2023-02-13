@@ -145,6 +145,8 @@ items:
               env:
                 - name: INIT_CONTAINER
                   value: "true"
+                - name: IPALLOC_RANGE
+                  value: 10.1.0.0/16
                 - name: HOSTNAME
                   valueFrom:
                     fieldRef:
