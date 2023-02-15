@@ -24,6 +24,7 @@
   "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -131,7 +132,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -240,7 +241,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -339,7 +340,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -387,7 +388,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.server_plug_electricalmeasurement"
+              "options": "sensor.server_plug_active_power"
             },
             "properties": [
               {
@@ -427,7 +428,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.zigbee_plug_electricalmeasurement"
+              "options": "sensor.desk_plug_active_power"
             },
             "properties": [
               {
@@ -463,7 +464,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.zigbee_plug2_electricalmeasurement"
+              "options": "sensor.zigbee_plug_active_power"
             },
             "properties": [
               {
@@ -493,7 +494,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -582,7 +583,7 @@
         },
         "showUnfilled": true
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -625,6 +626,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -727,7 +730,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -764,6 +768,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -853,7 +859,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -891,6 +898,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -980,7 +989,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -1017,6 +1027,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1061,7 +1073,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.server_plug_electricalmeasurement"
+              "options": "sensor.server_plug_active_power"
             },
             "properties": [
               {
@@ -1073,7 +1085,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.zigbee_plug_electricalmeasurement"
+              "options": "sensor.desk_plug_active_power"
             },
             "properties": [
               {
@@ -1085,7 +1097,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.sp3s_16a_current_power"
+              "options": "sensor.zigbee_plug_active_power"
             },
             "properties": [
               {
@@ -1119,7 +1131,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -1154,6 +1167,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1252,7 +1267,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -1399,7 +1415,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1492,7 +1508,7 @@
         },
         "showUnfilled": true
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "9.3.6",
       "targets": [
         {
           "datasource": {
@@ -1522,6 +1538,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1639,7 +1657,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -1673,6 +1692,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1753,7 +1774,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -1777,7 +1799,7 @@
       "type": "timeseries"
     }
   ],
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "service",
