@@ -13,3 +13,5 @@ postgresql:
       size: 8Gi
     initdb:
       scriptsSecret: "postgres-initscript"
+  metrics:
+    enabled: true
