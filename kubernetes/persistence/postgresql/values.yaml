@@ -1,6 +1,7 @@
 # https://github.com/bitnami/charts/blob/9e15346368a58970bfe079d242e8ea78bc2618ef/bitnami/postgresql/values.yaml
 postgresql:
   auth:
+    database: homeassistant
     existingSecret: postgres-secrets
   shmVolume:
     enabled: false
@@ -15,3 +16,5 @@ postgresql:
       scriptsSecret: "postgres-initscript"
   metrics:
     enabled: true
+    serviceMonitor:
+      enabled: true
