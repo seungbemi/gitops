@@ -4,7 +4,8 @@ mariadb:
   auth:
     username: mariadb
     existingSecret: mariadb-secrets
-
   primary:
     persistence:
       storageClass: ceph-block
+  metrics:
+    enabled: true
