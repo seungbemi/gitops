@@ -1,5 +1,12 @@
 # https://github.com/rook/rook/blob/v1.10.11/deploy/charts/rook-ceph/values.yaml
 rook-ceph:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 150m
+      memory: 128Mi
   monitoring:
     enabled: true
   nodeSelector:
