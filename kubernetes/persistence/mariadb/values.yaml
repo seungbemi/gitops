@@ -9,3 +9,5 @@ mariadb:
       storageClass: ceph-block
   metrics:
     enabled: true
+    serviceMonitor:
+      enabled: true
