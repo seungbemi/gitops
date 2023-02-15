@@ -21,7 +21,6 @@
       }
     ]
   },
-  "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "links": [],
@@ -113,7 +112,7 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "builder",
-          "expr": "sum by(pod) (count_over_time({namespace=~\"$namespace\", pod=~\"$pod\"} |~ `err|warn|panic|stack` [$__interval]))",
+          "expr": "sum by(pod) (count_over_time({namespace=~\"$namespace\", pod=~\"$pod\"} |~ `(?i)(err|warn|panic|stack)` [$__interval]))",
           "legendFormat": "{{pod}}",
           "queryType": "range",
           "refId": "A"
@@ -212,6 +211,10 @@
           "value": [
             "$__all"
           ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
         },
         "definition": "query_result(kube_pod_info{namespace=~\"$namespace\"})",
         "hide": 0,
