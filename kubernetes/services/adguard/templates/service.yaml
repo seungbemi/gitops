@@ -7,6 +7,7 @@ metadata:
 spec:
   type: LoadBalancer
   loadBalancerIP: "172.20.0.129"
+  clusterIP: 10.99.99.99
   selector:
     app: adguardhome
   ports:
