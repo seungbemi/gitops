@@ -2,7 +2,7 @@
 traefik:
   service:
     spec:
-      loadBalancerIP: "192.168.50.245"
+      loadBalancerIP: "172.20.0.200"
   logs:
     # Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
     general:

@@ -1,4 +1,4 @@
-defaultIP: "192.168.50.195"
+defaultIP: "172.20.0.128"
 
 webServices:
 - name: dsm
