@@ -5,8 +5,8 @@ metadata:
   labels:
     app: adguardhome
 spec:
-  type: ClusterIP
-  clusterIP: 10.99.99.99
+  type: LoadBalancer
+  loadBalancerIP: "172.20.0.129"
   selector:
     app: adguardhome
   ports:
