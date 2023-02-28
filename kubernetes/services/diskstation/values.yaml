@@ -7,9 +7,5 @@ webServices:
   port: 7710
 - name: drive
   port: 7720
-- name: video
-  port: 7730
 - name: file
   port: 7740
-- name: webdav
-  port: 7776
