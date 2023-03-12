@@ -1,0 +1,12 @@
+apiVersion: v2
+name: coder
+description: Remote development environments on your infrastructure
+type: application
+
+version: v0.19.2
+appVersion: v0.19.2
+
+dependencies:
+- name: coder
+  version: v0.19.2
+  repository: https://helm.coder.com/v2
