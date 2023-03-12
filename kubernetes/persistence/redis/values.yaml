@@ -2,12 +2,8 @@
 redis:
   auth:
     enabled: false
+  architecture: standalone
   master:
     persistence:
       storageClass: ceph-block
-  replica:
-    persistence:
-      selector:
-        matchLabels:
-          app.kubernetes.io/name: pv-redis-replica
 
