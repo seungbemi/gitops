@@ -40,7 +40,7 @@ apps:
     sync: true
 
   - name: coder
-    namespace: services
+    namespace: coder-space
     path: kubernetes/services/coder
     sync: true
 
