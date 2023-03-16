@@ -51,7 +51,7 @@ paperless:
       enabled: true
       type: nfs
       server: diskstation.local
-      path: /volume1/LTS/paperless/consume
+      path: /volume2/shared/Paperless
       mountPath: /usr/src/paperless/consume
       accessMode: ReadWriteOnce
     export:
