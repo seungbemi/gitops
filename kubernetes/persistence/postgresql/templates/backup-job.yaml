@@ -1,0 +1,31 @@
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: backup-postgres-db
+#   namespace: persistence
+# spec:
+#   template:
+#     spec:
+#       containers:
+#         - name: backup
+#           image: bitnami/postgresql:14.5.0-debian-11-r14
+#           command: ["/bin/sh", "-c"]
+#           args:
+#             - pg_dumpall -f /backup/postgres.pgdump -h postgresql -U postgres
+#           env:
+#             - name: PGPASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: postgres-secrets
+#                   key: postgres-password
+#           volumeMounts:
+#             - mountPath: /backup
+#               name: database
+#               subPath: postgres
+#       restartPolicy: Never
+#       volumes:
+#         - name: database
+#           nfs:
+#             path: /volume1/LTS/database
+#             server: diskstation.local
+#   backoffLimit: 4

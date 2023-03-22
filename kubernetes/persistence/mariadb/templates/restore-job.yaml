@@ -1,0 +1,31 @@
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: restore-maria-db
+#   namespace: persistence
+# spec:
+#   template:
+#     spec:
+#       containers:
+#         - name: restore
+#           image: bitnami/mariadb:10.6.11-debian-11-r12
+#           command: ["/bin/sh", "-c"]
+#           args:
+#             - mysql --host=mariadb -uroot < /backup/mariadb.sql
+#           env:
+#             - name: MYSQL_PWD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mariadb-secrets
+#                   key: mariadb-root-password
+#           volumeMounts:
+#             - mountPath: /backup
+#               name: database
+#               subPath: mariadb
+#       restartPolicy: Never
+#       volumes:
+#         - name: database
+#           nfs:
+#             path: /volume1/LTS/database
+#             server: diskstation.local
+#   backoffLimit: 4
