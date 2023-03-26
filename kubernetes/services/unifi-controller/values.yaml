@@ -41,8 +41,8 @@ unifi:
 
   resources:
     limits:
-      cpu: 1
+      cpu: 2
       memory: 1024Mi
     requests:
-      cpu: 100m
-      memory: 1024Mi
+      cpu: 500m
+      memory: 512Mi
