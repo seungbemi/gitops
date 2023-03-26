@@ -1,0 +1,45 @@
+# https://github.com/k8s-at-home/charts/blob/unifi-5.1.2/charts/stable/unifi/values.yaml
+unifi:
+  image:
+    repository: jacobalberty/unifi
+    tag: v7.3.83
+    pullPolicy: IfNotPresent
+  env:
+    TZ: "Europe/Helsinki"
+  service:
+    main:
+      ports:
+        http:
+          port: 8888
+          protocol: HTTP
+        controller:
+          enabled: true
+          port: 8080
+          protocol: TCP
+        stun:
+          enabled: true
+          port: 3478
+          protocol: UDP
+        syslog:
+          enabled: true
+          port: 5514
+          protocol: UDP
+        discovery:
+          enabled: true
+          port: 10001
+          protocol: UDP
+
+  persistence:
+    data:
+      enabled: true
+      storageClass: ceph-block
+      accessMode: ReadWriteOnce
+      mountPath: /unifi
+      size: "5Gi"
+  resources:
+    limits:
+      cpu: 1
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 1024Mi
