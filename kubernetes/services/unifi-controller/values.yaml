@@ -8,6 +8,8 @@ unifi:
     TZ: "Europe/Helsinki"
   service:
     main:
+      type: LoadBalancer
+      loadBalancerIP: "172.20.0.131"
       ports:
         http:
           port: 8443
@@ -36,6 +38,7 @@ unifi:
       accessMode: ReadWriteOnce
       mountPath: /unifi
       size: "5Gi"
+
   resources:
     limits:
       cpu: 1
