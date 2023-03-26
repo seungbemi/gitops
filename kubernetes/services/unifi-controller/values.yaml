@@ -10,8 +10,8 @@ unifi:
     main:
       ports:
         http:
-          port: 8888
-          protocol: HTTP
+          port: 8443
+          protocol: HTTPS
         controller:
           enabled: true
           port: 8080
