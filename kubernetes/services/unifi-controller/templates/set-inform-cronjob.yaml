@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: set-inform-cronjob
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: set-inform
+              image: kroniak/ssh-client:3.15
+              command: ["/bin/bash", "-c"]
+              args:
+                - ssh -o "StrictHostKeyChecking=no" $USERNAME@$U6PRO_HOST -i /u6pro/u6pro "mca-cli-op info" | grep http://unifi.lan:8080/inform;
+                  [ $? == 1 ] && ssh -o "StrictHostKeyChecking=no" $USERNAME@$U6PRO_HOST -i /u6pro/u6pro "mca-cli-op set-inform http://unifi.lan:8080/inform";
+                  exit 0
+              env:
+                - name: USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: u6pro
+                      key: USERNAME
+                - name: U6PRO_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: u6pro
+                      key: HOST
+              volumeMounts:
+              - mountPath: "/u6pro"
+                name: ssh-key
+          restartPolicy: Never
+          volumes:
+            - name: ssh-key
+              secret:
+                secretName: unifi-controller-ssh-key
+                defaultMode: 256
+      backoffLimit: 0
