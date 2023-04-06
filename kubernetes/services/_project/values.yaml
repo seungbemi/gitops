@@ -39,9 +39,9 @@ apps:
     path: kubernetes/services/kavita
     sync: true
 
-  - name: unifi-controller
+  - name: unifi
     namespace: services
-    path: kubernetes/services/unifi-controller
+    path: kubernetes/services/unifi
     sync: true
 
   - name: coder

@@ -1,0 +1,58 @@
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+image:
+  repository: jacobalberty/unifi
+  tag: v7.3.83
+  pullPolicy: IfNotPresent
+env:
+  TZ: "Europe/Helsinki"
+  RUNAS_UID0: "false"
+  UNIFI_UID: "999"
+  UNIFI_GID: "999"
+  JVM_INIT_HEAP_SIZE:
+  JVM_MAX_HEAP_SIZE: 1024M
+podSecurityContext:
+  fsGroup: 999
+service:
+  main:
+    type: LoadBalancer
+    loadBalancerIP: "172.20.0.131"
+    ports:
+      http:
+        port: 443
+        protocol: HTTPS
+        targetPort: 8443
+      controller:
+        enabled: true
+        port: 8080
+        protocol: TCP
+      speedtest:
+        enabled: true
+        port: 6789
+        protocol: TCP
+      stun:
+        enabled: true
+        port: 3478
+        protocol: UDP
+      syslog:
+        enabled: true
+        port: 5514
+        protocol: UDP
+      discovery:
+        enabled: true
+        port: 10001
+        protocol: UDP
+persistence:
+  data:
+    enabled: true
+    storageClass: ceph-block
+    accessMode: ReadWriteOnce
+    mountPath: /unifi
+    size: "5Gi"
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 512Mi
