@@ -1,0 +1,27 @@
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+
+image:
+  repository: kizaing/kavita
+  pullPolicy: IfNotPresent
+env:
+  TZ: "Europe/Helsinki"
+service:
+  main:
+    ports:
+      http:
+        port: 5000
+persistence:
+  data:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/kavita/data
+    mountPath: /kavita/config
+    accessMode: ReadWriteOnce
+  book:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume2/book
+    mountPath: /media/book
+    accessMode: ReadOnly
