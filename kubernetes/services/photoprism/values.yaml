@@ -1,0 +1,73 @@
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+image:
+  repository: photoprism/photoprism
+  tag: 221118-jammy
+  pullPolicy: IfNotPresent
+env:
+  TZ: "Europe/Helsinki"
+  PHOTOPRISM_READONLY: "true"
+  PHOTOPRISM_CACHE_PATH: /assets/cache
+  PHOTOPRISM_IMPORT_PATH: /assets/photos/import
+  PHOTOPRISM_EXPORT_PATH: /assets/photos/export
+  PHOTOPRISM_STORAGE_PATH: /assets/storage
+  PHOTOPRISM_BACKUP_PATH: /assets/backup
+  PHOTOPRISM_ORIGINALS_PATH: /assets/photos/originals
+  PHOTOPRISM_DATABASE_DRIVER: mysql
+  PHOTOPRISM_HTTP_HOST: 0.0.0.0
+  PHOTOPRISM_HTTP_PORT: "2342"
+envFrom:
+  - secretRef:
+      name: photoprism-secrets
+      optional: false
+service:
+  main:
+    type: ClusterIP
+    ports:
+      http:
+        port: 8000
+        protocol: TCP
+        targetPort: 2342
+persistence:
+  original:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume2/photo
+    accessMode: ReadOnly
+    mountPath: /assets/photos/originals
+  cache:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/photoprism/cache
+    accessMode: ReadOnly
+    mountPath: /assets/cache
+  storage:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/photoprism/storage
+    accessMode: ReadOnly
+    mountPath: /assets/storage
+  import:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/photoprism/import
+    accessMode: ReadOnly
+    mountPath: /assets/photos/import
+  export:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/photoprism/export
+    accessMode: ReadOnly
+    mountPath: /assets/photos/export
+
+resources:
+  limits:
+    cpu: 1
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 512Mi
