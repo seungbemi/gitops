@@ -1,0 +1,55 @@
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+
+image:
+  repository: jellyfin/jellyfin
+  pullPolicy: IfNotPresent
+env:
+  TZ: "Europe/Helsinki"
+  JELLYFIN_DATA_DIR: "/data"
+  JELLYFIN_CONFIG_DIR: "/config"
+  JELLYFIN_CACHE_DIR: "/cache"
+envFrom:
+- secretRef:
+    name: jellyfin-secrets
+    optional: false
+service:
+  main:
+    ports:
+      http:
+        port: 8096
+persistence:
+  data:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/jellyfin/data
+    mountPath: /data
+    accessMode: ReadWriteOnce
+  cache:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/jellyfin/cache
+    mountPath: /cache
+    accessMode: ReadWriteOnce
+  config:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/jellyfin/config
+    mountPath: /config
+    accessMode: ReadWriteOnce
+  video:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume2/video
+    mountPath: /media/video
+    accessMode: ReadOnly
+  music:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume2/music
+    mountPath: /media/music
+    accessMode: ReadOnly
