@@ -1,64 +1,54 @@
-# https://github.com/k8s-at-home/charts/blob/paperless-9.1.3/charts/stable/paperless/values.yaml
-paperless:
-  image:
-    # -- image repository
-    repository: ghcr.io/paperless-ngx/paperless-ngx
-    # -- image pull policy
-    pullPolicy: IfNotPresent
-    # -- image tag
-    # @default -- chart.appVersion
-    tag: 1.12.2
-  env:
-    TZ: "Europe/Helsinki"
-    # -- Project name
-    COMPOSE_PROJECT_NAME: paperless
-    # -- Redis to use
-    PAPERLESS_REDIS: redis://redis-master.persistence:6379
-    # -- OCR languages to install
-    PAPERLESS_OCR_LANGUAGES: fin kor
-    PAPERLESS_OCR_LANGUAGE: eng+fin+kor
-    USERMAP_UID: 1000
-    USERMAP_GID: 1000
-    PAPERLESS_TIME_ZONE: Europe/Helsinki
-    # -- Database host to use
-    PAPERLESS_DBHOST: postgresql.persistence
-    # -- Port to use
-    PAPERLESS_PORT: 8000
-    PAPERLESS_CONSUMER_POLLING: 300
-    # -- Username for the root user
-    # PAPERLESS_ADMIN_USER: admin
-    # -- Password for the root user
-    # PAPERLESS_ADMIN_PASSWORD: admin
-    # PAPERLESS_URL: <set to main ingress by default>
-  envFrom:
-    - secretRef:
-        name: paperless-secrets
-  persistence:
-    data:
-      enabled: true
-      type: nfs
-      server: diskstation.local
-      path: /volume1/LTS/paperless/data
-      mountPath: /usr/src/paperless/data
-      accessMode: ReadWriteOnce
-    media:
-      enabled: true
-      type: nfs
-      server: diskstation.local
-      path: /volume1/LTS/paperless/media
-      mountPath: /usr/src/paperless/media
-      accessMode: ReadWriteOnce
-    consume:
-      enabled: true
-      type: nfs
-      server: diskstation.local
-      path: /volume2/shared/Paperless
-      mountPath: /usr/src/paperless/consume
-      accessMode: ReadWriteOnce
-    export:
-      enabled: true
-      type: nfs
-      server: diskstation.local
-      path: /volume1/LTS/paperless/export
-      mountPath: /usr/src/paperless/export
-      accessMode: ReadWriteOnce
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+
+image:
+  repository: ghcr.io/paperless-ngx/paperless-ngx
+  pullPolicy: IfNotPresent
+env:
+  TZ: "Europe/Helsinki"
+  COMPOSE_PROJECT_NAME: paperless
+  PAPERLESS_REDIS: redis://redis-master.persistence:6379
+  PAPERLESS_OCR_LANGUAGES: fin kor
+  PAPERLESS_OCR_LANGUAGE: eng+fin+kor
+  USERMAP_UID: 1000
+  USERMAP_GID: 1000
+  PAPERLESS_TIME_ZONE: Europe/Helsinki
+  PAPERLESS_DBHOST: postgresql.persistence
+  PAPERLESS_PORT: 8000
+  PAPERLESS_CONSUMER_POLLING: 300
+envFrom:
+  - secretRef:
+      name: paperless-secrets
+service:
+  main:
+    ports:
+      http:
+        port: 8000
+persistence:
+  data:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/paperless/data
+    mountPath: /usr/src/paperless/data
+    accessMode: ReadWriteOnce
+  media:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/paperless/media
+    mountPath: /usr/src/paperless/media
+    accessMode: ReadWriteOnce
+  consume:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume2/shared/Paperless
+    mountPath: /usr/src/paperless/consume
+    accessMode: ReadWriteOnce
+  export:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/paperless/export
+    mountPath: /usr/src/paperless/export
+    accessMode: ReadWriteOnce
