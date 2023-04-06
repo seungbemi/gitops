@@ -39,28 +39,28 @@ persistence:
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/photoprism/cache
-    accessMode: ReadOnly
+    accessMode: ReadWriteOnce
     mountPath: /assets/cache
   storage:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/photoprism/storage
-    accessMode: ReadOnly
+    accessMode: ReadWriteOnce
     mountPath: /assets/storage
   import:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/photoprism/import
-    accessMode: ReadOnly
+    accessMode: ReadWriteOnce
     mountPath: /assets/photos/import
   export:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/photoprism/export
-    accessMode: ReadOnly
+    accessMode: ReadWriteOnce
     mountPath: /assets/photos/export
 
 resources:
