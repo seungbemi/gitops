@@ -1,68 +1,51 @@
 # https://github.com/k8s-at-home/charts/blob/home-assistant-13.4.2/charts/stable/home-assistant/values.yaml
-home-assistant:
-  image:
-    repository: homeassistant/home-assistant
-    tag: 2023.2.3
-  env:
-    TZ: "Europe/Helsinki"
-  # hostNetwork: true
-  # dnsPolicy: ClusterFirstWithHostNet
-  prometheus:
-    serviceMonitor:
-      enabled: false
-  probes:
-    liveness:
-      enabled: false
-    readiness:
-      enabled: false
-    startup:
-      enabled: true
-  securityContext:
-    privileged:  true
-  persistence:
-    config:
-      enabled: true
-      type: nfs
-      server: diskstation.local
-      path: /volume1/LTS/home-assistant
-      accessMode: ReadWriteOnce
-      size: "1Gi"
-    usb:
-      enabled: true
-      type: hostPath
-      hostPath: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
 
-  podAnnotations:
-    backup.velero.io/backup-volumes: config
-  addons:
-    codeserver:
-      enabled: true
-      image:
-        repository: codercom/code-server
-        tag: 4.6.0
-      workingDir: "/config"
-      args:
-        - --user-data-dir
-        - "/config/.vscode"
-        - --auth
-        - "none"
-      ingress:
-        enabled: false
-      volumeMounts:
-      - name: config
-        mountPath: /config
-  resources:
-    limits:
-      memory: 3000Mi
-    requests:
-      cpu: 100m
-      memory: 1000Mi
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: zigbee-node
-            operator: In
-            values:
-            - "true"
+image:
+  repository: homeassistant/home-assistant
+  pullPolicy: IfNotPresent
+controller:
+  strategy: RollingUpdate
+  rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+
+env:
+  TZ: "Europe/Helsinki"
+
+service:
+  main:
+    ports:
+      http:
+        port: 8123
+
+securityContext:
+  privileged:  true
+
+persistence:
+  config:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/coder/caffeine/Caffeine/home-assistant
+    accessMode: ReadWriteOnce
+  usb:
+    enabled: true
+    type: hostPath
+    hostPath: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
+
+resources:
+  limits:
+    memory: 3000Mi
+  requests:
+    cpu: 100m
+    memory: 1000Mi
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: zigbee-node
+          operator: In
+          values:
+          - "true"
