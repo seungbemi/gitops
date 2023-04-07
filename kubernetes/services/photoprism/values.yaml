@@ -2,6 +2,11 @@
 image:
   repository: photoprism/photoprism
   pullPolicy: IfNotPresent
+controller:
+  strategy: RollingUpdate
+  rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
 env:
   TZ: "Europe/Helsinki"
   PHOTOPRISM_READONLY: "true"

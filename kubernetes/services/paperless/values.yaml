@@ -1,8 +1,12 @@
 # https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-
 image:
   repository: ghcr.io/paperless-ngx/paperless-ngx
   pullPolicy: IfNotPresent
+controller:
+  strategy: RollingUpdate
+  rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
 env:
   TZ: "Europe/Helsinki"
   COMPOSE_PROJECT_NAME: paperless
