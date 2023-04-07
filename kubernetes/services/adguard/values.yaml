@@ -1,0 +1,35 @@
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+
+image:
+  repository: adguard/adguardhome
+  pullPolicy: IfNotPresent
+controller:
+  strategy: RollingUpdate
+  rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+env:
+  TZ: "Europe/Helsinki"
+service:
+  main:
+    type: LoadBalancer
+    loadBalancerIP: "172.20.0.129"
+    ports:
+      http:
+        enabled: true
+        port: 3000
+        protocol: TCP
+        targetPort: 3000
+      dns:
+        enabled: true
+        port: 53
+        protocol: UDP
+        targetPort: 53
+persistence:
+  config:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/adguardhome/config
+    mountPath: /opt/adguardhome/conf
+    accessMode: ReadWriteOnce
