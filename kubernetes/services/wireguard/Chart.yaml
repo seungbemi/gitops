@@ -1,9 +1,10 @@
 apiVersion: v2
-name: wireguard
 description: A Helm chart for wireguard
-
-type: application
-
+name: wireguard
 version: v1.0.0
-appVersion: v0.4.7
+appVersion: 0.0.20220316
 
+dependencies:
+  - name: common
+    repository: https://bjw-s.github.io/helm-charts
+    version: 1.3.2
