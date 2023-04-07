@@ -1,4 +1,5 @@
 # https://github.com/k8s-at-home/charts/blob/home-assistant-13.4.2/charts/stable/home-assistant/values.yaml
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
 
 image:
   repository: homeassistant/home-assistant
@@ -17,6 +18,16 @@ service:
     ports:
       http:
         port: 8123
+
+serviceMonitor:
+  main:
+    enabled: true
+    endpoints:
+    - port: http
+      path: /api/prometheus
+      bearerTokenSecret:
+        key: token
+        name: ha-prometheus
 
 securityContext:
   privileged:  true
