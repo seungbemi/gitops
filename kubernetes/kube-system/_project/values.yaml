@@ -8,3 +8,8 @@ apps:
     namespace: kube-system
     path: kubernetes/kube-system/kube-network
     sync: true
+
+  - name: image-pruner
+    namespace: kube-system
+    path: kubernetes/kube-system/image-pruner
+    sync: true
