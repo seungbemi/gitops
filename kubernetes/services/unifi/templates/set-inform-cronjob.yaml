@@ -13,22 +13,19 @@ spec:
               image: kroniak/ssh-client:3.15
               command: ["/bin/bash", "-c"]
               args:
-                - ssh -o "StrictHostKeyChecking=no" $USERNAME@$U6PRO_HOST -i /u6pro/u6pro "mca-cli-op info" | grep http://unifi.lan:8080/inform;
-                  [ $? == 1 ] && ssh -o "StrictHostKeyChecking=no" $USERNAME@$U6PRO_HOST -i /u6pro/u6pro "mca-cli-op set-inform http://unifi.lan:8080/inform";
-                  exit 0
-              env:
-                - name: USERNAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: u6pro
-                      key: USERNAME
-                - name: U6PRO_HOST
-                  valueFrom:
-                    secretKeyRef:
-                      name: u6pro
-                      key: HOST
+                - hosts=($HOSTS);
+                  for host in "${hosts[@]}";
+                  do
+                      echo "${host}";
+                      ssh -o "StrictHostKeyChecking=no" $USERNAME@$host -i /unifi/unifi "mca-cli-op info" | grep http://unifi.lan:8080/inform;
+                      [ $? == 1 ] && ssh -o "StrictHostKeyChecking=no" $USERNAME@$host -i /unifi/unifi "mca-cli-op set-inform http://unifi.lan:8080/inform";
+                  done;
+                  exit 0;
+              envFrom:
+              - secretRef:
+                  name: unifi
               volumeMounts:
-              - mountPath: "/u6pro"
+              - mountPath: "/unifi"
                 name: ssh-key
           restartPolicy: Never
           volumes:
