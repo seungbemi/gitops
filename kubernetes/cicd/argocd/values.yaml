@@ -17,7 +17,7 @@ argo-cd:
       repoServerTimeoutSeconds: "300"
     resources:
       limits:
-        cpu: 500m
+        cpu: 1
         memory: 512Mi
       requests:
         cpu: 250m
@@ -53,7 +53,7 @@ argo-cd:
     replicas: 2
     resources:
       limits:
-        cpu: 500m
+        cpu: 1
         memory: 512Mi
       requests:
         cpu: 100m
