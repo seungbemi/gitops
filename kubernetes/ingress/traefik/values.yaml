@@ -44,13 +44,13 @@ traefik:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 60
+          averageUtilization: 90
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 60
+          averageUtilization: 90
     behavior:
       scaleDown:
         stabilizationWindowSeconds: 300
