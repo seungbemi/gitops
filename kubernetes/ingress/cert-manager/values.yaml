@@ -6,7 +6,7 @@ cert-manager:
       cpu: 30m
       memory: 64Mi
     requests:
-      cpu: 1m
+      cpu: 10m
       memory: 32Mi
   prometheus:
     enabled: true
@@ -21,7 +21,7 @@ cert-manager:
         cpu: 30m
         memory: 64Mi
       requests:
-        cpu: 2m
+        cpu: 10m
         memory: 32Mi
   cainjector:
       resources:
