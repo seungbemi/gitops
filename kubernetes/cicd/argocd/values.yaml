@@ -34,8 +34,8 @@ argo-cd:
         cpu: 500m
         memory: 512Mi
       requests:
-        cpu: 10m
-        memory: 100Mi
+        cpu: 50m
+        memory: 200Mi
     config:
       admin.enabled: "false"
       accounts.seungbemi: apiKey, login
