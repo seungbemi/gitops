@@ -29,6 +29,8 @@ argo-cd:
     autoscaling:
       enabled: true
       minReplicas: 1
+      targetCPUUtilizationPercentage: 90
+      targetMemoryUtilizationPercentage: 90
     resources: 
       limits:
         cpu: 500m
