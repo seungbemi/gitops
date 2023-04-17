@@ -3,7 +3,7 @@ cert-manager:
   installCRDs: true
   resources:
     limits:
-      cpu: 10m
+      cpu: 30m
       memory: 64Mi
     requests:
       cpu: 1m
@@ -18,7 +18,7 @@ cert-manager:
     securePort: 10255
     resources:
       limits:
-        cpu: 10m
+        cpu: 30m
         memory: 64Mi
       requests:
         cpu: 2m
