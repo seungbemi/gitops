@@ -1,6 +1,13 @@
 # https://github.com/cert-manager/cert-manager/blob/v1.7.1/deploy/charts/cert-manager/values.yaml
 cert-manager: 
   installCRDs: true
+  resources:
+    limits:
+      cpu: 10m
+      memory: 64Mi
+    requests:
+      cpu: 1m
+      memory: 32Mi
   prometheus:
     enabled: true
     servicemonitor:
@@ -9,3 +16,18 @@ cert-manager:
   webhook:
     hostNetwork: true
     securePort: 10255
+    resources:
+      limits:
+        cpu: 10m
+        memory: 64Mi
+      requests:
+        cpu: 2m
+        memory: 32Mi
+  cainjector:
+      resources:
+        limits:
+          cpu: 30m
+          memory: 200Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
