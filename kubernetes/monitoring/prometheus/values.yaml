@@ -61,7 +61,14 @@ kube-prometheus-stack:
       targetPort: 10249
       selector:
         k8s-app: kube-proxy
-  
+  prometheusOperator:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 150Mi
+      requests:
+        cpu: 15m
+        memory: 50Mi
   prometheus:
     prometheusSpec:
       retention: 3y
@@ -77,6 +84,13 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 50Gi
+      resources:
+        limits:
+          cpu: 400m
+          memory: 1.5Gi
+        requests:
+          cput: 200m
+          memory: 1Gi
   alertmanager:
     alertmanagerSpec:
       useExistingSecret: true
@@ -93,7 +107,21 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 100Mi
-
+      resources:
+        limits:
+          cpu: 30m
+          memory: 100Mi
+        requests:
+          cput: 10m
+          memory: 50Mi
+  prometheus-node-exporter:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 30m
+        memory: 60Mi
   # https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
   grafana:
     admin:
@@ -104,3 +132,10 @@ kube-prometheus-stack:
       notifiers:
         enabled: true
         label: grafana_notifier
+    resources:
+      limits:
+        cpu: 60m
+        memory: 1Gi
+      requests:
+        cpu: 30m
+        memory: 500Mi
