@@ -14,6 +14,13 @@ postgresql:
       size: 8Gi
     initdb:
       scriptsSecret: "postgres-initscript"
+    resources:
+      limits:
+        memory: 1.5Gi
+        cpu: 250m
+      requests:
+        memory: 1Gi
+        cpu: 50m
   metrics:
     enabled: true
     serviceMonitor:

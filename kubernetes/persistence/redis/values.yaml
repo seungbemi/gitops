@@ -6,4 +6,11 @@ redis:
   master:
     persistence:
       storageClass: ceph-block
+    resources:
+      limits:
+        memory: 256Mi
+        cpu: 256m
+      requests:
+        memory: 64Mi
+        cpu: 24m
 

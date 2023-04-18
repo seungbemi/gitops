@@ -7,7 +7,14 @@ mariadb:
   primary:
     persistence:
       storageClass: ceph-block
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 500Mi
   metrics:
     enabled: true
     serviceMonitor:
-      enabled: true
+      enabled: true 
