@@ -33,11 +33,11 @@ argo-cd:
       targetMemoryUtilizationPercentage: 90
     resources: 
       limits:
-        cpu: 500m
+        cpu: 200m
         memory: 512Mi
       requests:
         cpu: 50m
-        memory: 200Mi
+        memory: 100Mi
     config:
       admin.enabled: "false"
       accounts.seungbemi: apiKey, login
@@ -56,7 +56,7 @@ argo-cd:
     resources:
       limits:
         cpu: 1
-        memory: 512Mi
+        memory: 1Gi
       requests:
         cpu: 100m
         memory: 64Mi
