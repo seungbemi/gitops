@@ -14,5 +14,19 @@ loki-stack:
     serviceMonitor:
       enabled: true
       interval: 1m
+    resources:
+      limits:
+        memory: 300Mi
+        cpu: 150m
+      requests:
+        memory: 150Mi
+        cpu: 50m
   # https://github.com/grafana/helm-charts/blob/loki-stack-2.9.9/charts/promtail/values.yaml
-  # promtail:
+  promtail:
+    resources: 
+      limits:
+        cpu: 100m
+        memory: 300Mi
+      requests:
+        cpu: 30m
+        memory: 150Mi
