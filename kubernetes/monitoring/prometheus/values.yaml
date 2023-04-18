@@ -89,7 +89,7 @@ kube-prometheus-stack:
           cpu: 400m
           memory: 1.5Gi
         requests:
-          cput: 200m
+          cpu: 200m
           memory: 1Gi
   alertmanager:
     alertmanagerSpec:
@@ -112,7 +112,7 @@ kube-prometheus-stack:
           cpu: 30m
           memory: 100Mi
         requests:
-          cput: 10m
+          cpu: 10m
           memory: 50Mi
   prometheus-node-exporter:
     resources:
