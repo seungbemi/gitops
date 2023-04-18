@@ -33,25 +33,25 @@ rook-ceph-cluster:
     resources:
       mgr:
         limits:
-          cpu: "1000m"
+          cpu: "500m"
           memory: "1Gi"
         requests:
-          cpu: "250m"
-          memory: "256Mi"
+          cpu: "100m"
+          memory: "500Mi"
       mon:
         limits:
-          cpu: "2000m"
-          memory: "2Gi"
+          cpu: "500m"
+          memory: "1Gi"
         requests:
-          cpu: "250m"
+          cpu: "100m"
           memory: "256Mi"
       osd:
         limits:
-          cpu: "2000m"
-          memory: "4Gi"
-        requests:
           cpu: "250m"
-          memory: "512Mi"
+          memory: "3Gi"
+        requests:
+          cpu: "100m"
+          memory: "1.5Gi"
   cephBlockPools:
   - name: ceph-blockpool
     spec:
