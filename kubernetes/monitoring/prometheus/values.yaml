@@ -94,10 +94,10 @@ kube-prometheus-stack:
                 storage: 50Gi
       resources:
         limits:
-          cpu: 400m
+          cpu: 800m
           memory: 1.5Gi
         requests:
-          cpu: 200m
+          cpu: 500m
           memory: 1Gi
   alertmanager:
     alertmanagerSpec:
