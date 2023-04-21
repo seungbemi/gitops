@@ -69,6 +69,14 @@ kube-prometheus-stack:
       requests:
         cpu: 15m
         memory: 50Mi
+    prometheusConfigReloader:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 30Mi
+        limits:
+          cpu: 20m
+          memory: 50Mi
   prometheus:
     prometheusSpec:
       retention: 3y
