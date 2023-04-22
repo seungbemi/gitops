@@ -51,10 +51,3 @@ persistence:
     path: /volume1/LTS/paperless/export
     mountPath: /usr/src/paperless/export
     accessMode: ReadWriteOnce
-resources:
-  limits:
-    cpu: 128m
-    memory: 1.5Gi
-  requests:
-    cpu: 16m
-    memory: 1Gi
