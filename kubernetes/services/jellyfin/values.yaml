@@ -53,3 +53,10 @@ persistence:
     path: /volume2/music
     mountPath: /media/music
     accessMode: ReadOnly
+resources:
+  limits:
+    cpu: 512m
+    memory: 1Gi
+  requests:
+    cpu: 16m
+    memory: 250Mi
