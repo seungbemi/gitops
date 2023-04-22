@@ -3,11 +3,6 @@
 image:
   repository: jellyfin/jellyfin
   pullPolicy: IfNotPresent
-controller:
-  strategy: RollingUpdate
-  rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 0
 env:
   TZ: "Europe/Helsinki"
   JELLYFIN_DATA_DIR: "/data"
