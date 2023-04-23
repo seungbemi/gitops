@@ -55,7 +55,7 @@ persistence:
     accessMode: ReadOnly
 resources:
   limits:
-    cpu: 512m
+    cpu: 1
     memory: 1Gi
   requests:
     cpu: 16m
