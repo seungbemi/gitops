@@ -20,7 +20,7 @@ apps:
     path: kubernetes/ingress/routes
     sync: true
   
-  - name: secrets
+  - name: ingress-secrets
     namespace: ingress
     repoURL: git@github.com:seungbemi/gitops-secrets.git
     path: kubernetes/ingress/secrets
