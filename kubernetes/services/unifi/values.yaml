@@ -2,11 +2,6 @@
 image:
   repository: jacobalberty/unifi
   pullPolicy: IfNotPresent
-controller:
-  strategy: RollingUpdate
-  rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 0
 env:
   TZ: "Europe/Helsinki"
   RUNAS_UID0: "false"
