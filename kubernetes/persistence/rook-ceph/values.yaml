@@ -9,8 +9,6 @@ rook-ceph:
       memory: 128Mi
   monitoring:
     enabled: true
-  nodeSelector:
-    ceph-node: "true"
   csi:
     csiRBDProvisionerResource: |
         - name : csi-provisioner
@@ -178,6 +176,16 @@ rook-ceph-cluster:
   monitoring:
     enabled: true
   cephClusterSpec:
+    placement:
+      all:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: ceph-node
+                  operator: In
+                  values:
+                  - "true"
     mon:
       count: 3
       allowMultiplePerNode: false
