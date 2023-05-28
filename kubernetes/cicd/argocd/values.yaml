@@ -71,6 +71,18 @@ argo-cd:
   dex:
     enabled: false
 
+  redis:
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+
   repoServer:
     replicas: 2
     resources:
