@@ -1,5 +1,5 @@
 # https://github.com/blakeblackshear/blakeshome-charts/blob/frigate-7.0.1/charts/frigate/values.yaml
-blakeshome:
+frigate:
   env:
     TZ: "Europe/Helsinki"
   envFromSecrets:
@@ -14,17 +14,12 @@ blakeshome:
       topic_prefix: frigate
       client_id: frigate
       # Optional: user
-      user: {FRIGATE_MQTT_USER}
-      password: {FRIGATE_MQTT_PASSWORD}
+      user: "{FRIGATE_MQTT_USER}"
+      password: "{FRIGATE_MQTT_PASSWORD}"
       stats_interval: 60
-
     detectors:
-      # coral:
-      #   type: edgetpu
-      #   device: usb
       cpu1:
         type: cpu
-
     cameras:
       front_door:
         ffmpeg:
@@ -33,6 +28,3 @@ blakeshome:
               roles:
                 - detect
                 - rtmp
-        width: 1280
-        height: 720
-        fps: 5
