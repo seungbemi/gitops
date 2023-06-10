@@ -24,6 +24,11 @@ apps:
     path: kubernetes/kube-system/_project
     sync: true
 
+  - name: messaging
+    namespace: messaging
+    path: kubernetes/messaging/_project
+    sync: true
+
   - name: services
     namespace: services
     path: kubernetes/services/_project

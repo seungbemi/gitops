@@ -1,0 +1,72 @@
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+image:
+  repository: eclipse-mosquitto
+  pullPolicy: IfNotPresent
+# controller:
+#   strategy: RollingUpdate
+#   rollingUpdate:
+#       maxUnavailable: 1
+#       maxSurge: 0
+env:
+  TZ: "Europe/Helsinki"
+  # COMPOSE_PROJECT_NAME: paperless
+  # PAPERLESS_REDIS: redis://redis-master.persistence:6379
+  # PAPERLESS_OCR_LANGUAGES: fin kor
+  # PAPERLESS_OCR_LANGUAGE: eng+fin+kor
+  USERMAP_UID: 1000
+  USERMAP_GID: 1000
+  # PAPERLESS_TIME_ZONE: Europe/Helsinki
+  # PAPERLESS_DBHOST: postgresql.persistence
+  # PAPERLESS_PORT: 8000
+  # PAPERLESS_CONSUMER_POLLING: 300
+# envFrom:
+#   - secretRef:
+#       name: paperless-secrets
+service:
+  main:
+    ports:
+      http:
+        enabled: false
+      main:
+        enabled: true
+        port: 1883
+
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          probes:
+            liveness:
+              enabled: true
+              type: tcp
+              port: 1883
+            readiness:
+              enabled: true
+              type: tcp
+              port: 1883
+            startup:
+              enabled: true
+              type: tcp
+              port: 1883
+persistence:
+  data:
+    enabled: true
+    storageClass: ceph-block
+    mountPath: "/mosquitto/data"
+    accessMode: ReadWriteOnce
+    size: "1Gi"
+  config:
+    enabled: true
+    type: configMap
+    name: mosquitto-configmap
+    subPath: mosquitto.conf
+    mountPath: /mosquitto/config/mosquitto.conf
+    defaultMode: 384
+  password:
+    enabled: true
+    type: secret
+    name: mosquitto-secrets
+    subPath: password.txt
+    mountPath: /mosquitto/config/password.txt
+    defaultMode: 384

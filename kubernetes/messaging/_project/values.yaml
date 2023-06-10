@@ -1,0 +1,11 @@
+apps:
+  - name: mosquitto
+    namespace: messaging
+    path: kubernetes/messaging/mosquitto
+    sync: true
+
+  - name: messaging-secrets
+    namespace: messaging
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/messaging/secrets
+    sync: true
