@@ -1,0 +1,12 @@
+apiVersion: v2
+appVersion: "0.12.0"
+description: NVR With Realtime Object Detection for IP Cameras
+name: frigate
+version: 7.0.1
+sources:
+  - https://github.com/blakeblackshear/frigate
+
+dependencies:
+  - name: frigate
+    repository: https://blakeblackshear.github.io/blakeshome-charts/
+    version: 7.0.1

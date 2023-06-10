@@ -49,6 +49,11 @@ apps:
     path: kubernetes/services/coder
     sync: true
 
+  - name: frigate
+    namespace: services
+    path: kubernetes/services/frigate
+    sync: true
+
   - name: service-secrets
     namespace: services
     repoURL: git@github.com:seungbemi/gitops-secrets.git

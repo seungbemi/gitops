@@ -1,0 +1,38 @@
+# https://github.com/blakeblackshear/blakeshome-charts/blob/frigate-7.0.1/charts/frigate/values.yaml
+blakeshome:
+  env:
+    TZ: "Europe/Helsinki"
+  envFromSecrets:
+    - frigate-secrets
+  # secrets are required before `helm install`
+  # - frigate-rstp-credentials
+# -- frigate configuration - see [Docs](https://docs.frigate.video/configuration/index) for more info
+  config: |
+    mqtt:
+      host: mosquitto.messaging
+      port: 1883
+      topic_prefix: frigate
+      client_id: frigate
+      # Optional: user
+      user: {FRIGATE_MQTT_USER}
+      password: {FRIGATE_MQTT_PASSWORD}
+      stats_interval: 60
+
+    detectors:
+      # coral:
+      #   type: edgetpu
+      #   device: usb
+      cpu1:
+        type: cpu
+
+    cameras:
+      front_door:
+        ffmpeg:
+          inputs:
+            - path: rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=0
+              roles:
+                - detect
+                - rtmp
+        width: 1280
+        height: 720
+        fps: 5
