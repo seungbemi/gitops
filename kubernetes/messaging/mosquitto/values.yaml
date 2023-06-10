@@ -59,14 +59,13 @@ persistence:
   config:
     enabled: true
     type: configMap
-    name: mosquitto-configmap
+    name: mosquitto-config
     subPath: mosquitto.conf
     mountPath: /mosquitto/config/mosquitto.conf
     defaultMode: 384
   password:
     enabled: true
-    type: secret
-    name: mosquitto-secrets
+    type: configMap
+    name: mosquitto-password
     subPath: password.txt
     mountPath: /mosquitto/config/password.txt
-    defaultMode: 384
