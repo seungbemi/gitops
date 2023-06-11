@@ -21,6 +21,34 @@ service:
       rtsp:
         port: 8554
 
+configMaps:
+  # -- frigate configuration - see [Docs](https://docs.frigate.video/configuration/index) for more info
+  frigate-config:
+    enable: true
+    labels:
+      app: frigate
+    data: |
+      config.yml: |
+      mqtt:
+        host: mosquitto.messaging
+        port: 1883
+        topic_prefix: frigate
+        client_id: frigate
+        # Optional: user
+        user: "{FRIGATE_MQTT_USER}"
+        password: "{FRIGATE_MQTT_PASSWORD}"
+        stats_interval: 60
+      detectors:
+        cpu1:
+          type: cpu
+      cameras:
+        front_door:
+          ffmpeg:
+            inputs:
+              - path: rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=0
+                roles:
+                  - detect
+                  - rtmp
 persistence:
   data:
     enabled: true
