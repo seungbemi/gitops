@@ -41,14 +41,33 @@ configMaps:
         detectors:
           cpu1:
             type: cpu
+        record:
+          enabled: true
+          events:
+            retain:
+              default: 14
+              mode: active_objects
+        snapshots:
+          enabled: true
+          crop: true
+          height: 175
+          retain:
+            default: 10
+            objects:
+              person: 15
         cameras:
           front_door:
             ffmpeg:
               inputs:
-                - path: rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=0
+                - path: rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=2
                   roles:
                     - detect
-                    - rtmp
+                - path: rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=0
+                  roles:
+                    - record
+            motion:
+              mask:
+                - 342,0,1280,0,1280,298,1254,357,547,40,343,67
 persistence:
   data:
     enabled: true
