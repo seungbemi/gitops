@@ -20,6 +20,8 @@ service:
         port: 5000
       rtsp:
         port: 8554
+      rtmp:
+        port: 1935
 
 configMaps:
   # -- frigate configuration - see [Docs](https://docs.frigate.video/configuration/index) for more info
@@ -65,6 +67,7 @@ configMaps:
                 - path: rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=0
                   roles:
                     - record
+                    - rtmp
             motion:
               mask:
                 - 342,0,1280,0,1280,298,1254,357,547,40,343,67
