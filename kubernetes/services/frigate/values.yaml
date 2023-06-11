@@ -57,6 +57,10 @@ configMaps:
             default: 10
             objects:
               person: 15
+        go2rtc:
+          streams:
+            front_door:
+              - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=0
         cameras:
           front_door:
             ffmpeg:
