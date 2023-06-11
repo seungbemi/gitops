@@ -9,19 +9,9 @@ image:
 #       maxSurge: 0
 env:
   TZ: "Europe/Helsinki"
-  # COMPOSE_PROJECT_NAME: paperless
-  # PAPERLESS_REDIS: redis://redis-master.persistence:6379
-  # PAPERLESS_OCR_LANGUAGES: fin kor
-  # PAPERLESS_OCR_LANGUAGE: eng+fin+kor
   USERMAP_UID: 1000
   USERMAP_GID: 1000
-  # PAPERLESS_TIME_ZONE: Europe/Helsinki
-  # PAPERLESS_DBHOST: postgresql.persistence
-  # PAPERLESS_PORT: 8000
-  # PAPERLESS_CONSUMER_POLLING: 300
-# envFrom:
-#   - secretRef:
-#       name: paperless-secrets
+
 service:
   main:
     ports:
@@ -31,24 +21,21 @@ service:
         enabled: true
         port: 1883
 
-workload:
-  main:
-    podSpec:
-      containers:
-        main:
-          probes:
-            liveness:
-              enabled: true
-              type: tcp
-              port: 1883
-            readiness:
-              enabled: true
-              type: tcp
-              port: 1883
-            startup:
-              enabled: true
-              type: tcp
-              port: 1883
+
+probes:
+  liveness:
+    enabled: true
+    type: tcp
+    port: 1883
+  readiness:
+    enabled: true
+    type: tcp
+    port: 1883
+  startup:
+    enabled: true
+    type: tcp
+    port: 1883
+
 persistence:
   data:
     enabled: true
