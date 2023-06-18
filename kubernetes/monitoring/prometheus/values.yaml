@@ -132,6 +132,8 @@ kube-prometheus-stack:
         memory: 60Mi
   # https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
   grafana:
+    env:
+      GF_SECURITY_ALLOW_EMBEDDING: true
     admin:
       existingSecret: grafana-dashboard
       userKey: admin-user
