@@ -47,6 +47,8 @@ configMaps:
           coral:
             type: edgetpu
             device: usb
+        ffmpeg:
+          hwaccel_args: preset-vaapi
         record:
           enabled: true
           events:
@@ -104,6 +106,10 @@ persistence:
     enabled: true
     type: hostPath
     hostPath: /dev/bus/usb
+  hwaccel:
+    enabled: true
+    type: hostPath
+    hostPath: /dev/dri/renderD128
 # resources:
 #   limits:
 #     cpu: 1
