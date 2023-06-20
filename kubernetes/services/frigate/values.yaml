@@ -23,6 +23,9 @@ service:
       rtmp:
         port: 1935
 
+securityContext:
+  privileged:  true
+
 configMaps:
   # -- frigate configuration - see [Docs](https://docs.frigate.video/configuration/index) for more info
   config:
@@ -41,8 +44,9 @@ configMaps:
           password: "{FRIGATE_MQTT_PASSWORD}"
           stats_interval: 60
         detectors:
-          cpu1:
-            type: cpu
+          coral:
+            type: edgetpu
+            device: usb
         record:
           enabled: true
           events:
@@ -96,6 +100,10 @@ persistence:
     mountPath: /dev/shm
     sizeLimit: 1Gi
     medium: Memory
+  tpu:
+    enabled: true
+    type: hostPath
+    hostPath: /dev/bus/usb
 # resources:
 #   limits:
 #     cpu: 1
@@ -103,3 +111,12 @@ persistence:
 #   requests:
 #     cpu: 16m
 #     memory: 1Gi
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: coral-tpu-node
+          operator: In
+          values:
+          - "true"
