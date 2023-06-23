@@ -28,7 +28,7 @@ traefik:
       protocol: TCP
   resources:
     limits:
-      cpu: 300m
+      cpu: 1
       memory: 500Mi
     requests:
       cpu: 30m
