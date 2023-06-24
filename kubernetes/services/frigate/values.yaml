@@ -97,6 +97,9 @@ configMaps:
                   roles:
                     - record
                     - rtmp
+            motion:
+              mask:
+                - 1280,0,1248,196,1038,108,1017,256,577,100,585,0
 persistence:
   data:
     enabled: true
