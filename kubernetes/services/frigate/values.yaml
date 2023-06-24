@@ -60,7 +60,7 @@ configMaps:
           crop: true
           height: 175
           retain:
-            default: 10
+            default: 14
             objects:
               person: 15
         go2rtc:
@@ -69,6 +69,10 @@ configMaps:
               - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=0
             front_door_sub:
               - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=2
+            back_door:
+              - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM2}:554/cam/realmonitor?channel=1&subtype=0
+            back_door_sub:
+              - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM2}:554/cam/realmonitor?channel=1&subtype=2
         cameras:
           front_door:
             ffmpeg:
@@ -83,6 +87,16 @@ configMaps:
             motion:
               mask:
                 - 342,0,1280,0,1280,298,1254,357,547,40,343,67
+          back_door:
+            ffmpeg:
+              inputs:
+                - path: rtsp://127.0.0.1:8554/back_door_sub
+                  roles:
+                    - detect
+                - path: rtsp://127.0.0.1:8554/back_door
+                  roles:
+                    - record
+                    - rtmp
 persistence:
   data:
     enabled: true
