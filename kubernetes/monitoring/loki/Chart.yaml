@@ -3,10 +3,10 @@ name: loki-stack
 description: "Loki: like Prometheus, but for logs."
 type: application
 
-version: 2.9.9
+version: 2.9.10
 appVersion: v2.6.1
 
 dependencies:
 - name: loki-stack
-  version: 2.9.9
+  version: 2.9.10
   repository: https://grafana.github.io/helm-charts
