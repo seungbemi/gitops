@@ -1,7 +1,7 @@
 # https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
 
 image:
-  repository: kizaing/kavita
+  repository: ghcr.io/kareadita/kavita
   pullPolicy: IfNotPresent
 controller:
   strategy: RollingUpdate
