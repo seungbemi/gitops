@@ -31,9 +31,6 @@ persistence:
     mountPath: /media/book
     accessMode: ReadOnly
 resources:
-  limits:
-    cpu: 256m
-    memory: 256Mi
   requests:
     cpu: 32m
     memory: 160Mi
