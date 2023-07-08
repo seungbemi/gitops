@@ -18,7 +18,6 @@
     "editable": false,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 1,
-    "id": 34,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -1400,7 +1399,6 @@
                     },
                     "decimals": 0,
                     "mappings": [],
-                    "max": 100,
                     "min": 0,
                     "thresholds": {
                         "mode": "percentage",
@@ -1421,7 +1419,34 @@
                     },
                     "unit": "percent"
                 },
-                "overrides": []
+                "overrides": [
+                    {
+                        "__systemRef": "hideSeriesFrom",
+                        "matcher": {
+                            "id": "byNames",
+                            "options": {
+                                "mode": "exclude",
+                                "names": [
+                                    "master3",
+                                    "master2",
+                                    "master1"
+                                ],
+                                "prefix": "All except:",
+                                "readOnly": true
+                            }
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.hideFrom",
+                                "value": {
+                                    "legend": false,
+                                    "tooltip": false,
+                                    "viz": true
+                                }
+                            }
+                        ]
+                    }
+                ]
             },
             "gridPos": {
                 "h": 7,
@@ -1478,6 +1503,18 @@
                     "legendFormat": "master3",
                     "range": true,
                     "refId": "C"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "100",
+                    "hide": false,
+                    "legendFormat": "MAX",
+                    "range": true,
+                    "refId": "D"
                 }
             ],
             "title": "CPU load (%)",
@@ -1525,7 +1562,6 @@
                     },
                     "decimals": 0,
                     "mappings": [],
-                    "max": 100,
                     "min": 0,
                     "thresholds": {
                         "mode": "percentage",
@@ -1546,7 +1582,34 @@
                     },
                     "unit": "percent"
                 },
-                "overrides": []
+                "overrides": [
+                    {
+                        "__systemRef": "hideSeriesFrom",
+                        "matcher": {
+                            "id": "byNames",
+                            "options": {
+                                "mode": "exclude",
+                                "names": [
+                                    "master3",
+                                    "master2",
+                                    "master1"
+                                ],
+                                "prefix": "All except:",
+                                "readOnly": true
+                            }
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.hideFrom",
+                                "value": {
+                                    "legend": false,
+                                    "tooltip": false,
+                                    "viz": true
+                                }
+                            }
+                        ]
+                    }
+                ]
             },
             "gridPos": {
                 "h": 7,
@@ -1604,6 +1667,18 @@
                     "legendFormat": "master3",
                     "range": true,
                     "refId": "C"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "100",
+                    "hide": false,
+                    "legendFormat": "MAX",
+                    "range": true,
+                    "refId": "D"
                 }
             ],
             "title": "Memory Usage (%)",
@@ -2031,7 +2106,6 @@
                     },
                     "decimals": 0,
                     "mappings": [],
-                    "max": 100,
                     "min": 0,
                     "thresholds": {
                         "mode": "percentage",
@@ -2052,7 +2126,35 @@
                     },
                     "unit": "percent"
                 },
-                "overrides": []
+                "overrides": [
+                    {
+                        "__systemRef": "hideSeriesFrom",
+                        "matcher": {
+                            "id": "byNames",
+                            "options": {
+                                "mode": "exclude",
+                                "names": [
+                                    "worker4",
+                                    "worker3",
+                                    "worker2",
+                                    "worker1"
+                                ],
+                                "prefix": "All except:",
+                                "readOnly": true
+                            }
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.hideFrom",
+                                "value": {
+                                    "legend": false,
+                                    "tooltip": false,
+                                    "viz": true
+                                }
+                            }
+                        ]
+                    }
+                ]
             },
             "gridPos": {
                 "h": 7,
@@ -2121,6 +2223,18 @@
                     "legendFormat": "worker4",
                     "range": true,
                     "refId": "D"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "100",
+                    "hide": false,
+                    "legendFormat": "MAX",
+                    "range": true,
+                    "refId": "E"
                 }
             ],
             "title": "CPU load (%)",
@@ -2168,7 +2282,6 @@
                     },
                     "decimals": 2,
                     "mappings": [],
-                    "max": 100,
                     "min": 0,
                     "thresholds": {
                         "mode": "percentage",
@@ -2223,6 +2336,33 @@
                             {
                                 "id": "displayName",
                                 "value": "master1"
+                            }
+                        ]
+                    },
+                    {
+                        "__systemRef": "hideSeriesFrom",
+                        "matcher": {
+                            "id": "byNames",
+                            "options": {
+                                "mode": "exclude",
+                                "names": [
+                                    "worker1",
+                                    "worker2",
+                                    "worker3",
+                                    "worker4"
+                                ],
+                                "prefix": "All except:",
+                                "readOnly": true
+                            }
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.hideFrom",
+                                "value": {
+                                    "legend": false,
+                                    "tooltip": false,
+                                    "viz": true
+                                }
                             }
                         ]
                     }
@@ -2296,6 +2436,18 @@
                     "legendFormat": "worker4",
                     "range": true,
                     "refId": "D"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "100",
+                    "hide": false,
+                    "legendFormat": "MAX",
+                    "range": true,
+                    "refId": "E"
                 }
             ],
             "title": "Memory Usage (%)",
@@ -2319,6 +2471,6 @@
     "timezone": "",
     "title": "Data Center",
     "uid": "df489a34-ef11-4573-881c-3d6b190877b7",
-    "version": 11,
+    "version": 1,
     "weekStart": ""
 }
