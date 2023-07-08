@@ -34,9 +34,6 @@ persistence:
     mountPath: /opt/adguardhome/conf
     accessMode: ReadWriteOnce
 resources:
-  limits:
-    cpu: 160m
-    memory: 160Mi
   requests:
     cpu: 16m
     memory: 96Mi

@@ -43,9 +43,6 @@ persistence:
     hostPath: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
 
 resources:
-  limits:
-    cpu: 150m
-    memory: 3000Mi
   requests:
     cpu: 50m
     memory: 1000Mi

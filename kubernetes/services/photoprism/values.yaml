@@ -64,9 +64,6 @@ persistence:
     mountPath: /assets/photos/export
 
 resources:
-  limits:
-    cpu: 2
-    memory: 4.5Gi
   requests:
     cpu: 32m
     memory: 512Mi
