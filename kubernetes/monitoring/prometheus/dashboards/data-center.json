@@ -18,6 +18,7 @@
     "editable": false,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 1,
+    "id": 9,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -161,7 +162,7 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "builder",
-                    "expr": "sum by(friendly_name) (increase(ha_sensor_monetary_eur{entity=\"sensor.server_plug_summation_delivered_cost\"}[24h]))",
+                    "expr": "sum by(friendly_name) (increase(ha_sensor_monetary_eur{entity=\"sensor.server_plug_summation_delivered_cost_2\"}[24h]))",
                     "legendFormat": "__auto",
                     "range": true,
                     "refId": "A"
@@ -681,8 +682,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -813,8 +813,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             }
                         ]
                     },
@@ -936,8 +935,7 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "red",
@@ -1076,8 +1074,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -1174,8 +1171,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -1273,8 +1269,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -1404,8 +1399,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -1567,8 +1561,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -1712,8 +1705,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -1824,8 +1816,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -1966,8 +1957,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -2111,8 +2101,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
@@ -2287,8 +2276,7 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "orange",
