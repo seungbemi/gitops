@@ -9,6 +9,7 @@ env:
   UNIFI_GID: "999"
   JVM_INIT_HEAP_SIZE:
   JVM_MAX_HEAP_SIZE: 1024M
+hostNetwork: true
 podSecurityContext:
   fsGroup: 999
 service:
