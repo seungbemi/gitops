@@ -11,8 +11,12 @@ controller:
 env:
   TZ: "Europe/Helsinki"
 
+hostNetwork: true
+
 service:
   main:
+    type: LoadBalancer
+    loadBalancerIP: "172.20.0.132"
     ports:
       http:
         port: 8123
