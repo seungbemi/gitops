@@ -79,6 +79,7 @@ kube-prometheus-stack:
           memory: 50Mi
   prometheus:
     prometheusSpec:
+      replicas: 2
       retention: 3y
       ruleSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
@@ -101,6 +102,7 @@ kube-prometheus-stack:
           memory: 1Gi
   alertmanager:
     alertmanagerSpec:
+      replicas: 2
       useExistingSecret: true
       configSecret: alertmanager-secret-config
       alertmanagerConfigSelector:
