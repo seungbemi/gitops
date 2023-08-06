@@ -12,18 +12,3 @@ spec:
   nfs:
     server: diskstation.local
     path: /volume1/LTS/monitoring/prometheus
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-prometheus-2
-  labels:
-    app.kubernetes.io/name: pv-prometheus
-spec:
-  capacity:
-    storage: 50Gi
-  accessModes:
-  - ReadWriteOnce
-  nfs:
-    server: diskstation.local
-    path: /volume1/LTS/monitoring/prometheus-2

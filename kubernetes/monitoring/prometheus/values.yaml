@@ -79,7 +79,6 @@ kube-prometheus-stack:
           memory: 50Mi
   prometheus:
     prometheusSpec:
-      replicas: 2
       retention: 3y
       ruleSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
