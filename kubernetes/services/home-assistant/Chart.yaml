@@ -2,7 +2,7 @@ apiVersion: v2
 description: A Helm chart for home-assistant
 name: home-assistant
 version: 1.0.0
-appVersion: "2023.9"
+appVersion: "2023.8.4"
 
 dependencies:
   - name: common
