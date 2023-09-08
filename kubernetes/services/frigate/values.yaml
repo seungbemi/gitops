@@ -38,7 +38,7 @@ configMaps:
           host: mosquitto.messaging
           port: 1883
           topic_prefix: frigate
-          client_id: frigate_new
+          client_id: frigate
           # Optional: user
           user: "{FRIGATE_MQTT_USER}"
           password: "{FRIGATE_MQTT_PASSWORD}"
