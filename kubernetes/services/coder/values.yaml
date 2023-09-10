@@ -1,4 +1,4 @@
-# https://github.com/coder/coder/blob/v0.22.0/helm/values.yaml
+# https://github.com/coder/coder/blob/v2.1.5/helm/coder/values.yaml
 coder:
   coder:
     env:
