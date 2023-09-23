@@ -18,7 +18,7 @@
     "editable": false,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 1,
-    "id": 9,
+    "id": 2,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -374,7 +374,7 @@
                             }
                         ]
                     },
-                    "unit": "KBs"
+                    "unit": "binBps"
                 },
                 "overrides": [
                     {
@@ -434,7 +434,7 @@
                     },
                     "editorMode": "builder",
                     "exemplar": false,
-                    "expr": "sum by(friendly_name) (ha_sensor_unit_kb_per_s{entity=~\"sensor.mikrotik_ether1_rx|sensor.mikrotik_ether1_tx\"})",
+                    "expr": "sum by(friendly_name) (ha_sensor_data_rate_b_per_s{entity=~\"sensor.mikrotik_ether1_rx|sensor.mikrotik_ether1_tx\"})",
                     "hide": false,
                     "instant": true,
                     "legendFormat": "__auto",
@@ -501,7 +501,7 @@
                             }
                         ]
                     },
-                    "unit": "KBs"
+                    "unit": "binBps"
                 },
                 "overrides": [
                     {
@@ -557,7 +557,7 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "builder",
-                    "expr": "sum by(friendly_name) (ha_sensor_unit_kb_per_s{entity=~\"sensor.mikrotik_ether1_rx|sensor.mikrotik_ether1_tx\"})",
+                    "expr": "sum by(friendly_name) (ha_sensor_data_rate_b_per_s{entity=~\"sensor.mikrotik_ether1_rx|sensor.mikrotik_ether1_tx\"})",
                     "hide": false,
                     "interval": "10m",
                     "legendFormat": "__auto",
@@ -595,7 +595,7 @@
                             }
                         ]
                     },
-                    "unit": "KBs"
+                    "unit": "binBps"
                 },
                 "overrides": []
             },
@@ -630,7 +630,7 @@
                     },
                     "editorMode": "builder",
                     "exemplar": false,
-                    "expr": "sum by(friendly_name) (ha_sensor_unit_kb_per_s{entity=~\".*_vlan_.*\"})",
+                    "expr": "sum by(friendly_name) (ha_sensor_data_rate_kb_per_s{entity=~\".*_vlan_.*\"})",
                     "format": "time_series",
                     "instant": true,
                     "legendFormat": "__auto",
@@ -682,7 +682,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -813,7 +814,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             }
                         ]
                     },
@@ -935,7 +937,8 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "red",
@@ -1074,7 +1077,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -1171,7 +1175,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -1269,7 +1274,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -1399,7 +1405,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -1561,7 +1568,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -1705,7 +1713,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -1816,7 +1825,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -1957,7 +1967,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -2101,7 +2112,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
@@ -2276,7 +2288,8 @@
                         "mode": "percentage",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "orange",
