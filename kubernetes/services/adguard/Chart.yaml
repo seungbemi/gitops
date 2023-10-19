@@ -3,7 +3,7 @@ description: A Helm chart for adguard
 name: adguard
 version: 1.0.0
 # https://github.com/AdguardTeam/AdGuardHome/releases
-appVersion: v0.107.37
+appVersion: v0.107.40
 
 dependencies:
   - name: common
