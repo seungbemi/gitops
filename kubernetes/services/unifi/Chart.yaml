@@ -2,7 +2,7 @@ apiVersion: v2
 description: Ubiquiti Network's Unifi Controller
 name: unifi
 version: 1.0.0
-appVersion: v7.5.187
+appVersion: v7.5.176
 
 dependencies:
   - name: common
