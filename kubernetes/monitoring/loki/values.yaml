@@ -4,7 +4,7 @@ loki-stack:
   loki:
     isDefault: false
     persistence:
-      enabled: true
+      enabled: false
       accessModes:
       - ReadWriteOnce
       size: 15Gi
