@@ -29,8 +29,3 @@ persistence:
     server: diskstation.local
     path: /volume2/book
     mountPath: /media/book
-    accessMode: ReadOnly
-resources:
-  requests:
-    cpu: 32m
-    memory: 160Mi
