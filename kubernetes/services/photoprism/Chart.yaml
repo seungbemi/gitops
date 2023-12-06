@@ -2,7 +2,7 @@ apiVersion: v2
 description: A Helm chart for photoprism
 name: photoprism
 version: 1.0.0
-appVersion: "231011"
+appVersion: "231128"
 
 dependencies:
   - name: common
