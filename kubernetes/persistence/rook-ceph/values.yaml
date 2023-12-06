@@ -1,4 +1,4 @@
-# https://github.com/rook/rook/blob/v1.10.11/deploy/charts/rook-ceph/values.yaml
+# https://github.com/rook/rook/blob/v1.12.9/deploy/charts/rook-ceph/values.yaml
 rook-ceph:
   resources:
     limits:
@@ -170,7 +170,7 @@ rook-ceph:
           limits:
             memory: 256Mi
             cpu: 100m
-# https://github.com/rook/rook/blob/v1.10.11/deploy/charts/rook-ceph-cluster/values.yaml
+# https://github.com/rook/rook/blob/v1.12.9/deploy/charts/rook-ceph-cluster/values.yaml
 rook-ceph-cluster:
   operatorNamespace: persistence
   monitoring:
