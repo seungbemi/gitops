@@ -1,4 +1,4 @@
-# https://github.com/prometheus-community/helm-charts/blob/kube-prometheus-stack-47.0.0/charts/kube-prometheus-stack/values.yaml
+# https://github.com/prometheus-community/helm-charts/blob/kube-prometheus-stack-55.0.0/charts/kube-prometheus-stack/Chart.yaml
 kube-prometheus-stack:
   fullnameOverride: prometheus
   defaultRules:
