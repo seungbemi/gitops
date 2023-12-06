@@ -226,6 +226,7 @@ rook-ceph-cluster:
       failureDomain: host
       replicated:
         size: 3
+      deviceClass: "ssd"
     storageClass:
       enabled: true
       name: ceph-block
