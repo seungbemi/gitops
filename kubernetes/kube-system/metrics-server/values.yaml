@@ -1,4 +1,4 @@
-# https://github.com/kubernetes-sigs/metrics-server/blob/metrics-server-helm-chart-3.8.2/charts/metrics-server/values.yaml
+# https://github.com/kubernetes-sigs/metrics-server/blob/metrics-server-helm-chart-3.10.0/charts/metrics-server/values.yaml
 metrics-server:
   service:
     labels:
