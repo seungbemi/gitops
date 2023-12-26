@@ -3,10 +3,10 @@ name: coder
 description: Remote development environments on your infrastructure
 type: application
 
-version: v2.4.0
-appVersion: v2.4.0
+version: v2.6.0
+appVersion: v2.6.0
 
 dependencies:
 - name: coder
-  version: v2.4.0
+  version: v2.6.0
   repository: https://helm.coder.com/v2
