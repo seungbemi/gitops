@@ -23,8 +23,7 @@
   },
   "editable": false,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
-  "id": 10,
+  "graphTooltip": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -40,6 +39,77 @@
       "panels": [],
       "title": "Overview",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "id": 27,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(entity) (ha_temperature_c{entity=\"sensor.outdoor_temperature\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Outdoor",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -70,9 +140,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 3,
-        "x": 0,
+        "h": 4,
+        "w": 5,
+        "x": 4,
         "y": 1
       },
       "id": 25,
@@ -110,7 +180,153 @@
           "useBackend": false
         }
       ],
-      "title": "Current Total Consumption",
+      "title": "Current Month Usage",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineWidth": 0,
+            "spanNulls": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 9,
+        "y": 1
+      },
+      "id": 21,
+      "options": {
+        "alignValue": "center",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "mergeValues": false,
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum by(friendly_name) (ha_binary_sensor_state{entity=~\"binary_sensor..*door.*\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Sensors",
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 5
+      },
+      "id": 24,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "(sum by(entity) (ha_sensor_unit_eur_per_kwh{entity=\"sensor.helen_fixed_price_electricity_unit_price\"})) * 100",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Price (Cent/kWh)",
       "type": "stat"
     },
     {
@@ -142,10 +358,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 4,
-        "x": 3,
-        "y": 1
+        "h": 4,
+        "w": 5,
+        "x": 4,
+        "y": 5
       },
       "id": 23,
       "options": {
@@ -190,260 +406,6 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 3,
-        "x": 7,
-        "y": 1
-      },
-      "id": 24,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "10.2.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "(sum by(entity) (ha_sensor_unit_eur_per_kwh{entity=\"sensor.helen_fixed_price_electricity_unit_price\"})) * 100",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "Price (Cent/kWh)",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "custom": {
-            "fillOpacity": 70,
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineWidth": 0,
-            "spanNulls": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 14,
-        "x": 10,
-        "y": 1
-      },
-      "id": 21,
-      "options": {
-        "alignValue": "center",
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "mergeValues": false,
-        "rowHeight": 0.9,
-        "showValue": "auto",
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum by(friendly_name) (ha_binary_sensor_state{entity=~\"binary_sensor..*door.*\"})",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Sensors",
-      "type": "state-timeline"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "axisSoftMin": 21,
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 2,
-            "pointSize": 3,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 1,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "kwatth"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "id": 22,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum by(entity) (increase(ha_sensor_energy_kwh{entity=\"sensor.helen_monthly_consumption\"}[6h]))",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "Home Electricity Consumption",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -476,38 +438,9 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.bedroom_temperature"
+              "options": ""
             },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Bedroom"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "sensor.living_room_temperature"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Living Room"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "sensor.seri_room_temperature"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Kids Room"
-              }
-            ]
+            "properties": []
           }
         ]
       },
@@ -515,7 +448,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 9
       },
       "id": 9,
       "options": {
@@ -549,6 +482,22 @@
         }
       ],
       "title": "Temperature (°C)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)MultiSensor Temperature",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*) Smoke Detector Temperature",
+            "renamePattern": "$1"
+          }
+        }
+      ],
       "type": "gauge"
     },
     {
@@ -626,7 +575,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 14
       },
       "id": 13,
       "options": {
@@ -660,6 +609,22 @@
         }
       ],
       "title": "Humidity (%)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)MultiSensor .*",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*) Smoke .*",
+            "renamePattern": "$1"
+          }
+        }
+      ],
       "type": "gauge"
     },
     {
@@ -724,10 +689,10 @@
         ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 16,
+        "h": 5,
+        "w": 17,
         "x": 0,
-        "y": 25
+        "y": 19
       },
       "id": 17,
       "options": {
@@ -763,6 +728,22 @@
         }
       ],
       "title": "Pressure (hPa)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)MultiSensor .*",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*) Smoke .*",
+            "renamePattern": "$1"
+          }
+        }
+      ],
       "type": "gauge"
     },
     {
@@ -792,12 +773,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.server_plug_active_power"
+              "options": "sensor.coffee_machine_active_power"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Home Servers"
+                "value": "Coffee Machine"
               },
               {
                 "id": "thresholds",
@@ -868,22 +849,22 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sensor.zigbee_plug_active_power"
+              "options": "sensor.server_plug_active_power"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "zigbee plug"
+                "value": "Server"
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 16,
-        "y": 25
+        "h": 5,
+        "w": 7,
+        "x": 17,
+        "y": 19
       },
       "id": 19,
       "options": {
@@ -907,13 +888,17 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "sum by(entity) (ha_sensor_power_w{service=\"home-assistant\", entity=~\"sensor.coffee_machine_active_power|sensor.desk_plug_active_power\"})",
+          "expr": "sum by(entity) (ha_sensor_power_w{service=\"home-assistant\", entity=~\"sensor.coffee_machine_active_power|sensor.desk_plug_active_power|sensor.server_plug_active_power\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         }
       ],
       "title": "Power Consumption (W)",
@@ -925,12 +910,117 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 24
       },
       "id": 3,
       "panels": [],
       "title": "Timeline",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMin": 21,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 3,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(entity) (increase(ha_sensor_energy_kwh{entity=\"sensor.helen_monthly_consumption\"}[6h]))",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Home Electricity Consumption",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -1024,17 +1114,38 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "sum by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity=~\"sensor..*room.*\"})",
+          "expr": "sum by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity=~\"sensor..*room.*|sensor.outdoor_temperature\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
           "instant": false,
+          "interval": "3h",
           "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
           "legendFormat": "__auto",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
         }
       ],
       "title": "Temperature (°C)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*) Smoke .*",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)MultiSensor .*",
+            "renamePattern": "$1"
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -1159,6 +1270,7 @@
           "exemplar": false,
           "expr": "sum by(friendly_name) (ha_humidity_percent{service=\"home-assistant\", entity=~\"sensor..*room.*\"})",
           "instant": false,
+          "interval": "3h",
           "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
           "legendFormat": "__auto",
           "range": true,
@@ -1166,6 +1278,22 @@
         }
       ],
       "title": "Humidity (%)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)MultiSensor .*",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*) Smoke .*",
+            "renamePattern": "$1"
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -1291,6 +1419,7 @@
           "exemplar": false,
           "expr": "sum by(friendly_name) (ha_pressure_hPa{service=\"home-assistant\", entity=~\"sensor..*room.*\"})",
           "instant": false,
+          "interval": "3h",
           "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
           "legendFormat": "__auto",
           "range": true,
@@ -1298,6 +1427,22 @@
         }
       ],
       "title": "Pressure (hPa)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*) Smoke .*",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)MultiSensor .*",
+            "renamePattern": "$1"
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -1328,7 +1473,7 @@
             "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "pointSize": 5,
+            "pointSize": 2,
             "scaleDistribution": {
               "type": "linear"
             },
@@ -1388,17 +1533,27 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "sum by(entity) (ha_battery_percent)",
+          "expr": "sum by(friendly_name) (ha_battery_percent)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "__auto",
+          "interval": "3h",
+          "legendFormat": "{{friendly_name}}",
           "range": true,
           "refId": "A",
           "useBackend": false
         }
       ],
       "title": "Battery Percentage",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*) Battery",
+            "renamePattern": "$1"
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -1565,6 +1720,6 @@
   "timezone": "",
   "title": "Home Assistant",
   "uid": "vYzWqUD4k",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
