@@ -23,7 +23,8 @@
   },
   "editable": false,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 1,
+  "graphTooltip": 2,
+  "id": 10,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -53,12 +54,24 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-blue",
                 "value": null
               },
               {
+                "color": "semi-dark-blue",
+                "value": -10
+              },
+              {
+                "color": "blue",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 20
+              },
+              {
                 "color": "red",
-                "value": 80
+                "value": 30
               }
             ]
           },
@@ -434,15 +447,7 @@
           },
           "unit": "celsius"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": ""
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 5,
@@ -764,6 +769,14 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 140
+              },
+              {
+                "color": "dark-red",
+                "value": 180
               }
             ]
           },
@@ -855,6 +868,34 @@
               {
                 "id": "displayName",
                 "value": "Server"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 125
+                    },
+                    {
+                      "color": "red",
+                      "value": 150
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 180
+              },
+              {
+                "id": "min",
+                "value": 95
               }
             ]
           }
@@ -925,6 +966,132 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "area"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 28,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity=~\"sensor.outdoor_temperature\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "3h",
+          "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Temperature (°C)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*) Smoke .*",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)MultiSensor .*",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -986,7 +1153,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 32
       },
       "id": 22,
       "options": {
@@ -1093,7 +1260,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 39
       },
       "id": 1,
       "options": {
@@ -1117,7 +1284,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "sum by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity=~\"sensor..*room.*|sensor.outdoor_temperature\"})",
+          "expr": "sum by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity=~\"sensor..*room.*\"})",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1245,7 +1412,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 48
       },
       "id": 4,
       "options": {
@@ -1394,7 +1561,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 49
+        "y": 56
       },
       "id": 5,
       "options": {
@@ -1509,7 +1676,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 64
       },
       "id": 26,
       "options": {
@@ -1666,7 +1833,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 66
+        "y": 73
       },
       "id": 20,
       "options": {
@@ -1703,7 +1870,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
+  "refresh": "1m",
   "schemaVersion": 38,
   "tags": [
     "service",
@@ -1713,13 +1880,13 @@
     "list": []
   },
   "time": {
-    "from": "now-14d",
+    "from": "now-30d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Home Assistant",
   "uid": "vYzWqUD4k",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
