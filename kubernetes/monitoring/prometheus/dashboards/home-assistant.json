@@ -305,8 +305,8 @@
       },
       "id": 24,
       "options": {
-        "colorMode": "background",
-        "graphMode": "none",
+        "colorMode": "value",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -1024,7 +1024,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{friendly_name=\"Outdoor Temperature\"}"
+              "options": "Temperature"
             },
             "properties": [
               {
@@ -1074,7 +1074,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "{entity=\"sensor.helen_monthly_consumption\"}"
+              "options": "Energy Consumption"
             },
             "properties": [
               {
@@ -1126,7 +1126,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "Energy Consumption",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -1140,7 +1140,7 @@
           "expr": "sum by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity=~\"sensor.outdoor_temperature\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "Temperature",
           "range": true,
           "refId": "B"
         }
