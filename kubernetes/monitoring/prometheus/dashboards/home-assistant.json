@@ -966,141 +966,14 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 30
-              }
-            ]
-          },
-          "unit": "celsius"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 25
-      },
-      "id": 28,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "disableTextWrap": false,
-          "editorMode": "builder",
-          "exemplar": false,
-          "expr": "sum by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity=~\"sensor.outdoor_temperature\"})",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "interval": "3h",
-          "key": "Q-34346281-c459-4a01-aa5f-add951a4dc9b-0",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "Temperature (°C)",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "(.*) Smoke .*",
-            "renamePattern": "$1"
-          }
-        },
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "(.*)MultiSensor .*",
-            "renamePattern": "$1"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
             "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
-            "axisCenteredZero": false,
+            "axisCenteredZero": true,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "axisSoftMin": 21,
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 0,
@@ -1111,11 +984,11 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineStyle": {
               "fill": "solid"
             },
-            "lineWidth": 2,
+            "lineWidth": 1,
             "pointSize": 3,
             "scaleDistribution": {
               "type": "linear"
@@ -1130,8 +1003,8 @@
               "mode": "off"
             }
           },
+          "fieldMinMax": true,
           "mappings": [],
-          "min": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1147,13 +1020,86 @@
           },
           "unit": "kwatth"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{friendly_name=\"Outdoor Temperature\"}"
+            },
+            "properties": [
+              {
+                "id": "fieldMinMax",
+                "value": false
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-blue",
+                      "value": null
+                    },
+                    {
+                      "color": "semi-dark-blue",
+                      "value": -10
+                    },
+                    {
+                      "color": "blue",
+                      "value": 0
+                    },
+                    {
+                      "color": "orange",
+                      "value": 20
+                    },
+                    {
+                      "color": "red",
+                      "value": 30
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.thresholdsStyle",
+                "value": {
+                  "mode": "area"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "{entity=\"sensor.helen_monthly_consumption\"}"
+            },
+            "properties": [
+              {
+                "id": "min",
+                "value": 1
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "solid"
+                }
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 10,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 25
       },
       "id": 22,
       "options": {
@@ -1161,7 +1107,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "mode": "single",
@@ -1184,6 +1130,19 @@
           "range": true,
           "refId": "A",
           "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum by(friendly_name) (ha_temperature_c{service=\"home-assistant\", entity=~\"sensor.outdoor_temperature\"})",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "Home Electricity Consumption",
@@ -1260,7 +1219,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 35
       },
       "id": 1,
       "options": {
@@ -1412,7 +1371,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 44
       },
       "id": 4,
       "options": {
@@ -1561,7 +1520,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 52
       },
       "id": 5,
       "options": {
@@ -1676,7 +1635,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 64
+        "y": 60
       },
       "id": 26,
       "options": {
@@ -1833,7 +1792,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 69
       },
       "id": 20,
       "options": {
