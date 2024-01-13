@@ -2,6 +2,7 @@ apiVersion: v2
 description: A Helm chart for jellyfin
 name: jellyfin
 version: 1.0.0
+# https://github.com/jellyfin/jellyfin/releases
 appVersion: 10.8.13
 
 dependencies:
