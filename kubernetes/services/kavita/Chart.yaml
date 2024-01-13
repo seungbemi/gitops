@@ -2,6 +2,7 @@ apiVersion: v2
 description: A Helm chart for kavita
 name: kavita
 version: 1.0.0
+# https://github.com/Kareadita/Kavita/releases
 appVersion: 0.7.12
 
 dependencies:
