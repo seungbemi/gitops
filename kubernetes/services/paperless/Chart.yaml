@@ -2,7 +2,8 @@ apiVersion: v2
 description: Paperless - Index and archive all of your scanned paper documents
 name: paperless
 version: 1.0.0
-appVersion: 2.3.0
+# https://github.com/paperless-ngx/paperless-ngx/releases
+appVersion: 2.3.3
 
 dependencies:
   - name: common
