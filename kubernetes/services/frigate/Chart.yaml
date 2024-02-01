@@ -3,7 +3,7 @@ description: NVR With Realtime Object Detection for IP Cameras
 name: frigate
 version: 1.0.0
 # https://github.com/blakeblackshear/frigate/releases
-appVersion: 0.12.1
+appVersion: 0.13.1
 
 dependencies:
   - name: common

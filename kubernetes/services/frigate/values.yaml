@@ -13,6 +13,19 @@ envFrom:
   - secretRef:
       name: frigate-secrets
 
+initContainers:
+  init-config:
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        cp /tmp/config/config.yml /config/config.yml
+    volumeMounts:
+      - name: config
+        mountPath: /tmp/config/config.yml
+        subPath: config.yml
+      - name: config-folder
+        mountPath: /config
 service:
   main:
     ports:
@@ -108,12 +121,19 @@ persistence:
     path: /volume1/LTS/frigate
     mountPath: /media/frigate
     accessMode: ReadWriteOnce
+  config-folder:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/frigate/config
+    mountPath: /config
+    accessMode: ReadWriteOnce
   config:
     enabled: true
     type: configMap
     name: frigate-config
     subPath: config.yml
-    mountPath: /config/config.yml
+    mountPath: /tmp/config/config.yml
     defaultMode: 384
   shm:
     enabled: true
