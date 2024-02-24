@@ -123,11 +123,10 @@ persistence:
     accessMode: ReadWriteOnce
   config-folder:
     enabled: true
-    type: nfs
-    server: diskstation.local
-    path: /volume1/LTS/frigate/config
+    storageClass: ceph-block
     mountPath: /config
     accessMode: ReadWriteOnce
+    size: "1Gi"
   config:
     enabled: true
     type: configMap
