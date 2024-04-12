@@ -3,7 +3,7 @@ description: A Helm chart for home-assistant
 name: home-assistant
 version: 1.0.0
 # https://github.com/home-assistant/core/releases
-appVersion: "2024.4.0"
+appVersion: "2024.4.2"
 
 dependencies:
   - name: common
