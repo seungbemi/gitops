@@ -1,12 +1,11 @@
 apiVersion: v2
 description: A Helm chart for ollama
 name: ollama
-version: 1.0.0
+version: 0.23.0
 # https://github.com/ollama/ollama/releases
 appVersion: 0.1.32
 
 dependencies:
-  - name: common
-    repository: https://bjw-s.github.io/helm-charts
-    version: 1.3.2
-
+  - name: ollama
+    repository: https://otwld.github.io/ollama-helm/
+    version: 0.23.0
