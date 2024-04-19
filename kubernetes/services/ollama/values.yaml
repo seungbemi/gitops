@@ -1,20 +1,13 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-image:
-  repository: ollama/ollama
-  pullPolicy: IfNotPresent
-env:
-  TZ: "Europe/Helsinki"
-
-service:
-  main:
-    ports:
-      http:
-        port: 11434
-
-persistence:
-  data:
-    enabled: true
-    storageClass: ceph-block
-    accessMode: ReadWriteOnce
-    mountPath: /root/.ollama
-    size: "10Gi"
+# https://github.com/otwld/ollama-helm/blob/ollama-0.23.0/values.yaml
+ollama:
+  volumes:
+    - name: ollama
+      nfs:
+        path: /volume1/LTS/ollama/core
+        server: diskstation.local
+  volumeMounts:
+    - mountPath: /.ollama
+      name: ollama
+  extraEnv:
+    - name: OLLAMA_MODELS
+      value: /.ollama/models
