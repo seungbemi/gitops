@@ -14,8 +14,7 @@ service:
 persistence:
   data:
     enabled: true
-    type: nfs
-    server: diskstation.local
-    path: /volume1/LTS/ollama/core
-    mountPath: /root/.ollama
+    storageClass: ceph-block
     accessMode: ReadWriteOnce
+    mountPath: /root/.ollama
+    size: "10Gi"
