@@ -1,0 +1,21 @@
+# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+image:
+  repository: ollama/ollama
+  pullPolicy: IfNotPresent
+env:
+  TZ: "Europe/Helsinki"
+
+service:
+  main:
+    ports:
+      http:
+        port: 11434
+
+persistence:
+  data:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/ollama/core
+    mountPath: /root/.ollama
+    accessMode: ReadWriteOnce
