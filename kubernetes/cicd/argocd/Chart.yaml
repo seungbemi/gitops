@@ -4,10 +4,10 @@ name: cicd
 description: A Helm chart for CICD applications.
 
 type: application
-version: 5.20.3
-appVersion: v2.6.1
+version: 6.7.13
+appVersion: v2.10.7
 
 dependencies:
   - name: argo-cd
-    version: 5.20.3
+    version: 6.7.13
     repository: https://argoproj.github.io/argo-helm
