@@ -4,7 +4,7 @@ apps:
     path: kubernetes/cicd/applications
     sync: true
 
-# https://github.com/argoproj/argo-helm/blob/argo-cd-5.20.3/charts/argo-cd/values.yaml
+# https://github.com/argoproj/argo-helm/blob/argo-cd-6.7.13/charts/argo-cd/values.yaml
 argo-cd:
   controller:
     enableStatefulSet: true
@@ -32,7 +32,16 @@ argo-cd:
           - matchExpressions:
             - key: node-role.kubernetes.io/control-plane
               operator: Exists
-
+  configs:
+    cm:
+      admin.enabled: false
+      accounts.seungbemi: apiKey, login
+    rbac:
+      policy.default: role:readonly
+      policy.csv: |
+        g, seungbemi, role:admin
+  secret:
+    createSecret: false
   server:
     extraArgs:
       - --insecure
@@ -48,15 +57,6 @@ argo-cd:
       requests:
         cpu: 50m
         memory: 100Mi
-    config:
-      admin.enabled: "false"
-      accounts.seungbemi: apiKey, login
-    rbacConfig:
-      policy.default: role:readonly
-      policy.csv: |
-        g, seungbemi, role:admin
-    secret:
-      createSecret: false
     tolerations:
       - key: node-role.kubernetes.io/control-plane
         effect: NoSchedule
