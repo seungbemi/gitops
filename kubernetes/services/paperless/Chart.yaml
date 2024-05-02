@@ -3,7 +3,7 @@ description: Paperless - Index and archive all of your scanned paper documents
 name: paperless
 version: 1.0.0
 # https://github.com/paperless-ngx/paperless-ngx/releases
-appVersion: 2.5.3
+appVersion: 2.7.2
 
 dependencies:
   - name: common
