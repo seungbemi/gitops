@@ -1,17 +1,60 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+controllers:
+  main:
+    strategy: RollingUpdate
+    rollingUpdate:
+      unavailable: 1
+      surge: 0
+    containers:
+      main:
+        image:
+          repository: adguard/adguardhome
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        env:
+          TZ: Europe/Helsinki
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 30
+              initialDelaySeconds: 0
+              periodSeconds: 5
+              tcpSocket:
+                port: 3000
+              timeoutSeconds: 1
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 30
+              initialDelaySeconds: 0
+              periodSeconds: 5
+              tcpSocket:
+                port: 3000
+              timeoutSeconds: 1
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 30
+              initialDelaySeconds: 0
+              periodSeconds: 5
+              tcpSocket:
+                port: 3000
+              timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: 16m
+            memory: 96Mi
 
-image:
-  repository: adguard/adguardhome
-  pullPolicy: IfNotPresent
-controller:
-  strategy: RollingUpdate
-  rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 0
-env:
-  TZ: "Europe/Helsinki"
 service:
   main:
+    controller: main
+    primary: true
     type: LoadBalancer
     loadBalancerIP: "172.20.0.129"
     ports:
@@ -31,9 +74,5 @@ persistence:
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/adguardhome/config
-    mountPath: /opt/adguardhome/conf
-    accessMode: ReadWriteOnce
-resources:
-  requests:
-    cpu: 16m
-    memory: 96Mi
+    globalMounts: 
+      - path: /opt/adguardhome/conf
