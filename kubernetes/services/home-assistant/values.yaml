@@ -1,27 +1,47 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-image:
-  repository: homeassistant/home-assistant
-  pullPolicy: IfNotPresent
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+defaultPodOptions:
+  hostNetwork: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: zigbee-node
+            operator: In
+            values:
+            - "true"
 
-
-env:
-  TZ: "Europe/Helsinki"
-
-hostNetwork: true
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: homeassistant/home-assistant
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        env:
+          TZ: "Europe/Helsinki"
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+          startup:
+            enabled: true
 
 service:
   main:
+    controller: main
     type: LoadBalancer
     loadBalancerIP: "172.20.0.132"
     ports:
       http:
         port: 8123
-      homekit:
-        enabled: true
-        port: 21065
 
 serviceMonitor:
   main:
+    serviceName: home-assistant
     enabled: true
     endpoints:
     - port: http
@@ -39,7 +59,6 @@ persistence:
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/coder/caffeine/Caffeine/home-assistant
-    accessMode: ReadWriteOnce
   usb:
     enabled: true
     type: hostPath
@@ -50,12 +69,4 @@ resources:
     cpu: 50m
     memory: 1000Mi
 
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: zigbee-node
-          operator: In
-          values:
-          - "true"
+
