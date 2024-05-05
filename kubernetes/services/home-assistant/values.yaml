@@ -29,6 +29,8 @@ controllers:
             enabled: true
           startup:
             enabled: true
+        securityContext:
+          privileged:  true
 
 service:
   main:
@@ -49,9 +51,6 @@ serviceMonitor:
       bearerTokenSecret:
         key: token
         name: ha-prometheus
-
-securityContext:
-  privileged:  true
 
 persistence:
   config:
