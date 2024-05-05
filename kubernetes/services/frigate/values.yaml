@@ -1,33 +1,58 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-image:
-  repository: ghcr.io/blakeblackshear/frigate
-  pullPolicy: IfNotPresent
-controller:
-  strategy: RollingUpdate
-  rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 0
-env:
-  TZ: "Europe/Helsinki"
-envFrom:
-  - secretRef:
-      name: frigate-secrets
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+defaultPodOptions:
+  securityContext:
+    privileged:  true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: coral-tpu-node
+            operator: In
+            values:
+            - "true"
 
-initContainers:
-  init-config:
-    image: busybox
-    command: ["/bin/sh", "-c"]
-    args:
-      - |
-        cp /tmp/config/config.yml /config/config.yml
-    volumeMounts:
-      - name: config
-        mountPath: /tmp/config/config.yml
-        subPath: config.yml
-      - name: config-folder
-        mountPath: /config
+controllers:
+  main:
+    enabled: true
+    strategy: RollingUpdate
+    rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 0
+    containers:
+      main:
+        image:
+          repository: ghcr.io/blakeblackshear/frigate
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        
+        env:
+          TZ: "Europe/Helsinki"
+        envFrom:
+          - secretRef:
+              name: frigate-secrets
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+          startup:
+            enabled: true
+
+    initContainers:
+      init-config:
+        image: 
+          repository: busybox
+          tag: latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            cp /tmp/config/config.yml /config/config.yml
+
 service:
   main:
+    controller: main
     ports:
       http:
         port: 5000
@@ -36,8 +61,6 @@ service:
       rtmp:
         port: 1935
 
-securityContext:
-  privileged:  true
 
 configMaps:
   # -- frigate configuration - see [Docs](https://docs.frigate.video/configuration/index) for more info
@@ -119,25 +142,32 @@ persistence:
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/frigate
-    mountPath: /media/frigate
-    accessMode: ReadWriteOnce
+    advancedMounts:
+      main:
+        main:
+        - path: /media/frigate
   config-folder:
     enabled: true
     storageClass: ceph-block
-    mountPath: /config
+    globalMounts: 
+      - path: /config
     accessMode: ReadWriteOnce
     size: "1Gi"
   config:
     enabled: true
     type: configMap
     name: frigate-config
-    subPath: config.yml
-    mountPath: /tmp/config/config.yml
+    globalMounts: 
+      - path: /tmp/config/config.yml
+        subPath: config.yml
     defaultMode: 384
   shm:
     enabled: true
     type: emptyDir
-    mountPath: /dev/shm
+    advancedMounts:
+      main:
+        main:
+        - path: /dev/shm
     sizeLimit: 1Gi
     medium: Memory
   tpu:
@@ -148,19 +178,3 @@ persistence:
     enabled: true
     type: hostPath
     hostPath: /dev/dri/renderD128
-# resources:
-#   limits:
-#     cpu: 1
-#     memory: 1.5Gi
-#   requests:
-#     cpu: 16m
-#     memory: 1Gi
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: coral-tpu-node
-          operator: In
-          values:
-          - "true"
