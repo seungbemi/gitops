@@ -1,19 +1,64 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-image:
-  repository: jacobalberty/unifi
-  pullPolicy: IfNotPresent
-env:
-  TZ: "Europe/Helsinki"
-  RUNAS_UID0: "false"
-  UNIFI_UID: "999"
-  UNIFI_GID: "999"
-  JVM_INIT_HEAP_SIZE:
-  JVM_MAX_HEAP_SIZE: 1024M
-hostNetwork: true
-podSecurityContext:
-  fsGroup: 999
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+defaultPodOptions:
+  hostNetwork: true
+  securityContext:
+    fsGroup: 999
+
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: jacobalberty/unifi
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        env:
+          TZ: "Europe/Helsinki"
+          RUNAS_UID0: "false"
+          UNIFI_UID: "999"
+          UNIFI_GID: "999"
+          JVM_INIT_HEAP_SIZE:
+          JVM_MAX_HEAP_SIZE: 1024M
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 3
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              tcpSocket:
+                port: 8443
+              timeoutSeconds: 1
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 3
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              tcpSocket:
+                port: 8443
+              timeoutSeconds: 1
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 3
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              tcpSocket:
+                port: 8443
+              timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+
 service:
   main:
+    controller: main
     type: LoadBalancer
     loadBalancerIP: "172.20.0.131"
     ports:
@@ -46,10 +91,6 @@ persistence:
     enabled: true
     storageClass: ceph-block
     accessMode: ReadWriteOnce
-    mountPath: /unifi
+    globalMounts:
+      - path: /unifi
     size: "5Gi"
-
-resources:
-  requests:
-    cpu: 100m
-    memory: 512Mi
