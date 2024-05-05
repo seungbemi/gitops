@@ -1,31 +1,47 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+controllers:
+  main:
+    strategy: RollingUpdate
+    rollingUpdate:
+        unavailable: 1
+        surge: 0
+    containers:
+      main:
+        image:
+          repository: jvmilazz0/kavita
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        env:
+          TZ: "Europe/Helsinki"
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+          startup:
+            enabled: true
 
-image:
-  repository: jvmilazz0/kavita
-  pullPolicy: IfNotPresent
-controller:
-  strategy: RollingUpdate
-  rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 0
-env:
-  TZ: "Europe/Helsinki"
 service:
   main:
+    controller: main
     ports:
       http:
         port: 5000
+
 persistence:
   data:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/kavita/data
-    mountPath: /kavita/config
-    accessMode: ReadWriteOnce
+    globalMounts:
+      - path: /kavita/config
+
   book:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume2/book
-    mountPath: /media/book
+    globalMounts:
+      - path: /media/book
