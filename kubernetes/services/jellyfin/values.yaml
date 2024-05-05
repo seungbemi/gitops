@@ -1,58 +1,79 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-
-image:
-  repository: jellyfin/jellyfin
-  pullPolicy: IfNotPresent
-env:
-  TZ: "Europe/Helsinki"
-  JELLYFIN_DATA_DIR: "/data"
-  JELLYFIN_CONFIG_DIR: "/config"
-  JELLYFIN_CACHE_DIR: "/cache"
-envFrom:
-- secretRef:
-    name: jellyfin-secrets
-    optional: false
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: jellyfin/jellyfin
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        env:
+          TZ: "Europe/Helsinki"
+          JELLYFIN_DATA_DIR: "/data"
+          JELLYFIN_CONFIG_DIR: "/config"
+          JELLYFIN_CACHE_DIR: "/cache"
+        envFrom:
+        - secretRef:
+            name: jellyfin-secrets
+            optional: false
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+          startup:
+            enabled: true
 service:
   main:
+    controller: main
     ports:
       http:
         port: 8096
+
 persistence:
   data:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/jellyfin/data
-    mountPath: /data
-    accessMode: ReadWriteOnce
+    globalMounts:
+      - path: /data
   cache:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/jellyfin/cache
-    mountPath: /cache
-    accessMode: ReadWriteOnce
+    globalMounts:
+      - path: /cache
+
   config:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/jellyfin/config
-    mountPath: /config
-    accessMode: ReadWriteOnce
+    globalMounts:
+      - path: /config
   video:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume2/video
-    mountPath: /media/video
-    accessMode: ReadOnly
+    advancedMounts:
+      main:
+        main:
+        - path: /media/video
+          readOnly: true
   music:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume2/music
-    mountPath: /media/music
-    accessMode: ReadOnly
+    advancedMounts:
+      main:
+        main:
+        - path: /media/music
+          readOnly: true
 resources:
   requests:
     cpu: 16m
