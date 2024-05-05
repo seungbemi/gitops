@@ -1,48 +1,64 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-image:
-  repository: masipcat/wireguard-go
-  pullPolicy: IfNotPresent
-controller:
-  strategy: RollingUpdate
-  rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 0
-env:
-  TZ: "Europe/Helsinki"
-  LOG_LEVEL: info
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+defaultPodOptions:
+  securityContext:
+    capabilities:
+      add:
+        - NET_ADMIN
+    privileged:  true
 
-securityContext:
-  capabilities:
-    add:
-      - NET_ADMIN
-  privileged:  true
+controllers:
+  main:
+    strategy: RollingUpdate
+    rollingUpdate:
+      unavailable: 1
+      surge: 0
+    containers:
+      main:
+        image:
+          repository: masipcat/wireguard-go
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        env:
+          TZ: "Europe/Helsinki"
+          LOG_LEVEL: info
+        probes:
+          liveness:
+            enabled: false
+          readiness:
+            enabled: false
+          startup:
+            enabled: false
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: "100m"
 
-initContainers:
-  sysctls:
-    image: busybox
-    command:
-    - sh
-    - -c
-    - sysctl -w net.ipv4.ip_forward=1 && sysctl -w net.ipv4.conf.all.forwarding=1
-    securityContext:
-      capabilities:
-        add:
-          - NET_ADMIN
-      privileged: true
-probes:
-  liveness:
-    enabled: false
-  readiness:
-    enabled: false
-  startup:
-    enabled: false
+
+    initContainers:
+      sysctls:
+        image: 
+          repository: busybox
+          tag: latest
+        command:
+        - sh
+        - -c
+        - sysctl -w net.ipv4.ip_forward=1 && sysctl -w net.ipv4.conf.all.forwarding=1
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+          privileged: true
+
 service:
   main:
+    controller: main
     type: LoadBalancer
     loadBalancerIP: "172.20.0.130"
     ports:
       http:
         enabled: false
+        port: 80
       wg:
         primary: true
         port: 51820
@@ -54,18 +70,15 @@ persistence:
     enabled: true
     type: configMap
     name: wg-configmap
-    subPath: wg0.conf
-    mountPath: /etc/wireguard/wg0.conf
+    globalMounts:
+      - path: /etc/wireguard/wg0.conf
+        subPath: wg0.conf
     defaultMode: 384
   secret:
     enabled: true
     type: secret
     name: wg-secret
-    subPath: privatekey
-    mountPath: /etc/wireguard/privatekey
+    globalMounts:
+      - path: /etc/wireguard/privatekey
+        subPath: privatekey
     defaultMode: 384
-
-resources:
-  requests:
-    memory: 64Mi
-    cpu: "100m"
