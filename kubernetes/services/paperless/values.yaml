@@ -1,29 +1,48 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-image:
-  repository: ghcr.io/paperless-ngx/paperless-ngx
-  pullPolicy: IfNotPresent
-controller:
-  strategy: RollingUpdate
-  rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 0
-env:
-  TZ: "Europe/Helsinki"
-  COMPOSE_PROJECT_NAME: paperless
-  PAPERLESS_REDIS: redis://redis-master.persistence:6379
-  PAPERLESS_OCR_LANGUAGES: fin kor
-  PAPERLESS_OCR_LANGUAGE: eng+fin+kor
-  USERMAP_UID: 1000
-  USERMAP_GID: 1000
-  PAPERLESS_TIME_ZONE: Europe/Helsinki
-  PAPERLESS_DBHOST: postgresql.persistence
-  PAPERLESS_PORT: 8000
-  PAPERLESS_CONSUMER_POLLING: 300
-envFrom:
-  - secretRef:
-      name: paperless-secrets
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+
+controllers:
+  main:
+    strategy: RollingUpdate
+    rollingUpdate:
+      unavailable: 1
+      surge: 0
+    containers:
+      main:
+        image:
+          repository: ghcr.io/paperless-ngx/paperless-ngx
+          tag: "{{ .Chart.AppVersion }}"
+          pullPolicy: IfNotPresent
+        env:
+          TZ: "Europe/Helsinki"
+          COMPOSE_PROJECT_NAME: paperless
+          PAPERLESS_REDIS: redis://redis-master.persistence:6379
+          PAPERLESS_OCR_LANGUAGES: fin kor
+          PAPERLESS_OCR_LANGUAGE: eng+fin+kor
+          USERMAP_UID: 1000
+          USERMAP_GID: 1000
+          PAPERLESS_TIME_ZONE: Europe/Helsinki
+          PAPERLESS_DBHOST: postgresql.persistence
+          PAPERLESS_PORT: 8000
+          PAPERLESS_CONSUMER_POLLING: 300
+        envFrom:
+          - secretRef:
+              name: paperless-secrets
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+          startup:
+            enabled: true
+        resources:
+          requests:
+            cpu: 16m
+            memory: 1Gi
+
 service:
   main:
+    controller: main
     ports:
       http:
         port: 8000
@@ -33,30 +52,27 @@ persistence:
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/paperless/data
-    mountPath: /usr/src/paperless/data
-    accessMode: ReadWriteOnce
+    globalMounts: 
+      - path: /usr/src/paperless/data
   media:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/paperless/media
-    mountPath: /usr/src/paperless/media
-    accessMode: ReadWriteOnce
+    globalMounts: 
+      - path: /usr/src/paperless/media
+
   consume:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume2/shared/Paperless
-    mountPath: /usr/src/paperless/consume
-    accessMode: ReadWriteOnce
+    globalMounts: 
+      - path: /usr/src/paperless/consume
   export:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/paperless/export
-    mountPath: /usr/src/paperless/export
-    accessMode: ReadWriteOnce
-resources:
-  requests:
-    cpu: 16m
-    memory: 1Gi
+    globalMounts:
+      - path: /usr/src/paperless/export
