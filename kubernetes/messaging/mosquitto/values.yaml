@@ -1,54 +1,79 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
-image:
-  repository: eclipse-mosquitto
-  pullPolicy: IfNotPresent
-# controller:
-#   strategy: RollingUpdate
-#   rollingUpdate:
-#       maxUnavailable: 1
-#       maxSurge: 0
-env:
-  TZ: "Europe/Helsinki"
-  USERMAP_UID: 1000
-  USERMAP_GID: 1000
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: eclipse-mosquitto
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        env:
+          TZ: "Europe/Helsinki"
+          USERMAP_UID: 1000
+          USERMAP_GID: 1000
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 30
+              initialDelaySeconds: 0
+              periodSeconds: 5
+              tcpSocket:
+                port: 1883
+              timeoutSeconds: 1
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 30
+              initialDelaySeconds: 0
+              periodSeconds: 5
+              tcpSocket:
+                port: 1883
+              timeoutSeconds: 1
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              failureThreshold: 30
+              initialDelaySeconds: 0
+              periodSeconds: 5
+              tcpSocket:
+                port: 1883
+              timeoutSeconds: 1
+
 
 service:
   main:
+    controller: main
     ports:
-      http:
-        enabled: false
       main:
         enabled: true
         port: 1883
 
-probes:
-  liveness:
-    enabled: true
-    targetPort: 1883
-  readiness:
-    enabled: true
-    targetPort: 1883
-  startup:
-    enabled: true
-    targetPort: 1883
 
 persistence:
   data:
     enabled: true
     storageClass: ceph-block
-    mountPath: "/mosquitto/data"
     accessMode: ReadWriteOnce
+    globalMounts:
+      - path: /mosquitto/data
     size: "1Gi"
   config:
     enabled: true
     type: configMap
     name: mosquitto-config
-    subPath: mosquitto.conf
-    mountPath: /mosquitto/config/mosquitto.conf
+    globalMounts:
+      - path: /mosquitto/config/mosquitto.conf
+        subPath: mosquitto.conf
     defaultMode: 384
   password:
     enabled: true
     type: configMap
     name: mosquitto-password
-    subPath: password.txt
-    mountPath: /mosquitto/config/password.txt
+    globalMounts:
+      - path: /mosquitto/config/password.txt
+        subPath: password.txt
