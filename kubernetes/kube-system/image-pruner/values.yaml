@@ -1,18 +1,35 @@
-# https://github.com/bjw-s/helm-charts/tree/93e761fd99fb6eaad188173de6a6a3a57811ed25/charts/library/common
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+defaultPodOptions:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
 
-image:
-  repository: alpine
-  pullPolicy: IfNotPresent
+controllers:
+  main:
+    type: daemonset
+    containers:
+      main:
+        image:
+          repository: alpine
+          pullPolicy: IfNotPresent
+          tag: latest
+        command:
+          [
+            "sh",
+            "-c",
+            "wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$CRICTL_VERSION/crictl-$CRICTL_VERSION-linux-amd64.tar.gz && tar zxvf crictl-$CRICTL_VERSION-linux-amd64.tar.gz -C /usr/local/bin && crontab /config/cronjobs && crond -f -d 8",
+          ]
+        env:
+          TZ: "Europe/Helsinki"
+          CRICTL_VERSION: v1.25.0
+          CONTAINER_RUNTIME_ENDPOINT: unix:///var/run/containerd/containerd.sock
+          IMAGE_SERVICE_ENDPOINT: unix:///var/run/containerd/containerd.sock
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
 
-command:
-  [
-    "sh",
-    "-c",
-    "wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$CRICTL_VERSION/crictl-$CRICTL_VERSION-linux-amd64.tar.gz && tar zxvf crictl-$CRICTL_VERSION-linux-amd64.tar.gz -C /usr/local/bin && crontab /config/cronjobs && crond -f -d 8",
-  ]
-
-controller:
-  type: daemonset
 
 configMaps:
   config:
@@ -20,15 +37,6 @@ configMaps:
     data:
       cronjobs: 0 3 1 * * crictl rmi --prune 2>&1
     
-env:
-  TZ: "Europe/Helsinki"
-  CRICTL_VERSION: v1.25.0
-  CONTAINER_RUNTIME_ENDPOINT: unix:///var/run/containerd/containerd.sock
-  IMAGE_SERVICE_ENDPOINT: unix:///var/run/containerd/containerd.sock
-
-service:
-  main:
-    enabled: false
 
 persistence:
   containerd:
@@ -36,17 +44,11 @@ persistence:
     type: hostPath
     hostPath: /var/run/containerd/containerd.sock
     hostPathType: Socket
-    mountPath: /var/run/containerd/containerd.sock
+    advancedMounts:
+      main:
+        main:
+          - path: /var/run/containerd/containerd.sock
   config:
     enabled: true
     type: configMap
     name: image-pruner-config
-
-tolerations:
-  - key: node-role.kubernetes.io/control-plane
-    effect: NoSchedule
-
-resources:
-  requests:
-    cpu: 100m
-    memory: 50Mi
