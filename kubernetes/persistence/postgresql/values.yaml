@@ -3,7 +3,7 @@ postgresql:
   image:
     registry: ghcr.io
     repository: seungbemi/bitnami-postgres-pgvector-rs
-    tag: 14.5.0
+    tag: 14.5.0-v0.2.0
   auth:
     database: homeassistant
     existingSecret: postgres-secrets
