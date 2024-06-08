@@ -1,12 +1,12 @@
 immich:
-  env:
-    TZ: "Europe/Helsinki"
+  env: 
+    - name: TZ
+      value: "Europe/Helsinki"
   envFrom:
     - secretRef:
         name: immich-secrets
   image:
     tag: v1.105.1
-
 
   immich:
     metrics:
