@@ -1,4 +1,6 @@
 immich:
+  env:
+    TZ: "Europe/Helsinki"
   envFrom:
     - secretRef:
         name: immich-secrets
