@@ -6,7 +6,7 @@ immich:
     - secretRef:
         name: immich-secrets
   image:
-    tag: v1.105.1
+    tag: v1.106.0
 
   immich:
     metrics:
