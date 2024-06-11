@@ -6,6 +6,7 @@ immich:
     - secretRef:
         name: immich-secrets
   image:
+    # https://github.com/immich-app/immich/tags
     tag: v1.106.1
 
   immich:
