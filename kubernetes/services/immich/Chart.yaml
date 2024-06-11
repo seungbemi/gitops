@@ -8,4 +8,4 @@ appVersion: v1.105.1
 dependencies:
   - name: immich
     repository: https://immich-app.github.io/immich-charts
-    version: 0.6.0
+    version: 0.7.0
