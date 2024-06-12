@@ -2,6 +2,8 @@ immich:
   env: 
     - name: TZ
       value: "Europe/Helsinki"
+    - name: IMMICH_LOG_LEVEL
+      value: verbose
   envFrom:
     - secretRef:
         name: immich-secrets
