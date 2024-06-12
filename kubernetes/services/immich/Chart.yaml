@@ -2,10 +2,10 @@ apiVersion: v2
 description: A Helm chart for immich
 name: immich
 version: 1.0.0
-appVersion: v1.106.2
+appVersion: v1.105.1
 
 dependencies:
   - name: immich
     repository: https://immich-app.github.io/immich-charts
     # https://github.com/immich-app/immich-charts/tags
-    version: 0.7.0
+    version: 0.6.0
