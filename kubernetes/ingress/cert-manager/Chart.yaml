@@ -4,10 +4,10 @@ description: A Helm chart for cert-manager
 
 type: application
 
-version: 1.50.0
-appVersion: v1.50.0
+version: v1.15.0
+appVersion: v1.15.0
 
 dependencies:
 - name: cert-manager
-  version: 1.50.0
+  version: v1.15.0
   repository: https://charts.jetstack.io
