@@ -23,7 +23,8 @@ traefik:
   ports:
     external:
       port: 7443
-      expose: true
+      expose: 
+        default: true
       exposedPort: 8443
       protocol: TCP
   resources:
