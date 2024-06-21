@@ -13,11 +13,6 @@ apps:
     namespace: persistence
     path: kubernetes/persistence/postgresql
     sync: true
-  
-  - name: mariadb
-    namespace: persistence
-    path: kubernetes/persistence/mariadb
-    sync: true
 
   - name: persistence-secrets
     namespace: persistence
