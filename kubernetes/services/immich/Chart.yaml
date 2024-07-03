@@ -2,7 +2,7 @@ apiVersion: v2
 description: A Helm chart for immich
 name: immich
 version: 1.0.0
-appVersion: v1.106.4
+appVersion: "v1.107.2"
 
 dependencies:
   - name: immich
