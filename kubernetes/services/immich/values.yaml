@@ -9,7 +9,7 @@ immich:
         name: immich-secrets
   image:
     # https://github.com/immich-app/immich/tags
-    tag: v1.107.1
+    tag: "v1.107.2"
 
   immich:
     metrics:
