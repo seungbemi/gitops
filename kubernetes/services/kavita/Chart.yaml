@@ -3,7 +3,7 @@ description: A Helm chart for kavita
 name: kavita
 version: 1.0.0
 # https://github.com/Kareadita/Kavita/releases
-appVersion: 0.8.1
+appVersion: 0.8.2
 
 dependencies:
   - name: common
