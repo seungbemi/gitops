@@ -50,7 +50,7 @@ controllers:
           - sh
           - -c
           - |
-            unison -batch -auto -prefer /config \
+            unison -batch -auto \
               -perms 0 \
               -ignore 'Name .git' \
               -ignore 'Name .unison' \
