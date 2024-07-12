@@ -6,11 +6,11 @@ defaultPodOptions:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: zigbee-node
-            operator: In
-            values:
-            - "true"
+          - matchExpressions:
+              - key: zigbee-node
+                operator: In
+                values:
+                  - "true"
 
 controllers:
   main:
@@ -30,7 +30,12 @@ controllers:
           startup:
             enabled: true
         securityContext:
-          privileged:  true
+          privileged: true
+      dumper:
+        image:
+          repository: alpine
+          tag: latest
+        command: ["sh", "-c", "echo Hello, Kubernetes! && sleep 3600"]
 
 service:
   main:
@@ -46,11 +51,11 @@ serviceMonitor:
     serviceName: home-assistant
     enabled: true
     endpoints:
-    - port: http
-      path: /api/prometheus
-      bearerTokenSecret:
-        key: token
-        name: ha-prometheus
+      - port: http
+        path: /api/prometheus
+        bearerTokenSecret:
+          key: token
+          name: ha-prometheus
 
 persistence:
   config:
@@ -58,19 +63,15 @@ persistence:
     storageClass: ceph-block
     accessMode: ReadWriteOnce
     size: "1Gi"
-    advancedMounts:
-      main:
-        main:
-          - path: /config-new
+    globalMounts:
+      - path: /config-new
   config-nfs:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/coder/caffeine/Caffeine/home-assistant
-    advancedMounts:
-      main:
-        main:
-          - path: /config
+    globalMounts:
+      - path: /config
   usb:
     enabled: true
     type: hostPath
@@ -80,5 +81,3 @@ resources:
   requests:
     cpu: 50m
     memory: 1000Mi
-
-
