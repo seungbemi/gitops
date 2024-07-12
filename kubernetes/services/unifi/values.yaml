@@ -4,6 +4,22 @@ defaultPodOptions:
   hostNetwork: true
   securityContext:
     fsGroup: 999
+  affinity:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - main
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - unifi
+            topologyKey: "kubernetes.io/hostname"
 
 controllers:
   main:
@@ -55,6 +71,26 @@ controllers:
           requests:
             cpu: 100m
             memory: 512Mi
+  backup:
+    type: cronjob
+    cronjob:
+      backoffLimit: 3
+      concurrencyPolicy: Forbid
+      failedJobsHistory: 3
+      schedule: "0 3 * * *" # daily at 3:00 utc
+      startingDeadlineSeconds: 30
+      successfulJobsHistory: 3
+      suspend: false
+    containers:
+      main:
+        image:
+          repository: alpine
+          tag: latest
+        command:
+          - sh
+          - -c
+          - |
+            tar -czvf /backups/unifi-data.tar.gz -C / unifi
 
 service:
   main:
@@ -94,3 +130,12 @@ persistence:
     globalMounts:
       - path: /unifi
     size: "5Gi"
+  backup:
+    enabled: true
+    type: nfs
+    server: diskstation.local
+    path: /volume1/LTS/backups
+    advancedMounts:
+      backup:
+        main:
+          - path: /backups
