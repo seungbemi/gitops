@@ -57,20 +57,7 @@ persistence:
     enabled: true
     storageClass: ceph-block
     accessMode: ReadWriteOnce
-    advancedMounts:
-      main:
-        main:
-          - path: /config-new
     size: "1Gi"
-  config-nfs:
-    enabled: true
-    type: nfs
-    server: diskstation.local
-    path: /volume1/LTS/coder/caffeine/Caffeine/home-assistant
-    advancedMounts:
-      main:
-        main:
-          - path: /config
   usb:
     enabled: true
     type: hostPath
