@@ -69,10 +69,17 @@ service:
         protocol: UDP
         targetPort: 53
 persistence:
-  config:
+  config-nfs:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/adguardhome/config
-    globalMounts: 
-      - path: /opt/adguardhome/conf
+    advancedMounts: 
+      main:
+        main:
+        - path: /opt/adguardhome/conf
+  config:
+    enabled: true
+    storageClass: ceph-block
+    accessMode: ReadWriteOnce
+    size: "50Mi"
