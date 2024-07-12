@@ -52,6 +52,7 @@ controllers:
           - |
             unison -batch -auto \
               -perms 0 \
+              -prefer newer \
               -ignore 'Name .storage' \
               -ignore 'Name .gitignore' \
               -ignore 'Name .git' \
