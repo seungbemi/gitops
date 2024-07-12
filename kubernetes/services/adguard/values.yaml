@@ -50,11 +50,27 @@ controllers:
           requests:
             cpu: 16m
             memory: 96Mi
-      temp:
+
+  backup:
+    type: cronjob
+    cronjob:
+      backoffLimit: 3
+      concurrencyPolicy: Forbid
+      failedJobsHistory: 3
+      schedule: "0 3 * * *" # daily at 3:00 utc
+      startingDeadlineSeconds: 30
+      successfulJobsHistory: 3
+      suspend: false
+    containers:
+      main:
         image:
           repository: alpine
           tag: latest
-        command: ["sh", "-c", "echo Hello, Kubernetes! && sleep 3600"]
+        command:
+          - sh
+          - -c
+          - |
+            tar -czvf /opt/adguardhome/backups/adguard-config.tar.gz -C /opt/adguardhome conf
 
 service:
   main:
@@ -74,17 +90,17 @@ service:
         protocol: UDP
         targetPort: 53
 persistence:
-  config-nfs:
+  config-backup:
     enabled: true
     type: nfs
     server: diskstation.local
-    path: /volume1/LTS/adguardhome/config
-    globalMounts: 
-      - path: /opt/adguardhome/conf
+    path: /volume1/LTS/backups
+    globalMounts:
+      - path: /opt/adguardhome/backups
   config:
     enabled: true
     storageClass: ceph-block
     accessMode: ReadWriteOnce
     size: "50Mi"
     globalMounts:
-      - path: /opt/adguardhome/conf-new
+      - path: /opt/adguardhome/conf
