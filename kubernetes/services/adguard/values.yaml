@@ -81,5 +81,5 @@ persistence:
   config:
     enabled: true
     storageClass: ceph-block
-    accessMode: ReadWriteMany
+    accessMode: ReadWriteOnce
     size: "50Mi"
