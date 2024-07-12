@@ -31,11 +31,15 @@ controllers:
             enabled: true
         securityContext:
           privileged: true
-      dumper:
-        image:
-          repository: alpine
+      unison:
+        image: 
+          repository: onnimonni/unison
           tag: latest
-        command: ["sh", "-c", "echo Hello, Kubernetes! && sleep 3600"]
+        command:
+        - sh
+        - -c
+        - |
+          unison -batch /config /config-nfs
 
 service:
   main:
@@ -64,14 +68,14 @@ persistence:
     accessMode: ReadWriteOnce
     size: "1Gi"
     globalMounts:
-      - path: /config-new
+      - path: /config
   config-nfs:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/coder/caffeine/Caffeine/home-assistant
     globalMounts:
-      - path: /config
+      - path: /config-nfs
   usb:
     enabled: true
     type: hostPath
