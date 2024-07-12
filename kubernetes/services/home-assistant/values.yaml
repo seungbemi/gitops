@@ -52,10 +52,11 @@ controllers:
           - |
             unison -batch -auto \
               -perms 0 \
+              -ignore 'Name .storage' \
+              -ignore 'Name .gitignore' \
               -ignore 'Name .git' \
-              -ignore 'Name .unison' \
               -ignore 'Name zigbee.db*' \
-              -ignore 'Name home-assistant.log' \
+              -ignore 'Name home-assistant.log*' \
               /config /config-nfs
   backup:
     type: cronjob
