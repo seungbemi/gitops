@@ -31,11 +31,6 @@ controllers:
             enabled: true
         securityContext:
           privileged: true
-      temp:
-        image:
-          repository: alpine
-          tag: latest
-        command: ["sh", "-c", "echo Hello, Kubernetes! && sleep 3600"]
   unison:
     type: cronjob
     cronjob:
