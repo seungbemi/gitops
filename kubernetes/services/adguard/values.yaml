@@ -50,6 +50,11 @@ controllers:
           requests:
             cpu: 16m
             memory: 96Mi
+      temp:
+        image:
+          repository: alpine
+          tag: latest
+        command: ["sh", "-c", "echo Hello, Kubernetes! && sleep 3600"]
 
 service:
   main:
@@ -74,12 +79,12 @@ persistence:
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/adguardhome/config
-    advancedMounts: 
-      main:
-        main:
-        - path: /opt/adguardhome/conf
+    globalMounts: 
+      - path: /opt/adguardhome/conf
   config:
     enabled: true
     storageClass: ceph-block
     accessMode: ReadWriteOnce
     size: "50Mi"
+    globalMounts:
+      - path: /opt/adguardhome/conf-new
