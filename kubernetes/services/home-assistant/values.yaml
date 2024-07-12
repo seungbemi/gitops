@@ -52,6 +52,7 @@ controllers:
           - |
             unison -batch -auto -prefer /config \
               -perms 0 \
+              -ignore 'Name .git' \
               -ignore 'Name .unison' \
               -ignore 'Name zigbee.db*' \
               -ignore 'Name home-assistant.log' \
