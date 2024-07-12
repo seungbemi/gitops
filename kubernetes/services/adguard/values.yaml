@@ -1,6 +1,24 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
 # https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+defaultPodOptions:
+  affinity:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - main
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - adguard
+            topologyKey: "kubernetes.io/hostname"
+
 controllers:
   main:
     strategy: RollingUpdate
