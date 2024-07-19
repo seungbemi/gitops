@@ -4,10 +4,10 @@ description: Redis(R) is an open source, advanced key-value store. It is often r
 
 type: application
 
-version: 17.2.0
-appVersion: 7.0.5
+version: 19.6.2
+appVersion: 7.2.5
 
 dependencies:
   - name: redis
-    version: 17.2.0
+    version: 19.6.2
     repository: https://charts.bitnami.com/bitnami
