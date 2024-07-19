@@ -1,4 +1,4 @@
-# https://github.com/grafana/helm-charts/blob/loki-stack-2.9.10/charts/loki-stack/values.yaml
+# https://github.com/grafana/helm-charts/blob/loki-stack-2.10.2/charts/loki-stack/values.yaml
 loki-stack:
   # https://github.com/grafana/loki/blob/v2.7.3/production/helm/loki/values.yaml
   loki:
