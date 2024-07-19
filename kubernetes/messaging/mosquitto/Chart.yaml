@@ -2,7 +2,8 @@ apiVersion: v2
 description: Monsquitto - lightweight MQTT broker
 name: mosquitto
 version: 1.0.0
-appVersion: 2.0.15
+# https://hub.docker.com/_/eclipse-mosquitto/tags
+appVersion: 2.0.18
 
 dependencies:
   - name: common
