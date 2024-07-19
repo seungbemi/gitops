@@ -2,12 +2,12 @@ apiVersion: v2
 
 name: cicd
 description: A Helm chart for CICD applications.
-
+# https://github.com/argoproj/argo-helm/blob/argo-cd-6.9.2/charts/argo-cd/Chart.yaml
 type: application
-version: 6.7.13
-appVersion: v2.10.7
+version: 6.9.2
+appVersion: v2.11.0
 
 dependencies:
   - name: argo-cd
-    version: 6.7.13
+    version: 6.9.2
     repository: https://argoproj.github.io/argo-helm
