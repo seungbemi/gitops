@@ -3,7 +3,7 @@ name: redis
 description: Redis(R) is an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
 
 type: application
-
+# https://github.com/bitnami/charts/blob/redis/19.6.2/bitnami/redis/Chart.yaml
 version: 19.6.2
 appVersion: 7.2.5
 
