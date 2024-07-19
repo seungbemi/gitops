@@ -4,7 +4,7 @@ apps:
     path: kubernetes/cicd/applications
     sync: true
 
-# https://github.com/argoproj/argo-helm/blob/argo-cd-6.7.13/charts/argo-cd/values.yaml
+# https://github.com/argoproj/argo-helm/blob/argo-cd-6.9.2/charts/argo-cd/values.yaml
 argo-cd:
   controller:
     enableStatefulSet: true
