@@ -3,6 +3,7 @@ description: A Helm chart for jellyfin
 name: jellyfin
 version: 1.0.0
 # https://github.com/jellyfin/jellyfin/releases
+# renovate: image=jellyfin/jellyfin
 appVersion: 10.9.7
 
 dependencies:
