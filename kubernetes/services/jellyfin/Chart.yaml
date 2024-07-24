@@ -4,7 +4,7 @@ name: jellyfin
 version: 1.0.0
 # https://github.com/jellyfin/jellyfin/releases
 # renovate: image=jellyfin/jellyfin
-appVersion: 10.9.7
+appVersion: 10.9.8
 
 dependencies:
   - name: common
