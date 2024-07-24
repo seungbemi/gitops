@@ -30,7 +30,7 @@ controllers:
             value: "/tmp/renovate"
         envFrom:
           - secretRef:
-              name: renovate-secrets
+              name: renovatebot-secrets
               optional: false
 configMaps:
   config:
