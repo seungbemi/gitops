@@ -9,5 +9,5 @@ appVersion: 7.2.5
 
 dependencies:
   - name: redis
-    version: 19.6.2
+    version: 19.6.3
     repository: https://charts.bitnami.com/bitnami
