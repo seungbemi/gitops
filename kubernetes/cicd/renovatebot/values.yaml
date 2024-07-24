@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+# https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
+controllers:
+  main:
+    type: cronjob
+    cronjob:
+      backoffLimit: 1
+      concurrencyPolicy: Forbid
+      failedJobsHistory: 3
+      schedule: "@hourly"
+      startingDeadlineSeconds: 30
+      successfulJobsHistory: 3
+      suspend: false
+    containers:
+      main:
+        image:
+          repository: renovate/renovate
+          tag: "{{ .Chart.AppVersion }}"
+        env:
+          - name: LOG_LEVEL
+            value: debug
+          - name: RENOVATE_CONFIG_FILE
+            value: /opt/renovate/config.json
+          - name: RENOVATE_AUTODISCOVER
+            value: "false"
+          - name: RENOVATE_PLATFORM
+            value: "github"
+          - name: RENOVATE_BASE_DIR
+            value: "/tmp/renovate"
+        envFrom:
+          - secretRef:
+              name: renovate-secrets
+              optional: false
+configMaps:
+  renovate-config:
+    enabled: true
+    data:
+      config.json: |-
+        {
+          "repositories": ["seungbemi/gitops"]
+        }
+
+persistence:
+  config:
+    enabled: true
+    type: configMap
+    name: renovate-config
+    advancedMounts:
+      main:
+        main:
+          - path: /opt/renovate/
+  tmp:
+    enabled: true
+    type: emptyDir
+    advancedMounts:
+      main:
+        main:
+          - path: /tmp/renovate/

@@ -1,0 +1,10 @@
+apiVersion: v2
+description: A Helm chart for renovatebot
+name: renovatebot
+version: 1.0.0
+appVersion: 37.440.6
+
+dependencies:
+  - name: common
+    repository: https://bjw-s.github.io/helm-charts
+    version: 3.1.0
