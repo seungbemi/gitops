@@ -3,6 +3,7 @@ description: A Helm chart for wireguard
 name: wireguard
 version: v1.0.0
 # https://hub.docker.com/r/masipcat/wireguard-go/tags
+# renovate: image=masipcat/wireguard-go
 appVersion: 0.0.20230223
 
 dependencies:

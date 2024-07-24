@@ -3,6 +3,7 @@ description: Ubiquiti Network's Unifi Controller
 name: unifi
 version: 1.0.0
 # https://github.com/jacobalberty/unifi-docker/releases
+# renovate: image=jacobalberty/unifi
 appVersion: v8.2.93
 
 dependencies:
