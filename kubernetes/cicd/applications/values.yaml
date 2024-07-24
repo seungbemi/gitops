@@ -4,6 +4,17 @@ apps:
     path: kubernetes/cicd/argocd
     sync: true
 
+  - name: renovatebot
+    namespace: cicd
+    path: kubernetes/cicd/renovatebot
+    sync: true
+
+  - name: cicd-secrets
+    namespace: cicd
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/cicd/secrets
+    sync: true
+
   - name: monitoring
     namespace: monitoring
     path: kubernetes/monitoring/_project
