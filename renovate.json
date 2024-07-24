@@ -1,7 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "ignorePaths": [
+    "kubernetes/persistence/**",
+    "kubernetes/kube-system/kube-network/**"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    }
+  ],
   "customManagers": [
     {
+      "description": "Container image updates for Helm charts",
       "customType": "regex",
       "datasourceTemplate": "docker",
       "fileMatch": ["(^|/)Chart\\.yaml$"],
