@@ -33,7 +33,7 @@ controllers:
               name: renovate-secrets
               optional: false
 configMaps:
-  renovate-config:
+  config:
     enabled: true
     data:
       config.json: |-
@@ -45,7 +45,7 @@ persistence:
   config:
     enabled: true
     type: configMap
-    name: renovate-config
+    name: renovatebot-config
     advancedMounts:
       main:
         main:
