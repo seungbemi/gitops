@@ -13,7 +13,7 @@ apps:
   - name: prometheus-crds
     repoURL: https://github.com/prometheus-community/helm-charts.git
     path: charts/kube-prometheus-stack/charts/crds/
-    targetRevision: kube-prometheus-stack-55.5.1
+    targetRevision: kube-prometheus-stack-61.3.2
     sync: true
     syncOptions:
       - Replace=true
