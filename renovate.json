@@ -12,12 +12,21 @@
   ],
   "customManagers": [
     {
-      "description": "Container image updates for Helm charts",
+      "description": "Container image updates for Helm charts using appVersion",
       "customType": "regex",
       "datasourceTemplate": "docker",
       "fileMatch": ["(^|/)Chart\\.yaml$"],
       "matchStrings": [
         "#\\s*renovate: image=(?<depName>.*?)\\s+appVersion:\\s*[\"']?(?<currentValue>[\\w+\\.\\-]*)"
+      ]
+    },
+    {
+      "description": "Container image updates for Helm charts using values.yaml image.tag",
+      "customType": "regex",
+      "datasourceTemplate": "docker",
+      "fileMatch": ["values\\.yaml$"],
+      "matchStrings": [
+        "#\\s*renovate: image=(?<depName>.*?)\\s+tag:\\s*[\"']?(?<currentValue>[\\w+\\.\\-]*)"
       ]
     }
   ]
