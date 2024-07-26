@@ -2,9 +2,8 @@ apiVersion: v2
 name: rook-ceph
 description: File, Block, and Object Storage Services for your Cloud-Native Environment
 type: application
-
-appVersion: 1.12.9
-version: 1.12.9
+version: 1.0.0
+appVersion: v1.0.0
 
 dependencies:
   - name: rook-ceph

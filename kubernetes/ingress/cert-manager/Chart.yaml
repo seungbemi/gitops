@@ -1,12 +1,11 @@
 apiVersion: v2
 name: cert-manager
 description: A Helm chart for cert-manager
-
 type: application
-# https://github.com/cert-manager/cert-manager/blob/v1.15.1/deploy/charts/cert-manager/Chart.template.yaml
-version: v1.15.1
-appVersion: v1.15.1
+version: 1.0.0
+appVersion: v1.0.0
 
+# https://github.com/cert-manager/cert-manager/blob/v1.15.1/deploy/charts/cert-manager/Chart.template.yaml
 dependencies:
 - name: cert-manager
   version: v1.15.1
