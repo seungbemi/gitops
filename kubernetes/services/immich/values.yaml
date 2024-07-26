@@ -8,8 +8,8 @@ immich:
     - secretRef:
         name: immich-secrets
   image:
-    # https://github.com/immich-app/immich/tags
-    tag: "v1.109.2"
+    # renovate: image=ghcr.io/immich-app/immich-server
+    tag: v1.109.2
 
   immich:
     metrics:
