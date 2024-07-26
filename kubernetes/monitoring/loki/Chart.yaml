@@ -2,10 +2,11 @@ apiVersion: v2
 name: loki-stack
 description: "Loki: like Prometheus, but for logs."
 type: application
-# https://github.com/grafana/helm-charts/blob/loki-stack-2.10.2/charts/loki-stack/Chart.yaml
-version: 2.10.2
-appVersion: v2.9.3
 
+version: 1.0.0
+appVersion: v1.0.0
+
+# https://github.com/grafana/helm-charts/blob/loki-stack-2.10.2/charts/loki-stack/Chart.yaml
 dependencies:
 - name: loki-stack
   version: 2.10.2
