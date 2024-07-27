@@ -14,6 +14,11 @@ apps:
     path: kubernetes/ingress/cert-manager
     sync: true
 
+  - name: ddclient
+    namespace: ingress
+    path: kubernetes/ingress/ddclient
+    sync: true
+
   - name: routes
     namespace: ingress
     repoURL: git@github.com:seungbemi/gitops-secrets.git

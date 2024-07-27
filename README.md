@@ -38,6 +38,7 @@ These applications are running in the home network to maintain the infrastructur
 | [Traefik](https://doc.traefik.io/traefik/) | Traefik is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy. |
 | [Cert-Manager](https://cert-manager.io/docs/) | Automatically provision and manage TLS certificates in Kubernetes. |
 | [MetalLB](https://metallb.universe.tf/) | MetalLB is a load-balancer implementation for bare metal Kubernetes clusters, using standard routing protocols. |
+| [ddclient](https://ddclient.net/) | ddclient is a Perl client used to update dynamic DNS entries for accounts on Dynamic DNS Network Service Provider. |
 
 ### Monitoring
 
