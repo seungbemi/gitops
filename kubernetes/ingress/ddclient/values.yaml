@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/values.schema.json
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: linuxserver/ddclient
+          pullPolicy: IfNotPresent
+          tag: "{{ .Chart.AppVersion }}"
+        resources:
+          limits:
+            cpu: 30m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 50Mi
+
+persistence:
+  config:
+    enabled: true
+    type: secret
+    name: ddclient-secret
