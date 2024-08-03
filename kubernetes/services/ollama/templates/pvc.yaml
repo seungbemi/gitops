@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-ollama
+  labels:
+    app.kubernetes.io/name: pv-ollama
+spec:
+  capacity:
+    storage: 30Gi
+  accessModes:
+  - ReadWriteOnce
+  nfs:
+    server: diskstation.local
+    path: /volume1/LTS/ollama
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-ollama
+  labels:
+    app.kubernetes.io/name: pvc-ollama
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pv-ollama
+
+
