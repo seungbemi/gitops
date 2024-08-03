@@ -1,0 +1,5 @@
+# https://github.com/otwld/ollama-helm/blob/main/values.yaml
+ollama:
+  persistentVolume:
+    size: 30G
+    existingClaim: pvc-ollama
