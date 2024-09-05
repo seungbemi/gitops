@@ -47,6 +47,8 @@ service:
         port: 8971
       rtsp:
         port: 8554
+      api: 
+        port: 5000
 
 persistence:
   data:
