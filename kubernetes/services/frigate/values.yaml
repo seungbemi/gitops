@@ -39,16 +39,6 @@ controllers:
         securityContext:
           privileged:  true
 
-    initContainers:
-      init-config:
-        image: 
-          repository: busybox
-          tag: latest
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            cp /tmp/config/config.yml /config/config.yml
-
 service:
   main:
     controller: main
@@ -59,82 +49,6 @@ service:
         port: 8554
       rtmp:
         port: 1935
-
-
-configMaps:
-  # -- frigate configuration - see [Docs](https://docs.frigate.video/configuration/index) for more info
-  config:
-    enabled: true
-    labels:
-      app: frigate
-    data:
-      config.yml: |
-        mqtt:
-          host: mosquitto.messaging
-          port: 1883
-          topic_prefix: frigate
-          client_id: frigate
-          # Optional: user
-          user: "{FRIGATE_MQTT_USER}"
-          password: "{FRIGATE_MQTT_PASSWORD}"
-          stats_interval: 60
-        detectors:
-          coral:
-            type: edgetpu
-            device: usb
-        ffmpeg:
-          hwaccel_args: preset-vaapi
-        record:
-          enabled: true
-          events:
-            retain:
-              default: 14
-              mode: active_objects
-        snapshots:
-          enabled: true
-          crop: true
-          height: 175
-          retain:
-            default: 14
-            objects:
-              person: 15
-        go2rtc:
-          streams:
-            front_door:
-              - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=0
-              - "ffmpeg:front_door#audio=aac"
-            front_door_sub:
-              - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM1}:554/cam/realmonitor?channel=1&subtype=2
-            back_door:
-              - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM2}:554/cam/realmonitor?channel=1&subtype=0
-              - "ffmpeg:back_door#audio=aac"
-            back_door_sub:
-              - rtsp://{FRIGATE_RSTP_USERNAME}:{FRIGATE_RTSP_PASSWORD}@{FRIGATE_RTSP_HOST_CAM2}:554/cam/realmonitor?channel=1&subtype=2
-        cameras:
-          front_door:
-            ffmpeg:
-              inputs:
-                - path: rtsp://127.0.0.1:8554/front_door_sub
-                  roles:
-                    - detect
-                - path: rtsp://127.0.0.1:8554/front_door
-                  roles:
-                    - record
-            motion:
-              mask:
-                - 329,0,1280,0,1280,372,1207,499,576,100,340,82
-          back_door:
-            ffmpeg:
-              inputs:
-                - path: rtsp://127.0.0.1:8554/back_door_sub
-                  roles:
-                    - detect
-                - path: rtsp://127.0.0.1:8554/back_door
-                  roles:
-                    - record
-            motion:
-              mask:
-                - 1280,0,1244,206,1055,117,1003,286,486,102,489,0
 
 persistence:
   data:
@@ -153,14 +67,7 @@ persistence:
       - path: /config
     accessMode: ReadWriteOnce
     size: "1Gi"
-  config:
-    enabled: true
-    type: configMap
-    name: frigate-config
-    globalMounts: 
-      - path: /tmp/config/config.yml
-        subPath: config.yml
-    defaultMode: 384
+
   shm:
     enabled: true
     type: emptyDir
