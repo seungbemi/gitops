@@ -44,11 +44,9 @@ service:
     controller: main
     ports:
       http:
-        port: 5000
+        port: 8971
       rtsp:
         port: 8554
-      rtmp:
-        port: 1935
 
 persistence:
   data:
