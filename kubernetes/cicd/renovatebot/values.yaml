@@ -8,7 +8,7 @@ controllers:
       backoffLimit: 1
       concurrencyPolicy: Forbid
       failedJobsHistory: 3
-      schedule: "@hourly"
+      schedule: "0 */12 * * *"
       startingDeadlineSeconds: 30
       successfulJobsHistory: 3
       suspend: false
