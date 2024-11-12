@@ -3,7 +3,8 @@ immich:
     - name: TZ
       value: "Europe/Helsinki"
     - name: IMMICH_LOG_LEVEL
-      value: info
+    # verbose, debug, log, warn, error
+      value: warn
   envFrom:
     - secretRef:
         name: immich-secrets
