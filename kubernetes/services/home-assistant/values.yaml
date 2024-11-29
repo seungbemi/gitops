@@ -22,6 +22,7 @@ controllers:
           tag: "{{ .Chart.AppVersion }}"
         env:
           TZ: "Europe/Helsinki"
+          PYTHONPATH: "/config/deps"
         probes:
           liveness:
             enabled: true
