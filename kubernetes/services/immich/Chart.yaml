@@ -8,4 +8,4 @@ dependencies:
   - name: immich
     repository: https://immich-app.github.io/immich-charts
     # https://github.com/immich-app/immich-charts/tags
-    version: 0.8.4
+    version: 0.8.5
