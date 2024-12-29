@@ -1,4 +1,4 @@
-# https://github.com/traefik/traefik-helm-chart/blob/v28.3.0/traefik/values.yaml
+# https://github.com/traefik/traefik-helm-chart/blob/v33.2.1/traefik/values.yaml
 traefik:
   service:
     spec:
@@ -23,7 +23,8 @@ traefik:
   ports:
     external:
       port: 7443
-      expose: true
+      expose:
+        default: true
       exposedPort: 8443
       protocol: TCP
   resources:
