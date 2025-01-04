@@ -75,7 +75,6 @@ Services are the applications that are running in the home network to provide th
 | [Frigate](https://blakeblackshear.github.io/frigate/) | Real-time object detection for IP cameras. |
 | [Home Assistant](https://www.home-assistant.io/) | Open-source home automation platform. |
 | [Immich](https://immich.app/) | Self-hosted photo and video management solution. |
-| [Jellyfin](https://jellyfin.org/) | The Free Software Media System. |
 | [Kavita](https://www.kavitareader.com/) | A fast and feature-rich Progressive Web App for reading books. |
 | [Paperless-ngx](https://docs.paperless-ngx.com/) | A supercharged version of paperless: scan, index, and archive all your physical documents. |
 | [unifi-network-server](https://www.ui.com/software/) | Ubiquiti Network Management System. |
