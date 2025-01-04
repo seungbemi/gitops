@@ -24,11 +24,6 @@ apps:
     path: kubernetes/services/paperless
     sync: true
 
-  - name: jellyfin
-    namespace: services
-    path: kubernetes/services/jellyfin
-    sync: true
-
   - name: kavita
     namespace: services
     path: kubernetes/services/kavita
