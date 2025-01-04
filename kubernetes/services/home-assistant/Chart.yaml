@@ -4,7 +4,7 @@ name: home-assistant
 version: 1.0.0
 # https://github.com/home-assistant/core/releases
 # renovate: image=homeassistant/home-assistant
-appVersion: "2024.12.5"
+appVersion: "2025.1.0"
 
 dependencies:
   - name: common
