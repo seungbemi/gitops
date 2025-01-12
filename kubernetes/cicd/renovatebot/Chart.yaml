@@ -3,7 +3,7 @@ description: A Helm chart for renovatebot
 name: renovatebot
 version: 1.0.0
 # renovate: image=renovate/renovate
-appVersion: 39.75.0
+appVersion: 39.105.1
 
 dependencies:
   - name: common
