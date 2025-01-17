@@ -8,5 +8,5 @@ appVersion: v1.0.0
 # https://github.com/cert-manager/cert-manager/blob/v1.15.1/deploy/charts/cert-manager/Chart.template.yaml
 dependencies:
 - name: cert-manager
-  version: v1.16.2
+  version: v1.16.3
   repository: https://charts.jetstack.io
