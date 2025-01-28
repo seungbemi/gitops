@@ -10,7 +10,7 @@ immich:
         name: immich-secrets
   image:
     # renovate: image=ghcr.io/immich-app/immich-server
-    tag: v1.125.5
+    tag: v1.125.6
 
   immich:
     metrics:
