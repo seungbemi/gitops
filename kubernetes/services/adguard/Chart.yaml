@@ -4,7 +4,7 @@ name: adguard
 version: 1.0.0
 # https://github.com/AdguardTeam/AdGuardHome/releases
 # renovate: image=adguard/adguardhome
-appVersion: v0.107.60
+appVersion: v0.107.61
 
 dependencies:
   - name: common
