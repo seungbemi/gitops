@@ -8,5 +8,5 @@ appVersion: v1.0.0
 # https://github.com/prometheus-community/helm-charts/blob/kube-prometheus-stack-61.3.2/charts/kube-prometheus-stack/Chart.yaml
 dependencies:
 - name: kube-prometheus-stack
-  version: 71.1.0
+  version: 71.2.0
   repository: https://prometheus-community.github.io/helm-charts
