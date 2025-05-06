@@ -8,5 +8,5 @@ appVersion: v1.0.0
 # https://github.com/argoproj/argo-helm/blob/argo-cd-6.9.2/charts/argo-cd/Chart.yaml
 dependencies:
   - name: argo-cd
-    version: 7.9.0
+    version: 7.9.1
     repository: https://argoproj.github.io/argo-helm
