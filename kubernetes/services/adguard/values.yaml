@@ -88,7 +88,7 @@ controllers:
           - sh
           - -c
           - |
-            tar -czvf /opt/adguardhome/backups/adguard-config.tar.gz -C /opt/adguardhome conf
+            tar -czvf /opt/adguardhome/backups/backups.tar.gz -C /opt/adguardhome conf
 
 service:
   main:
@@ -112,7 +112,7 @@ persistence:
     enabled: true
     type: nfs
     server: diskstation.local
-    path: /volume1/LTS/backups
+    path: /volume1/LTS/backups/adguardhome
     globalMounts:
       - path: /opt/adguardhome/backups
   config:
