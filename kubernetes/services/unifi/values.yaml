@@ -77,7 +77,7 @@ controllers:
       backoffLimit: 3
       concurrencyPolicy: Forbid
       failedJobsHistory: 3
-      schedule: "0 3 * * *" # daily at 3:00 utc
+      schedule: "0 6 * * *" # daily at 6:00 utc
       startingDeadlineSeconds: 30
       successfulJobsHistory: 3
       suspend: false
@@ -90,7 +90,7 @@ controllers:
           - sh
           - -c
           - |
-            tar -czvf /backups/unifi-data.tar.gz -C / unifi
+            tar -czvf /backups/backups.tar.gz -C / unifi/data/backup/autobackup
 
 service:
   main:
@@ -134,7 +134,7 @@ persistence:
     enabled: true
     type: nfs
     server: diskstation.local
-    path: /volume1/LTS/backups
+    path: /volume1/LTS/backups/unifi
     advancedMounts:
       backup:
         main:
