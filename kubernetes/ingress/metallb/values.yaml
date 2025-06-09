@@ -1,6 +1,9 @@
 # https://github.com/bitnami/charts/blob/metallb/6.3.8/bitnami/metallb/values.yaml
 metallb:
   controller:
+    # Enable RBAC to fix permission issues with ipaddresspools/status
+    rbac:
+      create: true
     resources:
       limits:
         cpu: 50m
@@ -9,6 +12,9 @@ metallb:
         cpu: 10m
         memory: 64Mi
   speaker:
+    # Enable RBAC for speaker as well
+    rbac:
+      create: true
     resources:
       limits:
         cpu: 100m
@@ -16,3 +22,6 @@ metallb:
       requests:
         cpu: 25m
         memory: 25Mi
+  # Ensure global RBAC is enabled
+  rbac:
+    create: true
