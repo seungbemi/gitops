@@ -68,17 +68,19 @@ controllers:
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app.kubernetes.io/name
-                    operator: In
-                    values:
-                      - unifi
-                  - key: app.kubernetes.io/component
-                    operator: In
-                    values:
-                      - main
-              topologyKey: "kubernetes.io/hostname"
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - unifi
+                    - key: app.kubernetes.io/controller
+                      operator: In
+                      values:
+                        - main
+                topologyKey: "kubernetes.io/hostname"
     containers:
       main:
         image:
