@@ -1,4 +1,4 @@
-# https://github.com/traefik/traefik-helm-chart/blob/v33.2.1/traefik/values.yaml
+# https://github.com/traefik/traefik-helm-chart/blob/v36.0.0/traefik/values.yaml
 traefik:
   service:
     spec:
