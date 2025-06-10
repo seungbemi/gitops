@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/common-4.0.1/charts/library/common/values.yaml
+
 defaultPodOptions:
   hostNetwork: true
   securityContext:
@@ -64,23 +65,21 @@ controllers:
       startingDeadlineSeconds: 30
       successfulJobsHistory: 3
       suspend: false
-    podSpec:
+    pod:
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app.kubernetes.io/name
-                      operator: In
-                      values:
-                        - unifi
-                    - key: app.kubernetes.io/controller
-                      operator: In
-                      values:
-                        - main
-                topologyKey: "kubernetes.io/hostname"
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - unifi
+                  - key: app.kubernetes.io/controller
+                    operator: In
+                    values:
+                      - main
+              topologyKey: "kubernetes.io/hostname"
     containers:
       main:
         image:
