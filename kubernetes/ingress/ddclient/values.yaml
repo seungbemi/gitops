@@ -14,22 +14,9 @@ controllers:
           requests:
             cpu: 10m
             memory: 50Mi
-        env:
-          - name: TZ
-            value: "Etc/UTC"
+
 persistence:
   config:
     enabled: true
     type: secret
     name: ddclient-secret
-    defaultMode: 0600
-    mountPath: /config
-  cache:
-    enabled: true
-    type: emptyDir
-    mountPath: /cache
-  run:
-    enabled: true
-    type: emptyDir
-    medium: Memory
-    mountPath: /run
