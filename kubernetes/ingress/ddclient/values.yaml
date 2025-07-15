@@ -14,9 +14,9 @@ controllers:
           requests:
             cpu: 10m
             memory: 50Mi
-
 persistence:
   config:
     enabled: true
     type: secret
     name: ddclient-secret
+    defaultMode: 0600
