@@ -5,6 +5,8 @@ immich:
     - name: IMMICH_LOG_LEVEL
     # verbose, debug, log, warn, error
       value: warn
+    - name: IMMICH_MEDIA_LOCATION
+      value: /usr/src/app/upload
   envFrom:
     - secretRef:
         name: immich-secrets
