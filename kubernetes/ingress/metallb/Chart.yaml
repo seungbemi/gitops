@@ -8,5 +8,5 @@ appVersion: v1.0.0
 # https://github.com/bitnami/charts/blob/metallb/6.3.8/bitnami/metallb/Chart.yaml
 dependencies:
 - name: metallb
-  version: 6.4.21
+  version: 6.4.20
   repository: https://charts.bitnami.com/bitnami
