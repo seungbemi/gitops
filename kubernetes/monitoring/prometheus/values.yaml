@@ -1,4 +1,3 @@
-# https://github.com/prometheus-community/helm-charts/blob/kube-prometheus-stack-61.3.2/charts/kube-prometheus-stack/values.yaml
 kube-prometheus-stack:
   fullnameOverride: prometheus
   defaultRules:
@@ -99,6 +98,25 @@ kube-prometheus-stack:
         requests:
           cpu: 500m
           memory: 1Gi
+
+      readinessProbe:
+        httpGet:
+          path: /-/ready
+          port: web
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 60
+
+      startupProbe:
+        httpGet:
+          path: /-/ready
+          port: web
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 360
+
   alertmanager:
     alertmanagerSpec:
       replicas: 2
@@ -131,7 +149,6 @@ kube-prometheus-stack:
       requests:
         cpu: 30m
         memory: 60Mi
-  # https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
   grafana:
     env:
       GF_SECURITY_ALLOW_EMBEDDING: true
