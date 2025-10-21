@@ -8,9 +8,7 @@ spec:
     spec:
       containers:
         - name: backup
-          registry: ghcr.io
-          repository: seungbemi/bitnami-postgres-pgvector-rs
-          tag: 14.5.0-v0.2.0
+          image: ghcr.io/seungbemi/bitnami-postgres-pgvector-rs:14.5.0-v0.2.0
           command: ["/bin/sh", "-c"]
           args:
             - pg_dumpall -f /backup/postgres.pgdump -h postgresql -U postgres
