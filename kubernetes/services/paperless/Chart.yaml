@@ -4,7 +4,7 @@ name: paperless
 version: 1.0.0
 # https://github.com/paperless-ngx/paperless-ngx/releases
 # renovate: image=ghcr.io/paperless-ngx/paperless-ngx
-appVersion: 2.18.4
+appVersion: 2.19.0
 
 dependencies:
   - name: common
