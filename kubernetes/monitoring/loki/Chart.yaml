@@ -9,5 +9,5 @@ appVersion: v1.0.0
 # https://github.com/grafana/helm-charts/blob/loki-stack-2.10.2/charts/loki-stack/Chart.yaml
 dependencies:
 - name: loki-stack
-  version: 2.10.2
+  version: 2.10.3
   repository: https://grafana.github.io/helm-charts
