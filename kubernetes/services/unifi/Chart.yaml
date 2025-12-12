@@ -4,7 +4,7 @@ name: unifi
 version: 1.0.0
 # https://github.com/jacobalberty/unifi-docker/releases
 # renovate: image=jacobalberty/unifi
-appVersion: v9.5.21
+appVersion: v10.0.162
 
 dependencies:
   - name: common
