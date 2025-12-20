@@ -7,7 +7,7 @@ immich:
         main:
           image:
             # renovate: image=ghcr.io/immich-app/immich-server
-            tag: v2.4.0
+            tag: v2.4.1
           env:
             REDIS_HOSTNAME: redis-master.persistence
             IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
