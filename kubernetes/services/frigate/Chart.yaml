@@ -4,7 +4,7 @@ name: frigate
 version: 1.0.0
 # https://github.com/blakeblackshear/frigate/releases
 # renovate: image=ghcr.io/blakeblackshear/frigate
-appVersion: 0.16.3
+appVersion: 0.16.4
 
 dependencies:
   - name: common
