@@ -7,5 +7,5 @@ appVersion: v1.0.0
 
 dependencies:
 - name: traefik
-  version: 38.0.2
+  version: 39.0.2
   repository: https://helm.traefik.io/traefik
