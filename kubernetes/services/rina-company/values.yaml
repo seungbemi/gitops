@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/common-4.0.1/charts/library/common/values.yaml
+# https://github.com/bjw-s/helm-charts/blob/common-4.6.2/charts/library/common/values.yaml
+
+defaultPodOptions:
+  imagePullSecrets:
+    - name: rina-company-registry
+
+controllers:
+  main:
+    strategy: RollingUpdate
+    rollingUpdate:
+      unavailable: 1
+      surge: 0
+    containers:
+      main:
+        image:
+          repository: ghcr.io/seungbemi/rina-company
+          tag: "{{ .Chart.AppVersion }}"
+          pullPolicy: IfNotPresent
+        env:
+          TZ: "Europe/Helsinki"
+        envFrom:
+          - secretRef:
+              name: rina-company-secrets
+        resources:
+          requests:
+            cpu: 16m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+
+service:
+  main:
+    controller: main
+    ports:
+      http:
+        port: 3000

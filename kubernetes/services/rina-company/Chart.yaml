@@ -1,0 +1,12 @@
+apiVersion: v2
+description: Rina Company web service
+name: rina-company
+version: 1.0.0
+# https://github.com/seungbemi/rina-company/pkgs/container/rina-company
+# renovate: image=ghcr.io/seungbemi/rina-company
+appVersion: latest
+
+dependencies:
+  - name: common
+    repository: https://bjw-s-labs.github.io/helm-charts
+    version: 4.6.2
