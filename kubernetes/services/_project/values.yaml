@@ -54,6 +54,11 @@ apps:
     path: kubernetes/services/ollama
     sync: true
 
+  - name: rina-company
+    namespace: services
+    path: kubernetes/services/rina-company
+    sync: true
+
   - name: service-secrets
     namespace: services
     repoURL: git@github.com:seungbemi/gitops-secrets.git
