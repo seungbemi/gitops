@@ -35,3 +35,11 @@ service:
     ports:
       http:
         port: 3000
+
+persistence:
+  content:
+    type: configMap
+    name: rina-company-content
+    globalMounts:
+      - path: /app/page.yaml
+        subPath: page.yaml
