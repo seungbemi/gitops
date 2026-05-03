@@ -4,7 +4,7 @@ name: rina-company
 version: 1.0.0
 # https://github.com/seungbemi/rina-company/pkgs/container/rina-company
 # renovate: image=ghcr.io/seungbemi/rina-company
-appVersion: 0.0.4
+appVersion: 0.0.5
 
 dependencies:
   - name: common
