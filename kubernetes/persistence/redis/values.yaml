@@ -1,5 +1,9 @@
 # https://github.com/bitnami/charts/blob/redis/19.6.2/bitnami/redis/values.yaml
 redis:
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/redis
+    tag: 7.2.5-debian-12-r2
   auth:
     enabled: false
   architecture: standalone
@@ -13,4 +17,3 @@ redis:
       requests:
         memory: 64Mi
         cpu: 24m
-

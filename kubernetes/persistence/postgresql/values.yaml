@@ -27,5 +27,9 @@ postgresql:
         cpu: 50m
   metrics:
     enabled: true
+    image:
+      registry: docker.io
+      repository: prometheuscommunity/postgres-exporter
+      tag: v0.19.1
     serviceMonitor:
       enabled: true
