@@ -29,7 +29,7 @@ postgresql:
     enabled: true
     image:
       registry: docker.io
-      repository: prometheuscommunity/postgres-exporter
-      tag: v0.19.1
+      repository: bitnamilegacy/postgres-exporter
+      tag: 0.17.1-debian-12-r16
     serviceMonitor:
       enabled: true
