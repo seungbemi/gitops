@@ -7,12 +7,13 @@ immich:
         main:
           image:
             # renovate: image=ghcr.io/immich-app/immich-server
-            tag: v2.7.5
+            tag: v3.0.1
           env:
             REDIS_HOSTNAME: redis-master.persistence
             IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
             TZ: "Europe/Helsinki"
             IMMICH_LOG_LEVEL: "warn"
+            IMMICH_VERSION: "v3"
           envFrom:
             - secretRef:
                 name: immich-secrets
