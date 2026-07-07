@@ -1,6 +1,10 @@
 # https://github.com/bitnami/charts/blob/metallb/6.3.8/bitnami/metallb/values.yaml
 metallb:
   controller:
+    image:
+      registry: docker.io
+      repository: bitnamilegacy/metallb-controller
+      tag: 0.15.2-debian-12-r7
     resources:
       limits:
         cpu: 50m
@@ -9,6 +13,10 @@ metallb:
         cpu: 10m
         memory: 64Mi
   speaker:
+    image:
+      registry: docker.io
+      repository: bitnamilegacy/metallb-speaker
+      tag: 0.15.2-debian-12-r6
     resources:
       limits:
         cpu: 100m
