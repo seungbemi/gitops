@@ -3,7 +3,7 @@ postgresql:
   image:
     registry: ghcr.io
     repository: seungbemi/bitnami-postgres-pgvector-rs
-    tag: 14.18.0-migration
+    tag: 14.18.0-vchord1.1.1
   auth:
     database: homeassistant
     existingSecret: postgres-secrets
