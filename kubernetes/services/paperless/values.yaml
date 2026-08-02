@@ -22,9 +22,12 @@ controllers:
           USERMAP_UID: 1000
           USERMAP_GID: 1000
           PAPERLESS_TIME_ZONE: Europe/Helsinki
+          PAPERLESS_DBENGINE: postgresql
           PAPERLESS_DBHOST: postgresql.persistence
           PAPERLESS_PORT: 8000
-          PAPERLESS_CONSUMER_POLLING: 300
+          PAPERLESS_CONSUMER_POLLING_INTERVAL: 300
+          # Preserve the pre-v3 behavior of rejecting duplicate documents.
+          PAPERLESS_CONSUMER_DELETE_DUPLICATES: true
         envFrom:
           - secretRef:
               name: paperless-secrets
