@@ -1,0 +1,19 @@
+profile:
+  # Enable only after the runtime Secret exists and both users'
+  # numeric Telegram IDs have been set.
+  enabled: false
+  name: rina
+  runtimeSecretName: hermes-rina-runtime
+  telegram:
+    allowedUserIds: []
+    adminUserIds: []
+    regularUserCommands: [status, history]
+  kubernetes:
+    scope: rina-company
+
+browser:
+  enabled: false
+  allowedHosts: hermes-browser-rina.services.svc.cluster.local,hermes-browser-rina
+
+knowledgeBase:
+  enabled: false

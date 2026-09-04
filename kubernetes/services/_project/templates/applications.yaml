@@ -16,19 +16,19 @@ spec:
   project: services
   source:
     path: {{ .path }}
-    {{- if .repoURL }}
-    repoURL: {{ .repoURL }}
-    {{- else }}
-    repoURL: https://github.com/seungbemi/gitops.git
-    {{- end }}
-    {{- if .targetRevision }}
-    targetRevision: {{ .targetRevision }}
-    {{- else }}
-    targetRevision: HEAD
-    {{- end }}
-    {{- if .skipCrds }}
+    repoURL: {{ .repoURL | default "https://github.com/seungbemi/gitops.git" }}
+    targetRevision: {{ .targetRevision | default "HEAD" }}
+    {{- if or .skipCrds .valueFiles }}
     helm:
+      {{- if .valueFiles }}
+      valueFiles:
+        {{- range .valueFiles }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      {{- if .skipCrds }}
       skipCrds: true
+      {{- end }}
     {{- end }}
   {{- if and .sync (eq .sync true) }}
   syncPolicy:

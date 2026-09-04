@@ -1,0 +1,31 @@
+{{- if .Values.profile.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-{{ .Values.profile.name }}-environment
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "hermes.labels" . | nindent 4 }}
+data:
+  BROWSER_MCP_URL: {{ printf "http://hermes-browser-%s.%s.svc.cluster.local:8931/mcp" .Values.profile.name .Release.Namespace | quote }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hermes-{{ .Values.profile.name }}-kubernetes-api
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: hermes-agent
+      hermes-profile: {{ .Values.profile.name | quote }}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.kubernetes.apiServiceCidr | quote }}
+      ports:
+        - protocol: TCP
+          port: 443
+{{- end }}

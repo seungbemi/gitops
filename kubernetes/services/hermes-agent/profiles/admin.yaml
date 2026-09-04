@@ -1,0 +1,18 @@
+profile:
+  # Enable only after the runtime Secret exists and the numeric
+  # Telegram IDs below have been set.
+  enabled: false
+  name: admin
+  runtimeSecretName: hermes-admin-runtime
+  telegram:
+    allowedUserIds: []
+    adminUserIds: []
+  kubernetes:
+    scope: cluster
+
+browser:
+  enabled: false
+  allowedHosts: hermes-browser-admin.services.svc.cluster.local,hermes-browser-admin
+
+knowledgeBase:
+  enabled: false

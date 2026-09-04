@@ -1,0 +1,125 @@
+{{- if .Values.profile.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-{{ .Values.profile.name }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "hermes.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    model:
+      provider: openrouter
+      default: {{ .Values.model.main | quote }}
+      persist_switch_by_default: false
+    provider_routing:
+      sort: price
+      require_parameters: true
+      data_collection: deny
+    auxiliary:
+      compression:
+        provider: openrouter
+        model: {{ .Values.model.auxiliary | quote }}
+      vision:
+        provider: openrouter
+        model: {{ .Values.model.auxiliary | quote }}
+    agent:
+      max_turns: 30
+      disabled_toolsets:
+        - terminal
+        - file
+        - code_execution
+        - browser
+        - computer_use
+        - delegation
+        - cronjob
+        - skills
+        - kanban
+        - homeassistant
+    platform_toolsets:
+      telegram:
+        - clarify
+        - session_search
+        - mcp-kubernetes
+        {{- if .Values.browser.enabled }}
+        - mcp-browser-read
+        {{- end }}
+        {{- if .Values.knowledgeBase.enabled }}
+        - mcp-knowledge-base
+        {{- end }}
+    approvals:
+      mode: manual
+      timeout: 600
+      cron_mode: deny
+      single_query_mode: deny
+      unattended_mode: deny
+      mcp_reload_confirm: true
+      destructive_slash_confirm: true
+    security:
+      redact_secrets: true
+    unauthorized_dm_behavior: ignore
+    updates:
+      pre_update_backup: "off"
+    gateway:
+      platforms:
+        telegram:
+          extra:
+            allow_from:
+              {{- range .Values.profile.telegram.allowedUserIds }}
+              - {{ toString . | quote }}
+              {{- end }}
+            allow_admin_from:
+              {{- range .Values.profile.telegram.adminUserIds }}
+              - {{ toString . | quote }}
+              {{- end }}
+            group_allow_from: []
+            group_allow_admin_from: []
+            user_allowed_commands:
+              {{- range (.Values.profile.telegram.regularUserCommands | default (list "status" "history")) }}
+              - {{ . | quote }}
+              {{- end }}
+    mcp_servers:
+      kubernetes:
+        url: http://127.0.0.1:8080/mcp
+        enabled: true
+        protocol: stateless
+        # The server process is pinned, runs with --read-only, and is also
+        # constrained by RBAC, so all exposed operations are safe to auto-run.
+        trust: full
+        supports_parallel_tool_calls: false
+        tools:
+          resources: false
+          prompts: false
+      {{- if .Values.browser.enabled }}
+      browser-read:
+        url: ${BROWSER_MCP_URL}
+        enabled: true
+        trust: full
+        supports_parallel_tool_calls: false
+        tools:
+          include:
+            - browser_close
+            - browser_console_messages
+            - browser_navigate
+            - browser_navigate_back
+            - browser_network_requests
+            - browser_snapshot
+            - browser_take_screenshot
+            - browser_wait_for
+          resources: false
+          prompts: false
+      {{- end }}
+      {{- if .Values.knowledgeBase.enabled }}
+      knowledge-base:
+        url: {{ .Values.knowledgeBase.mcpUrl | quote }}
+        enabled: true
+        protocol: stateless
+        # The policy gateway implements exact-payload approval and owns the
+        # Wiki.js token. Hermes never connects to Wiki.js with credentials.
+        trust: full
+        supports_parallel_tool_calls: false
+        tools:
+          resources: false
+          prompts: false
+      {{- end }}
+{{- end }}

@@ -1,0 +1,60 @@
+{{- define "hermes.hardcodedValues" -}}
+global:
+  nameOverride: hermes-{{ .Values.profile.name }}
+  createDefaultServiceAccount: false
+controllers:
+  main:
+    forceRename: hermes-{{ .Values.profile.name }}
+    serviceAccount:
+      name: hermes-{{ .Values.profile.name }}
+    labels:
+      app.kubernetes.io/name: hermes-agent
+      hermes-profile: {{ .Values.profile.name | quote }}
+    pod:
+      labels:
+        app.kubernetes.io/name: hermes-agent
+        hermes-profile: {{ .Values.profile.name | quote }}
+  browser:
+    enabled: {{ .Values.browser.enabled }}
+    forceRename: hermes-browser-{{ .Values.profile.name }}
+    labels:
+      app.kubernetes.io/name: hermes-browser
+      hermes-profile: {{ .Values.profile.name | quote }}
+    pod:
+      labels:
+        app.kubernetes.io/name: hermes-browser
+        hermes-profile: {{ .Values.profile.name | quote }}
+    containers:
+      browser:
+        args:
+          - --port=8931
+          - --host=0.0.0.0
+          - --allowed-hosts={{ .Values.browser.allowedHosts }}
+          - --blocked-origins=https://mail.google.com;http://mail.google.com;https://calendar.google.com;http://calendar.google.com;https://accounts.google.com;http://accounts.google.com;https://myaccount.google.com;http://myaccount.google.com;https://passwords.google.com;http://passwords.google.com;https://payments.google.com;http://payments.google.com
+          - --block-service-workers
+          - --shared-browser-context
+          - --user-data-dir=/profile
+          - --output-dir=/tmp/playwright-output
+          - --output-max-size=52428800
+          - --image-responses=allow
+service:
+  browser:
+    enabled: {{ .Values.browser.enabled }}
+    forceRename: hermes-browser-{{ .Values.profile.name }}
+persistence:
+  data:
+    forceRename: hermes-{{ .Values.profile.name }}-data
+  browser-profile:
+    enabled: {{ .Values.browser.enabled }}
+    forceRename: hermes-browser-{{ .Values.profile.name }}-profile
+  browser-shm:
+    enabled: {{ .Values.browser.enabled }}
+  browser-output:
+    enabled: {{ .Values.browser.enabled }}
+{{- end -}}
+{{- if .Values.profile.enabled }}
+{{- include "hermes.validateProfile" . }}
+{{- include "bjw-s.common.loader.init" . }}
+{{- $_ := mergeOverwrite .Values (include "hermes.hardcodedValues" . | fromYaml) -}}
+{{ include "bjw-s.common.loader.generate" . }}
+{{- end }}
