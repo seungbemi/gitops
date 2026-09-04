@@ -1,0 +1,12 @@
+apiVersion: v2
+name: wikijs
+description: Human-facing knowledge base used as the canonical Hermes memory store
+type: application
+version: 1.0.0
+# renovate: image=ghcr.io/requarks/wiki
+appVersion: 2.5.314
+
+dependencies:
+  - name: common
+    repository: https://bjw-s-labs.github.io/helm-charts
+    version: 5.1.0

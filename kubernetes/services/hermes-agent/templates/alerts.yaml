@@ -1,0 +1,43 @@
+{{- if and .Values.profile.enabled .Values.monitoring.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: hermes-{{ .Values.profile.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: hermes-agent
+spec:
+  groups:
+    - name: hermes-{{ .Values.profile.name }}
+      rules:
+        - alert: HermesDeploymentUnavailable
+          expr: kube_deployment_status_replicas_available{namespace="services",deployment="hermes-{{ .Values.profile.name }}"} < 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes profile {{ `{{ $labels.deployment }}` }} is unavailable"
+        {{- if .Values.browser.enabled }}
+        - alert: HermesBrowserUnavailable
+          expr: kube_deployment_status_replicas_available{namespace="services",deployment="hermes-browser-{{ .Values.profile.name }}"} < 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes browser {{ `{{ $labels.deployment }}` }} is unavailable"
+        {{- end }}
+        - alert: HermesPersistentVolumeClaimPending
+          expr: kube_persistentvolumeclaim_status_phase{namespace="services",persistentvolumeclaim=~"hermes(-browser)?-{{ .Values.profile.name }}.*",phase="Pending"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes PVC {{ `{{ $labels.persistentvolumeclaim }}` }} is pending"
+        - alert: HermesPersistentVolumeClaimFilling
+          expr: (kubelet_volume_stats_available_bytes{namespace="services",persistentvolumeclaim=~"hermes(-browser)?-{{ .Values.profile.name }}.*"} / kubelet_volume_stats_capacity_bytes{namespace="services",persistentvolumeclaim=~"hermes(-browser)?-{{ .Values.profile.name }}.*"}) < 0.15
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes PVC {{ `{{ $labels.persistentvolumeclaim }}` }} has less than 15% free"
+{{- end }}

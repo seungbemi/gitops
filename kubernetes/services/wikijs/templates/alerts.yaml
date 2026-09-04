@@ -1,0 +1,25 @@
+{{- if and .Values.wikijs.enabled .Values.monitoring.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: wikijs
+  namespace: {{ .Release.Namespace }}
+spec:
+  groups:
+    - name: wikijs
+      rules:
+        - alert: WikiJsUnavailable
+          expr: kube_deployment_status_replicas_available{namespace="services", deployment="wikijs"} < 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Wiki.js knowledge base is unavailable
+        - alert: WikiJsPersistentVolumeFillingUp
+          expr: kubelet_volume_stats_available_bytes{namespace="services", persistentvolumeclaim="wikijs"} / kubelet_volume_stats_capacity_bytes{namespace="services", persistentvolumeclaim="wikijs"} < 0.15
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: Wiki.js data storage has less than 15% free space
+{{- end }}

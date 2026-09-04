@@ -1,0 +1,11 @@
+Hermes is fail-closed by default. No bot is deployed until a profile is enabled.
+
+Before enabling a profile:
+1. Create its runtime Secret with OPENROUTER_API_KEY and TELEGRAM_BOT_TOKEN in
+   the private GitOps repository.
+2. Set allowedUserIds and adminUserIds to numeric Telegram IDs.
+3. Enforce the matching monthly limit on that OpenRouter key.
+4. If memory is enabled, create the memory Secret containing key `token`.
+5. Enable the browser only after reviewing the NetworkPolicy assumptions for this cluster.
+
+Google and GitHub remain disabled until the credential gateway image is built and audited.

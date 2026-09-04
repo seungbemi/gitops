@@ -1,0 +1,11 @@
+{{- if and .Values.profile.enabled (eq .Values.profile.name "rina") }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rina-company
+  labels:
+    app.kubernetes.io/part-of: rina-company
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+{{- end }}

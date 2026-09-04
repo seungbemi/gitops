@@ -1,0 +1,11 @@
+apiVersion: v2
+name: hermes-agent
+description: Two isolated, fail-closed Hermes Agent profiles for Telegram
+type: application
+version: 0.1.0
+appVersion: "v2026.8.31"
+
+dependencies:
+  - name: common
+    repository: https://bjw-s-labs.github.io/helm-charts
+    version: 5.1.0

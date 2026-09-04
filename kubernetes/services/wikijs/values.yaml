@@ -1,0 +1,109 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-5.1.0/charts/library/common/values.schema.json
+
+# Wiki.js starts in setup mode on an empty database. Create the initial local
+# administrator through the private ingress before creating any other account.
+wikijs:
+  enabled: true
+
+controllers:
+  main:
+    type: deployment
+    strategy: Recreate
+    replicas: 1
+    pod:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    containers:
+      main:
+        image:
+          repository: ghcr.io/requarks/wiki
+          tag: "{{ .Chart.AppVersion }}"
+          digest: sha256:68f0d1848261ae76492ba358e30a96a76fed5d97a3fff381656082bf90f70d7e
+          pullPolicy: IfNotPresent
+        env:
+          DB_TYPE: postgres
+          DB_HOST: postgresql.persistence.svc.cluster.local
+          DB_PORT: "5432"
+          DB_USER: wikijs
+          DB_NAME: wikijs
+          DB_SSL: "false"
+          HA_ACTIVE: "false"
+          LOG_LEVEL: info
+          LOG_FORMAT: json
+          TZ: Europe/Helsinki
+          DB_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: wikijs-secrets
+                key: DB_PASS
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /healthz
+                port: 3000
+              initialDelaySeconds: 30
+              periodSeconds: 30
+              timeoutSeconds: 5
+              failureThreshold: 3
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /healthz
+                port: 3000
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 6
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /healthz
+                port: 3000
+              periodSeconds: 5
+              timeoutSeconds: 5
+              failureThreshold: 60
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            memory: 1Gi
+
+service:
+  main:
+    controller: main
+    ports:
+      http:
+        port: 3000
+
+persistence:
+  data:
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    storageClass: ceph-block
+    size: 5Gi
+    globalMounts:
+      - path: /wiki/data
+  tmp:
+    type: emptyDir
+    globalMounts:
+      - path: /tmp
+
+monitoring:
+  prometheusRule:
+    enabled: true
