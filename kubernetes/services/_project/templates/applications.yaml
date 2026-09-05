@@ -14,6 +14,27 @@ spec:
     server: https://kubernetes.default.svc
     {{- end }}
   project: services
+  {{- if .valueSources }}
+  sources:
+    - path: {{ .path }}
+      repoURL: {{ .repoURL | default "https://github.com/seungbemi/gitops.git" }}
+      targetRevision: {{ .targetRevision | default "HEAD" }}
+      helm:
+        {{- if .valueFiles }}
+        valueFiles:
+          {{- range .valueFiles }}
+          - {{ . | quote }}
+          {{- end }}
+        {{- end }}
+        {{- if .skipCrds }}
+        skipCrds: true
+        {{- end }}
+    {{- range .valueSources }}
+    - repoURL: {{ .repoURL }}
+      targetRevision: {{ .targetRevision | default "HEAD" }}
+      ref: {{ .ref }}
+    {{- end }}
+  {{- else }}
   source:
     path: {{ .path }}
     repoURL: {{ .repoURL | default "https://github.com/seungbemi/gitops.git" }}
@@ -30,6 +51,7 @@ spec:
       skipCrds: true
       {{- end }}
     {{- end }}
+  {{- end }}
   {{- if and .sync (eq .sync true) }}
   syncPolicy:
     {{- if .syncOptions }}

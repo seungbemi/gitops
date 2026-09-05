@@ -75,6 +75,11 @@ apps:
     path: kubernetes/services/hermes-agent
     valueFiles:
       - profiles/admin.yaml
+      - $private/kubernetes/services/hermes-agent/profiles/admin.yaml
+    valueSources:
+      - repoURL: git@github.com:seungbemi/gitops-secrets.git
+        targetRevision: HEAD
+        ref: private
     sync: true
 
   - name: hermes-rina
@@ -82,6 +87,11 @@ apps:
     path: kubernetes/services/hermes-agent
     valueFiles:
       - profiles/rina.yaml
+      - $private/kubernetes/services/hermes-agent/profiles/rina.yaml
+    valueSources:
+      - repoURL: git@github.com:seungbemi/gitops-secrets.git
+        targetRevision: HEAD
+        ref: private
     sync: true
 
   - name: service-secrets

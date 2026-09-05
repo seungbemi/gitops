@@ -1,10 +1,11 @@
 profile:
-  # Enable only after the runtime Secret exists and both users'
-  # numeric Telegram IDs have been set.
+  # Enable only after the runtime Secret exists and the private Telegram
+  # identity values have been set in gitops-secrets.
   enabled: false
   name: rina
   runtimeSecretName: hermes-rina-runtime
   telegram:
+    # Overridden by $private/kubernetes/services/hermes-agent/profiles/rina.yaml.
     allowedUserIds: []
     adminUserIds: []
     regularUserCommands: [status, history]

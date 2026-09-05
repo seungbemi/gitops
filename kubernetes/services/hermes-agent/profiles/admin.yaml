@@ -1,10 +1,11 @@
 profile:
-  # Enable only after the runtime Secret exists and the numeric
-  # Telegram IDs below have been set.
+  # Enable only after the runtime Secret exists and the private Telegram
+  # identity values have been set in gitops-secrets.
   enabled: false
   name: admin
   runtimeSecretName: hermes-admin-runtime
   telegram:
+    # Overridden by $private/kubernetes/services/hermes-agent/profiles/admin.yaml.
     allowedUserIds: []
     adminUserIds: []
   kubernetes:

@@ -59,7 +59,8 @@ explicit `secretKeyRef` entries:
 - `OPENROUTER_API_KEY`
 - `TELEGRAM_BOT_TOKEN`
 
-The Telegram allowlist is supplied through the release's profile values; group
+The Telegram allowlist is supplied through a private Helm values source in
+`gitops-secrets`; the public profile intentionally contains empty arrays. Group
 access is always empty. Admin IDs must also be included in the allowlist.
 
 Each release generates a `hermes-<profile>-environment` ConfigMap containing
