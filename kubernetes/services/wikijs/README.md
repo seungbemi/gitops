@@ -27,7 +27,9 @@ must not be treated as a database backup.
 
 The database bootstrap is deliberately separate from PostgreSQL `initdb`:
 `initdb` scripts do not rerun against an existing volume. The bootstrap Job is
-idempotent and creates only the non-superuser `wikijs` role and database.
+idempotent and creates only the non-superuser `wikijs` role and database. To
+rerun it after a password rotation, update both private Secret copies and bump
+`wikijsBootstrap.revision` in the PostgreSQL values.
 
 ## Human page permissions
 

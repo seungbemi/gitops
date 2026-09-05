@@ -1,4 +1,16 @@
 {{- if .Values.wikijsBootstrap.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wikijs-bootstrap-marker
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: wikijs-database-bootstrap
+data:
+  # Bump this value when the bootstrap hook must rerun, such as after rotating
+  # the database password in both private Secrets.
+  revision: {{ .Values.wikijsBootstrap.revision | quote }}
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
