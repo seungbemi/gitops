@@ -12,6 +12,11 @@ trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disab
 
 helm lint "$chart_dir"
 
+if grep -Fq 'app.kubernetes.io/name:' "$chart_dir/templates/common.yaml"; then
+  echo "common controller values must not override selector-owned name labels" >&2
+  exit 1
+fi
+
 helm template hermes-disabled "$chart_dir" >"$disabled"
 if grep -Eq '^kind: (Deployment|ServiceAccount|PersistentVolumeClaim)$' "$disabled"; then
   echo "disabled chart rendered a workload" >&2

@@ -17,7 +17,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: hermes-agent
+      app.kubernetes.io/controller: main
       hermes-profile: {{ .Values.profile.name | quote }}
   policyTypes:
     - Egress

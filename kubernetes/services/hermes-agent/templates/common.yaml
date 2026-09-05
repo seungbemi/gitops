@@ -8,21 +8,17 @@ controllers:
     serviceAccount:
       name: hermes-{{ .Values.profile.name }}
     labels:
-      app.kubernetes.io/name: hermes-agent
       hermes-profile: {{ .Values.profile.name | quote }}
     pod:
       labels:
-        app.kubernetes.io/name: hermes-agent
         hermes-profile: {{ .Values.profile.name | quote }}
   browser:
     enabled: {{ .Values.browser.enabled }}
     forceRename: hermes-browser-{{ .Values.profile.name }}
     labels:
-      app.kubernetes.io/name: hermes-browser
       hermes-profile: {{ .Values.profile.name | quote }}
     pod:
       labels:
-        app.kubernetes.io/name: hermes-browser
         hermes-profile: {{ .Values.profile.name | quote }}
     containers:
       browser:
