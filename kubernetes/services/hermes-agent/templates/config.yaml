@@ -8,6 +8,7 @@ metadata:
     {{- include "hermes.labels" . | nindent 4 }}
 data:
   config.yaml: |
+    _config_version: 12
     model:
       provider: openrouter
       default: {{ .Values.model.main | quote }}
