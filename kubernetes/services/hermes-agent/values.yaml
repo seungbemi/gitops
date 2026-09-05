@@ -14,8 +14,13 @@ profile:
     scope: ""
 
 model:
-  main: "~anthropic/claude-sonnet-latest"
+  main: openai/gpt-5.6-luna
   auxiliary: google/gemini-2.5-flash
+
+agent:
+  # Bound both spend and runaway tool loops. Expensive or complex work can use
+  # a stronger model explicitly for a single turn or session.
+  maxTurns: 15
 
 browser:
   enabled: false
