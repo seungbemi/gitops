@@ -25,7 +25,7 @@ data:
         provider: openrouter
         model: {{ .Values.model.auxiliary | quote }}
     agent:
-      max_turns: 30
+      max_turns: {{ .Values.agent.maxTurns }}
       disabled_toolsets:
         - terminal
         - file
