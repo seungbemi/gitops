@@ -24,8 +24,13 @@ grep -Fq 'name: wikijs-secrets' "$enabled"
 grep -Fq 'value: postgresql.persistence.svc.cluster.local' "$enabled"
 grep -Fq 'value: postgres' "$enabled"
 grep -Fq 'path: /healthz' "$enabled"
-grep -Fq 'storageClassName: "ceph-block"' "$enabled"
+grep -Fq 'claimName: wikijs-data' "$enabled"
 grep -Fq 'kubernetes.io/metadata.name: persistence' "$enabled"
+
+if grep -Eq 'diskstation|volume1|^[[:space:]]+nfs:' "$enabled"; then
+  echo "Wiki.js NFS endpoint leaked into the public chart" >&2
+  exit 1
+fi
 
 if grep -Fiq 'outline' "$enabled"; then
   echo "stale Outline reference found in rendered Wiki.js chart" >&2

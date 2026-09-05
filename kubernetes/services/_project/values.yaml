@@ -59,6 +59,12 @@ apps:
     path: kubernetes/services/rina-company
     sync: true
 
+  - name: wikijs-storage
+    namespace: services
+    repoURL: git@github.com:seungbemi/gitops-secrets.git
+    path: kubernetes/services/wikijs-storage
+    sync: true
+
   - name: wikijs
     namespace: services
     path: kubernetes/services/wikijs

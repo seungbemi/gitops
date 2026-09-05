@@ -94,9 +94,7 @@ service:
 persistence:
   data:
     type: persistentVolumeClaim
-    accessMode: ReadWriteOnce
-    storageClass: ceph-block
-    size: 5Gi
+    existingClaim: wikijs-data
     globalMounts:
       - path: /wiki/data
   tmp:
