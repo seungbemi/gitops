@@ -1,9 +1,11 @@
 # Wiki.js
 
-Wiki.js is the human-facing, canonical knowledge base for Hermes. It uses the
-existing PostgreSQL service in `persistence` and keeps writable application
-data on a Ceph PVC. Human users sign in with local accounts; no Google or OIDC
-provider is required.
+Wiki.js is the human-facing, canonical knowledge base for Hermes. Page content,
+users, permissions, and history live in the existing PostgreSQL service. The
+writable cache and temporary-content directory uses the NFS-backed
+`wikijs-data` claim defined in the private GitOps repository; no Ceph volume or
+NFS endpoint appears here. Human users sign in with local accounts, so no
+Google or OIDC provider is required.
 
 ## Activation
 
@@ -11,11 +13,17 @@ provider is required.
    `wikijs-database-bootstrap` and `wikijs-secrets` Secrets.
 2. Enable `wikijsBootstrap` in the PostgreSQL chart and wait for the
    `wikijs-database-bootstrap` Argo hook to complete.
-3. Deploy this chart, visit the private knowledge route, and complete Wiki.js
+3. Create the NFS directory configured by the private `wikijs-storage` chart
+   and make it writable by UID/GID `1000` before deployment.
+4. Deploy this chart, visit the private knowledge route, and complete Wiki.js
    setup with Sebe's local administrator account.
-4. Disable public registration and remove all page access from Guests.
-5. Create the top-level pages `sebe`, `rina`, and `shared`.
-6. Create Rina's local human account and the groups described below.
+5. Disable public registration and remove all page access from Guests.
+6. Create the top-level pages `sebe`, `rina`, and `shared`.
+7. Create Rina's local human account and the groups described below.
+
+PostgreSQL backups are the authoritative Wiki.js backup. Include the NFS folder
+only to preserve transient files and any future filesystem storage module; it
+must not be treated as a database backup.
 
 The database bootstrap is deliberately separate from PostgreSQL `initdb`:
 `initdb` scripts do not rerun against an existing volume. The bootstrap Job is
