@@ -29,6 +29,10 @@ knowledgeBase:
 
 kubernetes:
   apiServiceCidr: 10.96.0.1/32
+  # Some CNIs enforce NetworkPolicy after Service DNAT. Supply the actual API
+  # endpoint CIDRs through the private per-profile values when that applies.
+  apiEndpointCidrs: []
+  apiEndpointPort: 6443
 
 monitoring:
   prometheusRule:
@@ -57,6 +61,27 @@ controllers:
       securityContext:
         fsGroup: 10000
         fsGroupChangePolicy: OnRootMismatch
+    initContainers:
+      bootstrap-config:
+        image:
+          repository: nousresearch/hermes-agent
+          tag: v2026.8.31
+          digest: sha256:64923faeae267792bf9bf87fe3b4c4869e35004e360c7df01730ad801b74d524
+          pullPolicy: IfNotPresent
+        command: ["/bin/sh", "-c"]
+        args:
+          - >-
+            cp /opt/bootstrap/config.yaml /opt/data/config.yaml &&
+            cp /opt/bootstrap/SOUL.md /opt/data/SOUL.md &&
+            chown 10000:10000 /opt/data/config.yaml /opt/data/SOUL.md &&
+            chmod 0600 /opt/data/config.yaml &&
+            chmod 0644 /opt/data/SOUL.md
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+          capabilities:
+            drop: ["ALL"]
+            add: ["CHOWN", "DAC_OVERRIDE", "FOWNER"]
     containers:
       hermes:
         image:
@@ -91,7 +116,10 @@ controllers:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
-            add: ["CHOWN", "SETGID", "SETUID"]
+            # s6 starts as root, changes /opt/data ownership to hermes, then
+            # still needs to traverse and control the hermes-owned paths while
+            # dropping supervised services to UID/GID 10000.
+            add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
         resources:
           requests:
             cpu: 100m
@@ -171,6 +199,8 @@ persistence:
       main:
         hermes:
           - path: /opt/data
+        bootstrap-config:
+          - path: /opt/data
   config:
     type: configMap
     name: 'hermes-{{ .Values.profile.name }}-config'
@@ -179,8 +209,8 @@ persistence:
         path: config.yaml
     advancedMounts:
       main:
-        hermes:
-          - path: /opt/data/config.yaml
+        bootstrap-config:
+          - path: /opt/bootstrap/config.yaml
             subPath: config.yaml
             readOnly: true
   agent-profile:
@@ -191,8 +221,8 @@ persistence:
         path: SOUL.md
     advancedMounts:
       main:
-        hermes:
-          - path: /opt/data/SOUL.md
+        bootstrap-config:
+          - path: /opt/bootstrap/SOUL.md
             subPath: SOUL.md
             readOnly: true
   kubernetes-token:
