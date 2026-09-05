@@ -33,16 +33,3 @@ postgresql:
       tag: 0.17.1-debian-12-r16
     serviceMonitor:
       enabled: true
-
-# Enable only after the wikijs-database-bootstrap Secret has been populated.
-# This is a separate idempotent hook because initdb scripts do not rerun for an
-# existing PostgreSQL data volume.
-wikijsBootstrap:
-  enabled: true
-  # Changing this marker creates an ordinary Argo diff so the PostSync hook
-  # runs again. Increment it after rotating the password in both Secrets.
-  revision: "1"
-  image:
-    repository: ghcr.io/seungbemi/bitnami-postgres-pgvector-rs
-    tag: 14.18.0-vchord1.1.1
-    digest: sha256:e1e6f370931976b060fd76ff2ddc6fd9c3b99da1f2f59d707d3b5abb13e6e437
