@@ -139,7 +139,7 @@ controllers:
       browser:
         image:
           repository: mcr.microsoft.com/playwright/mcp
-          tag: v0.0.77
+          tag: v0.0.80
           digest: sha256:dd64332608905c527ff0b34494e7671711693057191ea8ee10e674e4d621f23b
           pullPolicy: IfNotPresent
         securityContext:
