@@ -9,10 +9,10 @@ Google or OIDC provider is required.
 
 ## Activation
 
-1. Put the same strong database password in the private
-   `wikijs-database-bootstrap` and `wikijs-secrets` Secrets.
-2. Enable `wikijsBootstrap` in the PostgreSQL chart and wait for the
-   `wikijs-database-bootstrap` Argo hook to complete.
+1. Put the same strong database password in the private `wikijs-secrets`
+   Secret and the Wiki.js section of the private PostgreSQL init script.
+2. On an existing PostgreSQL volume, run the documented idempotent SQL once in
+   the PostgreSQL pod. A clean PostgreSQL bootstrap runs it automatically.
 3. Create the NFS directory configured by the private `wikijs-storage` chart
    and make it writable by UID/GID `1000` before deployment.
 4. Deploy this chart, visit the private knowledge route, and complete Wiki.js
@@ -25,11 +25,10 @@ PostgreSQL backups are the authoritative Wiki.js backup. Include the NFS folder
 only to preserve transient files and any future filesystem storage module; it
 must not be treated as a database backup.
 
-The database bootstrap is deliberately separate from PostgreSQL `initdb`:
-`initdb` scripts do not rerun against an existing volume. The bootstrap Job is
-idempotent and creates only the non-superuser `wikijs` role and database. To
-rerun it after a password rotation, update both private Secret copies and bump
-`wikijsBootstrap.revision` in the PostgreSQL values.
+PostgreSQL `initdb` scripts do not rerun against an existing volume. Database
+password rotations therefore require rerunning the documented idempotent SQL
+inside the PostgreSQL pod; changing the init script alone does not update a
+running database.
 
 ## Human page permissions
 
