@@ -13,6 +13,14 @@ app.kubernetes.io/component: agent
 hermes-profile: {{ .Values.profile.name | quote }}
 {{- end -}}
 
+{{- define "hermes.telegramId" -}}
+{{- if kindIs "float64" . -}}
+{{- printf "%.0f" . -}}
+{{- else -}}
+{{- toString . -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "hermes.validateProfile" -}}
 {{- if not (has .Values.profile.name (list "admin" "rina")) -}}
 {{- fail "profile.name must be admin or rina when enabled" -}}
@@ -39,18 +47,18 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- fail "browser.allowedHosts is required when browser is enabled" -}}
 {{- end -}}
 {{- range .Values.profile.telegram.allowedUserIds -}}
-{{- if not (regexMatch "^[0-9]+$" (toString .)) -}}
+{{- if not (regexMatch "^[0-9]+$" (include "hermes.telegramId" .)) -}}
 {{- fail "profile.telegram.allowedUserIds contains a non-numeric ID" -}}
 {{- end -}}
 {{- end -}}
 {{- range .Values.profile.telegram.adminUserIds -}}
-{{- if not (regexMatch "^[0-9]+$" (toString .)) -}}
+{{- if not (regexMatch "^[0-9]+$" (include "hermes.telegramId" .)) -}}
 {{- fail "profile.telegram.adminUserIds contains a non-numeric ID" -}}
 {{- end -}}
-{{- $adminId := toString . -}}
+{{- $adminId := include "hermes.telegramId" . -}}
 {{- $present := false -}}
 {{- range $.Values.profile.telegram.allowedUserIds -}}
-{{- if eq (toString .) $adminId -}}{{- $present = true -}}{{- end -}}
+{{- if eq (include "hermes.telegramId" .) $adminId -}}{{- $present = true -}}{{- end -}}
 {{- end -}}
 {{- if not $present -}}
 {{- fail (printf "administrator %s must also appear in allowedUserIds" $adminId) -}}

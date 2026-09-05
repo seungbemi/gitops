@@ -1,7 +1,7 @@
 profile:
   # Enable only after the runtime Secret exists and the private Telegram
   # identity values have been set in gitops-secrets.
-  enabled: false
+  enabled: true
   name: admin
   runtimeSecretName: hermes-admin-runtime
   telegram:

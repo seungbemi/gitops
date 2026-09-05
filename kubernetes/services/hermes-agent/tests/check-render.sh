@@ -7,7 +7,8 @@ admin_rendered="$(mktemp)"
 rina_rendered="$(mktemp)"
 invalid="$(mktemp)"
 disabled="$(mktemp)"
-trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled"' EXIT INT TERM
+numeric_ids="$(mktemp)"
+trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids"' EXIT INT TERM
 
 helm lint "$chart_dir"
 
@@ -45,6 +46,15 @@ helm template hermes-admin "$chart_dir" --namespace services \
   --set 'knowledgeBase.enabled=true' \
   --set 'credentialGateway.enabled=true' \
   >"$admin_rendered"
+
+# YAML parsers can load an unquoted Telegram ID as a float64. The chart must
+# preserve its integer representation instead of rendering scientific notation.
+helm template hermes-admin "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/admin.yaml" \
+  --set-json 'profile.telegram.allowedUserIds=[1234567890.0]' \
+  --set-json 'profile.telegram.adminUserIds=[1234567890.0]' \
+  >"$numeric_ids"
+grep -Fq -- '- "1234567890"' "$numeric_ids"
 
 helm template hermes-rina "$chart_dir" --namespace services \
   --values "$chart_dir/profiles/rina.yaml" \
