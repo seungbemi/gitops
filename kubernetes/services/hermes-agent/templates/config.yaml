@@ -66,11 +66,11 @@ data:
           extra:
             allow_from:
               {{- range .Values.profile.telegram.allowedUserIds }}
-              - {{ toString . | quote }}
+              - {{ include "hermes.telegramId" . | quote }}
               {{- end }}
             allow_admin_from:
               {{- range .Values.profile.telegram.adminUserIds }}
-              - {{ toString . | quote }}
+              - {{ include "hermes.telegramId" . | quote }}
               {{- end }}
             group_allow_from: []
             group_allow_admin_from: []
