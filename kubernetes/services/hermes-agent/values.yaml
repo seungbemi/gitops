@@ -37,8 +37,6 @@ monitoring:
 credentialGateway:
   enabled: false
   image: ""
-  google:
-    enabled: false
   github:
     enabled: false
 

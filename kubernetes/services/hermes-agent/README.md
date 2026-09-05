@@ -71,7 +71,7 @@ range.
 
 The pinned GitHub MCP HTTP server expects a bearer token on each MCP request.
 Putting that header in Hermes config would violate the requirement that Hermes
-never receives GitHub credentials. Google Workspace and Wiki.js have the same
+never receives GitHub credentials. Wiki.js has the same
 process-level credential problem. These integrations therefore remain
 fail-closed until a
 separately built, audited credential gateway can:
@@ -91,3 +91,24 @@ second boundary, not the only boundary.
 
 Do not enable `credentialGateway` merely by supplying an image name; add its
 Deployment, tests, and restricted egress policy in the same reviewed change.
+
+Google Workspace is intentionally out of scope for the initial deployment. No
+Google OAuth client, refresh token, Gmail tool, or Calendar tool should be added
+to either profile.
+
+## Activation phases
+
+1. **Base bot:** configure a separate OpenRouter key and Telegram bot token per
+   profile, set exact numeric Telegram IDs, and enable Telegram plus the
+   read-only Kubernetes MCP server. Wiki.js, GitHub, and browsers stay disabled.
+2. **Knowledge:** deploy the reviewed policy gateway, mount the profile-specific
+   Wiki.js token only into that gateway, then enable the knowledge-base MCP
+   endpoint. Reads are automatic; writes are staged and require approval.
+3. **Repositories:** add profile-specific fine-grained GitHub tokens to the
+   gateway. The admin token is limited to explicitly selected personal private
+   repositories; the Rina token is limited to the approved Rina source and
+   GitOps repositories. Changes use branches and pull requests, never direct
+   pushes to protected branches or merges.
+4. **Browser:** enable read-only public browsing only after the DNS-aware egress
+   proxy is in place. Interactive browser actions remain a separate reviewed
+   capability.
