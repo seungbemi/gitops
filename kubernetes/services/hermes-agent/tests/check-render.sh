@@ -84,6 +84,8 @@ done
 grep -Fq 'namespace: rina-company' "$rendered"
 grep -Fq 'trust: full' "$rendered"
 grep -Fq '_config_version: 39' "$rendered"
+grep -Fq 'checksum/hermes-config:' "$rendered"
+grep -Fq 'checksum/hermes-agent-profile:' "$rendered"
 grep -Fq 'The Wiki.js knowledge base is the canonical durable knowledge store.' "$rendered"
 grep -Fq 'url: "http://127.0.0.1:8090/knowledge/mcp"' "$rendered"
 grep -Fq 'only `sebe/**` and `shared/**`' "$admin_rendered"

@@ -10,6 +10,9 @@ controllers:
     labels:
       hermes-profile: {{ .Values.profile.name | quote }}
     pod:
+      annotations:
+        checksum/hermes-config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        checksum/hermes-agent-profile: {{ include (print $.Template.BasePath "/agent-profile.yaml") . | sha256sum }}
       labels:
         hermes-profile: {{ .Values.profile.name | quote }}
   browser:
