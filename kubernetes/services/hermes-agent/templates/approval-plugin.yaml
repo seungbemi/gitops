@@ -48,8 +48,9 @@ data:
         return str(body.get("message", "Decision recorded"))
 
     def register(ctx):
-        ctx.register_command("approve_action", handler=lambda args: _decide(args, "approve"),
+        # Hermes maps Telegram underscores to hyphens before plugin lookup.
+        ctx.register_command("approve-action", handler=lambda args: _decide(args, "approve"),
                              description="Approve one exact staged external action")
-        ctx.register_command("deny_action", handler=lambda args: _decide(args, "deny"),
+        ctx.register_command("deny-action", handler=lambda args: _decide(args, "deny"),
                              description="Deny one staged external action")
 {{- end }}
