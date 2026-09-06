@@ -19,7 +19,11 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: hermes-agent
+              app.kubernetes.io/controller: main
+            matchExpressions:
+              - key: hermes-profile
+                operator: In
+                values: [admin, rina]
       ports:
         - { protocol: TCP, port: 3000 }
   egress:
