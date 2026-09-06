@@ -43,8 +43,37 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if and .Values.knowledgeBase.enabled (not .Values.credentialGateway.enabled) -}}
 {{- fail "knowledgeBase.enabled requires credentialGateway.enabled" -}}
 {{- end -}}
+{{- if and .Values.knowledgeBase.enabled (not .Values.knowledgeBase.mcpUrl) -}}
+{{- fail "knowledgeBase.mcpUrl is required when the knowledge base is enabled" -}}
+{{- end -}}
+{{- if and .Values.browser.enabled (not .Values.credentialGateway.enabled) -}}
+{{- fail "browser.enabled requires credentialGateway.enabled" -}}
+{{- end -}}
+{{- if .Values.credentialGateway.enabled -}}
+{{- if not .Values.credentialGateway.image.digest -}}
+{{- fail "credentialGateway.image.digest is required when the gateway is enabled" -}}
+{{- end -}}
+{{- if not .Values.credentialGateway.wikiSecretName -}}
+{{- fail "credentialGateway.wikiSecretName is required when the gateway is enabled" -}}
+{{- end -}}
+{{- if not .Values.credentialGateway.approvalSecretName -}}
+{{- fail "credentialGateway.approvalSecretName is required when the gateway is enabled" -}}
+{{- end -}}
+{{- if not .Values.credentialGateway.wikiGraphqlUrl -}}
+{{- fail "credentialGateway.wikiGraphqlUrl is required when the gateway is enabled" -}}
+{{- end -}}
+{{- if eq (len .Values.credentialGateway.wikiAllowedPrefixes) 0 -}}
+{{- fail "credentialGateway.wikiAllowedPrefixes must not be empty when the gateway is enabled" -}}
+{{- end -}}
+{{- end -}}
 {{- if and .Values.browser.enabled (not .Values.browser.allowedHosts) -}}
 {{- fail "browser.allowedHosts is required when browser is enabled" -}}
+{{- end -}}
+{{- if and .Values.browser.enabled (not .Values.browser.mcpUrl) -}}
+{{- fail "browser.mcpUrl is required when browser is enabled" -}}
+{{- end -}}
+{{- if and .Values.browser.enabled (not .Values.browser.proxyUrl) -}}
+{{- fail "browser.proxyUrl is required when browser is enabled" -}}
 {{- end -}}
 {{- range .Values.profile.telegram.allowedUserIds -}}
 {{- if not (regexMatch "^[0-9]+$" (include "hermes.telegramId" .)) -}}

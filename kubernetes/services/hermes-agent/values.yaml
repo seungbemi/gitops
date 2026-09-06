@@ -25,12 +25,14 @@ agent:
 browser:
   enabled: false
   allowedHosts: ""
+  mcpUrl: ""
+  proxyUrl: ""
 
 knowledgeBase:
   enabled: false
   # The policy gateway owns the Wiki.js credential and exposes only the
   # reviewed knowledge-base tool contract on this loopback endpoint.
-  mcpUrl: http://127.0.0.1:8090/knowledge/mcp
+  mcpUrl: ""
 
 kubernetes:
   apiServiceCidr: 10.96.0.1/32
@@ -45,7 +47,14 @@ monitoring:
 
 credentialGateway:
   enabled: false
-  image: ""
+  image:
+    repository: ghcr.io/seungbemi/hermes-policy-gateway
+    tag: latest
+    digest: sha256:f79a8de496c97461d0fd8a215d5d2ede3a233f6b1b3171ea212cef85b48a2ae7
+  wikiSecretName: ""
+  approvalSecretName: ""
+  wikiAllowedPrefixes: []
+  wikiGraphqlUrl: ""
   github:
     enabled: false
 
@@ -78,7 +87,15 @@ controllers:
           - >-
             cp /opt/bootstrap/config.yaml /opt/data/config.yaml &&
             cp /opt/bootstrap/SOUL.md /opt/data/SOUL.md &&
+            if [ -d /opt/bootstrap/approval-plugin ]; then
+              mkdir -p /opt/data/plugins/approval-gateway &&
+              cp /opt/bootstrap/approval-plugin/plugin.yaml /opt/data/plugins/approval-gateway/plugin.yaml &&
+              cp /opt/bootstrap/approval-plugin/__init__.py /opt/data/plugins/approval-gateway/__init__.py;
+            fi &&
             chown 10000:10000 /opt/data/config.yaml /opt/data/SOUL.md &&
+            if [ -d /opt/data/plugins/approval-gateway ]; then
+              chown -R 10000:10000 /opt/data/plugins/approval-gateway;
+            fi &&
             chmod 0600 /opt/data/config.yaml &&
             chmod 0644 /opt/data/SOUL.md
         securityContext:
@@ -158,6 +175,47 @@ controllers:
             memory: 64Mi
           limits:
             memory: 256Mi
+      policy-gateway:
+        enabled: false
+        image:
+          repository: '{{ .Values.credentialGateway.image.repository }}'
+          tag: '{{ .Values.credentialGateway.image.tag }}'
+          digest: '{{ .Values.credentialGateway.image.digest }}'
+          pullPolicy: IfNotPresent
+        env:
+          - name: PROFILE
+            value: '{{ .Values.profile.name }}'
+          - name: LISTEN_ADDR
+            value: 0.0.0.0:8090
+          - name: PROXY_ADDR
+            value: 0.0.0.0:8081
+          - name: WIKIJS_GRAPHQL_URL
+            value: '{{ .Values.credentialGateway.wikiGraphqlUrl }}'
+          - name: WIKI_ALLOWED_PREFIXES
+            value: '{{ join "," .Values.credentialGateway.wikiAllowedPrefixes }}'
+          - name: WIKIJS_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.credentialGateway.wikiSecretName }}'
+                key: WIKIJS_API_TOKEN
+          - name: APPROVAL_HMAC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.credentialGateway.approvalSecretName }}'
+                key: APPROVAL_HMAC_KEY
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65532
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 20m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
   browser:
     type: deployment
     strategy: Recreate
@@ -193,6 +251,12 @@ service:
       mcp:
         port: 8931
         targetPort: 8931
+  gateway:
+    controller: main
+    ports:
+      proxy:
+        port: 8081
+        targetPort: 8081
 
 persistence:
   data:
@@ -229,6 +293,14 @@ persistence:
         bootstrap-config:
           - path: /opt/bootstrap/SOUL.md
             subPath: SOUL.md
+            readOnly: true
+  approval-plugin:
+    type: configMap
+    name: 'hermes-{{ .Values.profile.name }}-approval-plugin'
+    advancedMounts:
+      main:
+        bootstrap-config:
+          - path: /opt/bootstrap/approval-plugin
             readOnly: true
   kubernetes-token:
     type: custom

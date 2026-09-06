@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "hermes.labels" . | nindent 4 }}
 data:
-  BROWSER_MCP_URL: {{ printf "http://hermes-browser-%s.%s.svc.cluster.local:8931/mcp" .Values.profile.name .Release.Namespace | quote }}
+  BROWSER_MCP_URL: {{ .Values.browser.mcpUrl | quote }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

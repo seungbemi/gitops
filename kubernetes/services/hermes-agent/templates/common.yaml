@@ -13,8 +13,14 @@ controllers:
       annotations:
         checksum/hermes-config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         checksum/hermes-agent-profile: {{ include (print $.Template.BasePath "/agent-profile.yaml") . | sha256sum }}
+        {{- if .Values.credentialGateway.enabled }}
+        checksum/hermes-approval-plugin: {{ include (print $.Template.BasePath "/approval-plugin.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         hermes-profile: {{ .Values.profile.name | quote }}
+    containers:
+      policy-gateway:
+        enabled: {{ .Values.credentialGateway.enabled }}
   browser:
     enabled: {{ .Values.browser.enabled }}
     forceRename: hermes-browser-{{ .Values.profile.name }}
@@ -36,10 +42,16 @@ controllers:
           - --output-dir=/tmp/playwright-output
           - --output-max-size=52428800
           - --image-responses=allow
+          {{- if .Values.credentialGateway.enabled }}
+          - --proxy-server={{ .Values.browser.proxyUrl }}
+          {{- end }}
 service:
   browser:
     enabled: {{ .Values.browser.enabled }}
     forceRename: hermes-browser-{{ .Values.profile.name }}
+  gateway:
+    enabled: {{ and .Values.credentialGateway.enabled .Values.browser.enabled }}
+    forceRename: hermes-gateway-{{ .Values.profile.name }}
 persistence:
   data:
     forceRename: hermes-{{ .Values.profile.name }}-data
@@ -50,6 +62,8 @@ persistence:
     enabled: {{ .Values.browser.enabled }}
   browser-output:
     enabled: {{ .Values.browser.enabled }}
+  approval-plugin:
+    enabled: {{ .Values.credentialGateway.enabled }}
 {{- end -}}
 {{- if .Values.profile.enabled }}
 {{- include "hermes.validateProfile" . }}

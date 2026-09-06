@@ -10,7 +10,18 @@ spec:
       app.kubernetes.io/controller: main
       hermes-profile: {{ .Values.profile.name | quote }}
   policyTypes: [Ingress, Egress]
-  ingress: []
+  ingress:
+    {{- if and .Values.credentialGateway.enabled .Values.browser.enabled }}
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/controller: browser
+              hermes-profile: {{ .Values.profile.name | quote }}
+      ports:
+        - { protocol: TCP, port: 8081 }
+    {{- else }}
+    []
+    {{- end }}
   egress:
     - to:
         - namespaceSelector:
@@ -86,19 +97,14 @@ spec:
       ports:
         - { protocol: UDP, port: 53 }
         - { protocol: TCP, port: 53 }
+    {{- if .Values.credentialGateway.enabled }}
     - to:
-        - ipBlock:
-            cidr: 0.0.0.0/0
-            except:
-              - 10.0.0.0/8
-              - 100.64.0.0/10
-              - 127.0.0.0/8
-              - 169.254.0.0/16
-              - 172.16.0.0/12
-              - 192.168.0.0/16
-              - 224.0.0.0/4
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/controller: main
+              hermes-profile: {{ .Values.profile.name | quote }}
       ports:
-        - { protocol: TCP, port: 80 }
-        - { protocol: TCP, port: 443 }
+        - { protocol: TCP, port: 8081 }
+    {{- end }}
 {{- end }}
 {{- end }}

@@ -1,0 +1,55 @@
+{{- if and .Values.profile.enabled .Values.credentialGateway.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-{{ .Values.profile.name }}-approval-plugin
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "hermes.labels" . | nindent 4 }}
+data:
+  plugin.yaml: |
+    name: approval-gateway
+    version: 0.1.0
+    description: Exact-payload approval commands for the local policy gateway
+    author: seungbemi
+    kind: standalone
+    requires_env: []
+    provides_tools: []
+    provides_hooks: []
+  __init__.py: |
+    import json
+    import re
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+
+    _ACTION_ID = re.compile(r"^[A-Za-z0-9_-]{24}\.[A-Za-z0-9_-]{16}$")
+    _BASE_URL = "http://127.0.0.1:8090/approvals"
+
+    def _decide(raw_args, decision):
+        action_id = raw_args.strip()
+        if not _ACTION_ID.fullmatch(action_id):
+            return f"Usage: /{decision}_action <action-id>"
+        safe_id = urllib.parse.quote(action_id, safe=".-_")
+        request = urllib.request.Request(
+            f"{_BASE_URL}/{safe_id}/{decision}", data=b"", method="POST",
+            headers={"Accept": "application/json"})
+        try:
+            with urllib.request.urlopen(request, timeout=20) as response:
+                body = json.load(response)
+        except urllib.error.HTTPError as exc:
+            try:
+                body = json.load(exc)
+                return str(body.get("message", "Approval failed"))
+            except Exception:
+                return f"Approval failed with HTTP {exc.code}"
+        except Exception as exc:
+            return f"Approval gateway unavailable: {exc}"
+        return str(body.get("message", "Decision recorded"))
+
+    def register(ctx):
+        ctx.register_command("approve_action", handler=lambda args: _decide(args, "approve"),
+                             description="Approve one exact staged external action")
+        ctx.register_command("deny_action", handler=lambda args: _decide(args, "deny"),
+                             description="Deny one staged external action")
+{{- end }}

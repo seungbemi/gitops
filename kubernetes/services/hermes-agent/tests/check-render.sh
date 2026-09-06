@@ -48,8 +48,18 @@ helm template hermes-admin "$chart_dir" --namespace services \
   --set 'profile.telegram.allowedUserIds[0]=123456789' \
   --set 'profile.telegram.adminUserIds[0]=123456789' \
   --set 'browser.enabled=true' \
+  --set 'browser.allowedHosts=browser.internal' \
+  --set 'browser.mcpUrl=http://browser.internal/mcp' \
+  --set 'browser.proxyUrl=http://proxy.internal' \
   --set 'knowledgeBase.enabled=true' \
+  --set 'knowledgeBase.mcpUrl=http://gateway.internal/knowledge/mcp' \
   --set 'credentialGateway.enabled=true' \
+  --set 'credentialGateway.image.digest=sha256:test' \
+  --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
+  --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
+  --set 'credentialGateway.wikiAllowedPrefixes[0]=sebe' \
+  --set 'credentialGateway.wikiAllowedPrefixes[1]=shared' \
+  --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
   >"$admin_rendered"
 
 # YAML parsers can load an unquoted Telegram ID as a float64. The chart must
@@ -68,8 +78,18 @@ helm template hermes-rina "$chart_dir" --namespace services \
   --set 'profile.telegram.allowedUserIds[1]=123456789' \
   --set 'profile.telegram.adminUserIds[0]=123456789' \
   --set 'browser.enabled=true' \
+  --set 'browser.allowedHosts=browser.internal' \
+  --set 'browser.mcpUrl=http://browser.internal/mcp' \
+  --set 'browser.proxyUrl=http://proxy.internal' \
   --set 'knowledgeBase.enabled=true' \
+  --set 'knowledgeBase.mcpUrl=http://gateway.internal/knowledge/mcp' \
   --set 'credentialGateway.enabled=true' \
+  --set 'credentialGateway.image.digest=sha256:test' \
+  --set 'credentialGateway.wikiSecretName=hermes-rina-knowledge' \
+  --set 'credentialGateway.approvalSecretName=hermes-rina-approval' \
+  --set 'credentialGateway.wikiAllowedPrefixes[0]=rina' \
+  --set 'credentialGateway.wikiAllowedPrefixes[1]=shared' \
+  --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
   >"$rina_rendered"
 
 cat "$admin_rendered" "$rina_rendered" >"$rendered"
@@ -86,8 +106,9 @@ grep -Fq 'trust: full' "$rendered"
 grep -Fq '_config_version: 39' "$rendered"
 grep -Fq 'checksum/hermes-config:' "$rendered"
 grep -Fq 'checksum/hermes-agent-profile:' "$rendered"
+grep -Fq 'checksum/hermes-approval-plugin:' "$rendered"
 grep -Fq 'The Wiki.js knowledge base is the canonical durable knowledge store.' "$rendered"
-grep -Fq 'url: "http://127.0.0.1:8090/knowledge/mcp"' "$rendered"
+grep -Fq 'url: "http://gateway.internal/knowledge/mcp"' "$rendered"
 grep -Fq 'only `sebe/**` and `shared/**`' "$admin_rendered"
 grep -Fq 'only `rina/**` and `shared/**`' "$rina_rendered"
 grep -Fq 'group_allow_from: []' "$rendered"
@@ -95,11 +116,16 @@ grep -Fq 'name: hermes-admin-environment' "$rendered"
 grep -Fq 'url: ${BROWSER_MCP_URL}' "$rendered"
 grep -Fq 'name: hermes-admin-runtime' "$admin_rendered"
 grep -Fq 'name: hermes-rina-runtime' "$rina_rendered"
+grep -Fq 'name: hermes-admin-knowledge' "$admin_rendered"
+grep -Fq 'name: hermes-admin-approval' "$admin_rendered"
+grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"
+grep -Fq -- '--proxy-server=http://proxy.internal' "$admin_rendered"
+grep -Fq 'port: 8081' "$admin_rendered"
 if grep -Fq 'MEMORY_REPOSITORY' "$rendered"; then
   echo "legacy Git memory configuration found" >&2
   exit 1
 fi
-grep -Fq -- '--allowed-hosts=hermes-browser-admin.services.svc.cluster.local,hermes-browser-admin' "$admin_rendered"
+grep -Fq -- '--allowed-hosts=browser.internal' "$admin_rendered"
 grep -Fq 'cidr: "10.96.0.1/32"' "$admin_rendered"
 grep -Fq 'hermes-profile: admin' "$admin_rendered"
 grep -Fq 'hermes-profile: rina' "$rina_rendered"
