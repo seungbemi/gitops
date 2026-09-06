@@ -13,7 +13,14 @@ profile:
 
 browser:
   enabled: false
-  allowedHosts: hermes-browser-admin.services.svc.cluster.local,hermes-browser-admin
 
 knowledgeBase:
   enabled: false
+
+credentialGateway:
+  # Enable together with knowledgeBase after rotating the credentials and
+  # making the pinned GHCR package pullable by the cluster.
+  enabled: false
+  wikiSecretName: hermes-admin-knowledge
+  approvalSecretName: hermes-admin-approval
+  wikiAllowedPrefixes: [sebe, shared]

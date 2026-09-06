@@ -68,30 +68,39 @@ Each release generates a `hermes-<profile>-environment` ConfigMap containing
 exact Kubernetes API address instead of allowing an entire private service
 range.
 
-## Deferred integrations
+## Policy gateway
 
-The pinned GitHub MCP HTTP server expects a bearer token on each MCP request.
-Putting that header in Hermes config would violate the requirement that Hermes
-never receives GitHub credentials. Wiki.js has the same
-process-level credential problem. These integrations therefore remain
-fail-closed until a
-separately built, audited credential gateway can:
+The gateway source is maintained in the private
+`seungbemi/hermes-policy-gateway` repository. Its pinned image runs as a
+non-root, read-only sidecar and is the only container that receives Wiki.js and
+approval credentials. Hermes talks to its loopback MCP endpoint without a
+credential. The current gateway:
 
-1. hold each profile's token outside the Hermes and browser containers;
-2. expose an exact read/write tool allowlist with correct MCP annotations;
-3. bind staged payloads to bot, Telegram user, hash, expiry, and single use;
-4. restrict Rina GitHub calls to the two approved repositories;
-5. bind each Wiki.js API key to its permitted paths (`sebe` plus `shared` for
-   admin; `rina` plus `shared` for Rina), and approval-gate every write; and
-6. emit audit metrics without logging message bodies or credentials.
+1. limits Wiki reads and searches to the profile's normalized path prefixes;
+2. stages creates and updates for ten minutes without changing Wiki.js;
+3. stores the exact payload server-side, includes its content hash in the
+   preview, and permits a single execution;
+4. rejects approval if an existing page changed after the preview;
+5. exposes no MCP execution or deletion tool; and
+6. accepts execution only through the GitOps-owned `/approve_action <id>`
+   Hermes plugin after Telegram slash-command authorization.
+
+The same process exposes an HTTPS-only, DNS-aware browser proxy. Every DNS
+answer must be public; private, loopback, link-local, metadata, cluster-local,
+and ambiguous targets are rejected. The browser pod has no direct public
+egress when this gateway is enabled.
+
+GitHub repository access remains deferred. It requires a separately reviewed
+tool contract and is not implicitly enabled by the Wiki gateway.
 
 Wiki.js 2.5 requires broader page-management permission than a read-only API
 client should need. The gateway must therefore normalize and enforce the path
 allowlist independently on every query and mutation; Wiki.js permissions are a
 second boundary, not the only boundary.
 
-Do not enable `credentialGateway` merely by supplying an image name; add its
-Deployment, tests, and restricted egress policy in the same reviewed change.
+The GHCR package must either be public (the source repository may remain
+private) or use a dedicated read-only registry pull Secret. Never reuse a
+write-capable GitHub MCP credential for image pulls.
 
 Google Workspace is intentionally out of scope for the initial deployment. No
 Google OAuth client, refresh token, Gmail tool, or Calendar tool should be added

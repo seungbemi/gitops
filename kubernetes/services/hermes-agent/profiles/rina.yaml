@@ -14,7 +14,12 @@ profile:
 
 browser:
   enabled: false
-  allowedHosts: hermes-browser-rina.services.svc.cluster.local,hermes-browser-rina
 
 knowledgeBase:
   enabled: false
+
+credentialGateway:
+  enabled: false
+  wikiSecretName: hermes-rina-knowledge
+  approvalSecretName: hermes-rina-approval
+  wikiAllowedPrefixes: [rina, shared]

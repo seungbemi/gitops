@@ -58,6 +58,13 @@ data:
       destructive_slash_confirm: true
     security:
       redact_secrets: true
+    plugins:
+      {{- if .Values.credentialGateway.enabled }}
+      enabled:
+        - approval-gateway
+      {{- else }}
+      enabled: []
+      {{- end }}
     unauthorized_dm_behavior: ignore
     updates:
       pre_update_backup: "off"
