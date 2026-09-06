@@ -63,6 +63,7 @@ class ApprovalButtons:
         self.app = None
         self.adapter = None
         self.pending = {}
+        self.deliveries = {}
 
     def wire(self, application, adapter):
         from telegram.ext import CallbackQueryHandler
@@ -86,6 +87,7 @@ class ApprovalButtons:
             return
         thread = get_session_env("HERMES_SESSION_THREAD_ID")
         future = asyncio.run_coroutine_threadsafe(self.send_card(card, chat, user, thread), self.loop)
+        self.deliveries[card["action_id"]] = (future, str(chat), str(user))
         def done(f):
             try:
                 f.result()
@@ -93,10 +95,47 @@ class ApprovalButtons:
                 logging.getLogger(__name__).exception("Approval card delivery failed; slash commands remain available")
         future.add_done_callback(done)
 
+    def transform_result(self, tool_name="", result=None, **kwargs):
+        if tool_name not in ("mcp__knowledge_base__wiki_stage_create", "mcp__knowledge_base__wiki_stage_update"):
+            return None
+        card = _preview(result)
+        delivery = self.deliveries.get(card["action_id"]) if card else None
+        if not delivery:
+            return None
+        try:
+            delivery[0].result(timeout=10)
+        except Exception:
+            return None  # Preserve copy/paste fallback when delivery fails.
+        entry = self.pending.get(card["action_id"])
+        if not entry or entry["message"] is None:
+            return None
+        return json.dumps({"status": "awaiting_approval", "operation": card["operation"],
+            "path": card["path"], "approval_ui": "Telegram Approve/Deny card delivered",
+            "message": "Tell the user to use the card's buttons. Do not repeat the preview or provide slash commands. Nothing has been changed."})
+
+    def transform_response(self, response_text="", **kwargs):
+        from gateway.session_context import get_session_env
+        if get_session_env("HERMES_SESSION_PLATFORM") != "telegram":
+            return None
+        chat, user = get_session_env("HERMES_SESSION_CHAT_ID"), get_session_env("HERMES_SESSION_USER_ID")
+        text = response_text
+        for action_id, entry in list(self.pending.items()):
+            if entry["chat"] != chat or entry["user"] != user or entry["message"] is None:
+                continue
+            command = r"/(?:approve|deny)(?:\\)?_action\s+" + re.escape(action_id)
+            # Strip the matching command's Markdown wrapper, keeping unrelated text.
+            pattern = r"```(?:\w+)?\s*" + command + r"\s*```|`" + command + r"`|" + command
+            text = re.sub(pattern, "Use the Approve or Deny buttons on the card above.", text)
+        if text == response_text:
+            return None
+        text = re.sub(r"(?im)^\s*(?:fresh\s+)?(?:approval|approve) command:\s*", "", text)
+        return text
+
     async def send_card(self, card, chat, user, thread=""):
         from telegram import InlineKeyboardButton, InlineKeyboardMarkup
         now = datetime.now(timezone.utc)
         self.pending = {key: value for key, value in self.pending.items() if value["expires"] > now}
+        self.deliveries = {key: value for key, value in self.deliveries.items() if key in self.pending or not value[0].done()}
         action_id = card["action_id"]
         expires = datetime.fromisoformat(card["expires_at"].replace("Z", "+00:00"))
         if action_id in self.pending or expires <= now:
@@ -108,7 +147,9 @@ class ApprovalButtons:
             InlineKeyboardButton("Approve", callback_data="hpa:a:" + action_id),
             InlineKeyboardButton("Deny", callback_data="hpa:d:" + action_id),
         ]])
-        entry = {"chat": str(chat), "user": str(user), "expires": expires, "message": None, "text": text}
+        entry = {"chat": str(chat), "user": str(user), "expires": expires,
+                 "message": None, "text": text, "operation": card["operation"],
+                 "path": card["path"], "title": card["title"]}
         self.pending[action_id] = entry
         try:
             message = await self.app.bot.send_message(chat_id=chat, text=text, reply_markup=keyboard,
@@ -139,17 +180,42 @@ class ApprovalButtons:
         # Consume before awaiting network I/O, so double clicks cannot execute twice.
         self.pending.pop(action_id)
         await query.answer("Processing…")
+        decision = "approve" if parts[1] == "a" else "deny"
         if entry["expires"] <= datetime.now(timezone.utc):
-            result = "Expired. Ask Hermes for a fresh preview."
+            result = {"ok": False, "uncertain": False,
+                      "message": "This request expired. Ask Hermes to stage it again."}
         else:
-            result = await asyncio.to_thread(_decide, action_id, "approve" if parts[1] == "a" else "deny")
-        await query.edit_message_text(text=entry["text"][:3000] + "\n\nResult: " + result[:900], reply_markup=None)
+            result = await asyncio.to_thread(_request_decision, action_id, decision)
+        await query.edit_message_text(
+            text=_format_result(entry, decision, result), reply_markup=None
+        )
 
 
-def _decide(raw_args: str, decision: str) -> str:
+def _format_result(entry, decision, result):
+    operation = entry["operation"]
+    noun = "Wiki page"
+    if result["ok"] and decision == "approve":
+        heading = "✅ Approved"
+        outcome = f"{noun} {'created' if operation == 'create' else 'updated'} successfully."
+    elif result["ok"]:
+        heading = "🚫 Denied"
+        outcome = "The proposed Wiki change was discarded. Nothing was changed."
+    elif result.get("uncertain"):
+        heading = "⚠️ Result unknown"
+        outcome = "The gateway response was lost. Check the Wiki page before trying again."
+    else:
+        heading = "⚠️ Approval failed"
+        outcome = "No Wiki change was confirmed."
+    local = datetime.now(timezone.utc).astimezone(ZoneInfo("Europe/Helsinki"))
+    return (f"{heading}\n\n{outcome}\n\n{entry['title']}\n{entry['path']}\n\n"
+            f"{result['message'][:700]}\nCompleted at {local:%H:%M} (Helsinki).")
+
+
+def _request_decision(raw_args: str, decision: str):
     action_id = raw_args.strip()
     if not _ACTION_ID.fullmatch(action_id):
-        return f"Usage: /{decision}_action <action-id>"
+        return {"ok": False, "uncertain": False,
+                "message": f"Usage: /{decision}_action <action-id>"}
 
     safe_id = urllib.parse.quote(action_id, safe=".-_")
     request = urllib.request.Request(
@@ -164,18 +230,28 @@ def _decide(raw_args: str, decision: str) -> str:
     except urllib.error.HTTPError as exc:
         try:
             body = json.load(exc)
-            return str(body.get("message", "Approval failed"))
+            return {"ok": False, "uncertain": False,
+                    "message": str(body.get("message", "Approval failed"))}
         except Exception:
-            return f"Approval failed with HTTP {exc.code}"
+            return {"ok": False, "uncertain": False,
+                    "message": f"Approval failed with HTTP {exc.code}"}
     except Exception as exc:
-        return f"Approval gateway unavailable: {exc}"
-    return str(body.get("message", "Decision recorded"))
+        return {"ok": False, "uncertain": True,
+                "message": f"Approval gateway unavailable: {exc}"}
+    return {"ok": bool(body.get("ok")), "uncertain": False,
+            "message": str(body.get("message", "Decision recorded"))}
+
+
+def _decide(raw_args: str, decision: str) -> str:
+    return _request_decision(raw_args, decision)["message"]
 
 
 def register(ctx):
     buttons = ApprovalButtons()
     ctx.register_telegram_handler(buttons.wire)
     ctx.register_hook("post_tool_call", buttons.after_tool)
+    ctx.register_hook("transform_tool_result", buttons.transform_result)
+    ctx.register_hook("transform_llm_output", buttons.transform_response)
     # Hermes maps Telegram underscores to hyphens before plugin lookup.
     ctx.register_command(
         "approve-action",
