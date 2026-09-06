@@ -79,7 +79,7 @@ credential. The current gateway:
 1. limits Wiki reads and searches to the profile's normalized path prefixes;
 2. stages creates and updates for ten minutes without changing Wiki.js;
 3. stores the exact payload server-side, includes its content hash in the
-   preview, and permits a single execution;
+   preview, and permits a single execution using an atomic PostgreSQL claim;
 4. rejects approval if an existing page changed after the preview;
 5. exposes no MCP execution or deletion tool; and
 6. accepts execution only through the GitOps-owned `/approve_action <id>`
@@ -94,6 +94,12 @@ The approval UI has its own private `seungbemi/hermes-approval-plugin`
 repository and tested OCI image. This chart only pins that immutable image and
 installs it into Hermes during pod initialization. The policy-gateway repository
 contains only the Go policy and execution service.
+
+Approval records survive gateway and pod restarts. Each profile uses its own
+least-privilege PostgreSQL role and database. An action claimed for execution is
+never made pending again: if the gateway or Wiki.js response fails mid-write,
+the result is reported as unknown and the user must inspect the page before
+staging another change. Terminal and expired records are retained for 30 days.
 
 ## Telegram model selection
 

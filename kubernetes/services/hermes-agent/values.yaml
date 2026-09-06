@@ -222,6 +222,11 @@ controllers:
               secretKeyRef:
                 name: '{{ .Values.credentialGateway.approvalSecretName }}'
                 key: APPROVAL_HMAC_KEY
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.credentialGateway.approvalSecretName }}'
+                key: DATABASE_URL
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

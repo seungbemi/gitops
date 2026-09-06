@@ -119,6 +119,7 @@ grep -Fq 'name: hermes-admin-runtime' "$admin_rendered"
 grep -Fq 'name: hermes-rina-runtime' "$rina_rendered"
 grep -Fq 'name: hermes-admin-knowledge' "$admin_rendered"
 grep -Fq 'name: hermes-admin-approval' "$admin_rendered"
+grep -Fq 'key: DATABASE_URL' "$admin_rendered"
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
 grep -Fq 'sha256:37d887d798dbffda2a44ab32779aacc1afdd0378e064cacae12815c94bd10eef' "$admin_rendered"
@@ -134,6 +135,9 @@ if grep -Fq 'MEMORY_REPOSITORY' "$rendered"; then
 fi
 grep -Fq -- '--allowed-hosts=browser.internal' "$admin_rendered"
 grep -Fq 'cidr: "10.96.0.1/32"' "$admin_rendered"
+grep -Fq 'kubernetes.io/metadata.name: persistence' "$admin_rendered"
+grep -Fq 'app.kubernetes.io/name: postgresql' "$admin_rendered"
+grep -Fq 'port: 5432' "$admin_rendered"
 grep -Fq 'hermes-profile: admin' "$admin_rendered"
 grep -Fq 'hermes-profile: rina' "$rina_rendered"
 
