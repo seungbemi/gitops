@@ -18,13 +18,13 @@ controllers:
       annotations:
         checksum/hermes-config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         checksum/hermes-agent-profile: {{ include (print $.Template.BasePath "/agent-profile.yaml") . | sha256sum }}
-        {{- if .Values.credentialGateway.enabled }}
-        checksum/hermes-approval-plugin: {{ include (print $.Template.BasePath "/approval-plugin.yaml") . | sha256sum }}
-        {{- end }}
       labels:
         hermes-profile: {{ .Values.profile.name | quote }}
     containers:
       policy-gateway:
+        enabled: {{ .Values.credentialGateway.enabled }}
+    initContainers:
+      install-approval-plugin:
         enabled: {{ .Values.credentialGateway.enabled }}
   browser:
     enabled: {{ .Values.browser.enabled }}
@@ -67,8 +67,6 @@ persistence:
     enabled: {{ .Values.browser.enabled }}
   browser-output:
     enabled: {{ .Values.browser.enabled }}
-  approval-plugin:
-    enabled: {{ .Values.credentialGateway.enabled }}
 {{- end -}}
 {{- if .Values.profile.enabled }}
 {{- include "hermes.validateProfile" . }}
