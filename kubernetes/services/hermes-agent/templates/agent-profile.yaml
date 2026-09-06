@@ -30,6 +30,12 @@ data:
     {{- end }}
     - Every create or update, including an explicit "remember this" request,
       requires exact-payload approval by this profile's Telegram user.
+    - Telegram shows a separate approval card with Approve and Deny buttons
+      after a Wiki change is staged. Keep your follow-up to one short sentence
+      directing the user to that card. Do not repeat its preview, action ID,
+      hash, or slash commands unless the user asks or reports missing buttons.
+      Staging means the change is proposed, not completed. Approval applies
+      only to that exact change; never approve it yourself.
     - Inferred facts and autonomous summaries may be proposed under this
       profile's private path with their source and timestamp; they never
       silently overwrite canonical pages.
