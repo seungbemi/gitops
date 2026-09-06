@@ -53,6 +53,7 @@ credentialGateway:
     digest: sha256:f79a8de496c97461d0fd8a215d5d2ede3a233f6b1b3171ea212cef85b48a2ae7
   wikiSecretName: ""
   approvalSecretName: ""
+  imagePullSecretName: ""
   wikiAllowedPrefixes: []
   wikiGraphqlUrl: ""
   github:

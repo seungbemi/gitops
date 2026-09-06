@@ -98,9 +98,11 @@ client should need. The gateway must therefore normalize and enforce the path
 allowlist independently on every query and mutation; Wiki.js permissions are a
 second boundary, not the only boundary.
 
-The GHCR package must either be public (the source repository may remain
-private) or use a dedicated read-only registry pull Secret. Never reuse a
-write-capable GitHub MCP credential for image pulls.
+The GHCR package and source repository remain private. Each profile uses a
+dedicated `kubernetes.io/dockerconfigjson` registry pull Secret backed by a
+token with package-read access only. The Secret is consumed by the kubelet and
+is not mounted into any container. Never reuse a write-capable GitHub MCP
+credential for image pulls.
 
 Google Workspace is intentionally out of scope for the initial deployment. No
 Google OAuth client, refresh token, Gmail tool, or Calendar tool should be added

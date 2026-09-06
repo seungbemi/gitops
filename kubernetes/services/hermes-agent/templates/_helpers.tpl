@@ -59,6 +59,9 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if not .Values.credentialGateway.approvalSecretName -}}
 {{- fail "credentialGateway.approvalSecretName is required when the gateway is enabled" -}}
 {{- end -}}
+{{- if not .Values.credentialGateway.imagePullSecretName -}}
+{{- fail "credentialGateway.imagePullSecretName is required when the gateway is enabled" -}}
+{{- end -}}
 {{- if not .Values.credentialGateway.wikiGraphqlUrl -}}
 {{- fail "credentialGateway.wikiGraphqlUrl is required when the gateway is enabled" -}}
 {{- end -}}

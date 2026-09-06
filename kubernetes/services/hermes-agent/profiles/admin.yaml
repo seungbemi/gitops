@@ -23,4 +23,5 @@ credentialGateway:
   enabled: false
   wikiSecretName: hermes-admin-knowledge
   approvalSecretName: hermes-admin-approval
+  imagePullSecretName: hermes-admin-gateway-registry
   wikiAllowedPrefixes: [sebe, shared]
