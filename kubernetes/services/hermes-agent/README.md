@@ -95,6 +95,16 @@ repository and tested OCI image. This chart only pins that immutable image and
 installs it into Hermes during pod initialization. The policy-gateway repository
 contains only the Go policy and execution service.
 
+## Telegram model selection
+
+Hermes already provides an interactive Telegram model picker. An administrator
+can send `/model` to choose from the models exposed by the authenticated
+OpenRouter provider. `/model --refresh` refreshes the provider catalog before
+opening the picker, and `/model <provider/model> --once` changes only the next
+turn. Picker choices are session scoped because `model.persist_switch_by_default`
+is false; the session override is stored in Hermes state and survives a gateway
+restart. Durable defaults remain GitOps-owned through `model.main`.
+
 GitHub repository access remains deferred. It requires a separately reviewed
 tool contract and is not implicitly enabled by the Wiki gateway.
 
