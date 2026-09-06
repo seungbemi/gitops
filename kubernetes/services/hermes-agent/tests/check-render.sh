@@ -57,6 +57,7 @@ helm template hermes-admin "$chart_dir" --namespace services \
   --set 'credentialGateway.image.digest=sha256:test' \
   --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
+  --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
   --set 'credentialGateway.wikiAllowedPrefixes[0]=sebe' \
   --set 'credentialGateway.wikiAllowedPrefixes[1]=shared' \
   --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
@@ -87,6 +88,7 @@ helm template hermes-rina "$chart_dir" --namespace services \
   --set 'credentialGateway.image.digest=sha256:test' \
   --set 'credentialGateway.wikiSecretName=hermes-rina-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-rina-approval' \
+  --set 'credentialGateway.imagePullSecretName=hermes-rina-gateway-registry' \
   --set 'credentialGateway.wikiAllowedPrefixes[0]=rina' \
   --set 'credentialGateway.wikiAllowedPrefixes[1]=shared' \
   --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
@@ -118,6 +120,7 @@ grep -Fq 'name: hermes-admin-runtime' "$admin_rendered"
 grep -Fq 'name: hermes-rina-runtime' "$rina_rendered"
 grep -Fq 'name: hermes-admin-knowledge' "$admin_rendered"
 grep -Fq 'name: hermes-admin-approval' "$admin_rendered"
+grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"
 grep -Fq -- '--proxy-server=http://proxy.internal' "$admin_rendered"
 grep -Fq 'port: 8081' "$admin_rendered"

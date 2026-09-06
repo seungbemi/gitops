@@ -2,6 +2,11 @@
 global:
   nameOverride: hermes-{{ .Values.profile.name }}
   createDefaultServiceAccount: false
+{{- if .Values.credentialGateway.enabled }}
+defaultPodOptions:
+  imagePullSecrets:
+    - name: {{ .Values.credentialGateway.imagePullSecretName }}
+{{- end }}
 controllers:
   main:
     forceRename: hermes-{{ .Values.profile.name }}

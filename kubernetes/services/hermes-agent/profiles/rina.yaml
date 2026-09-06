@@ -22,4 +22,5 @@ credentialGateway:
   enabled: false
   wikiSecretName: hermes-rina-knowledge
   approvalSecretName: hermes-rina-approval
+  imagePullSecretName: hermes-rina-gateway-registry
   wikiAllowedPrefixes: [rina, shared]
