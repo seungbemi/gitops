@@ -90,6 +90,11 @@ answer must be public; private, loopback, link-local, metadata, cluster-local,
 and ambiguous targets are rejected. The browser pod has no direct public
 egress when this gateway is enabled.
 
+The approval UI has its own private `seungbemi/hermes-approval-plugin`
+repository and tested OCI image. This chart only pins that immutable image and
+installs it into Hermes during pod initialization. The policy-gateway repository
+contains only the Go policy and execution service.
+
 GitHub repository access remains deferred. It requires a separately reviewed
 tool contract and is not implicitly enabled by the Wiki gateway.
 

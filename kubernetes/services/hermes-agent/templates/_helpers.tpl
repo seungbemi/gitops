@@ -50,8 +50,11 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- fail "browser.enabled requires credentialGateway.enabled" -}}
 {{- end -}}
 {{- if .Values.credentialGateway.enabled -}}
-{{- if not .Values.credentialGateway.image.digest -}}
-{{- fail "credentialGateway.image.digest is required when the gateway is enabled" -}}
+{{- if not (regexMatch "^sha256:[a-f0-9]{64}$" .Values.approvalPlugin.image.digest) -}}
+{{- fail "approvalPlugin.image.digest must be an immutable sha256 digest when the gateway is enabled" -}}
+{{- end -}}
+{{- if not (regexMatch "^sha256:[a-f0-9]{64}$" .Values.credentialGateway.image.digest) -}}
+{{- fail "credentialGateway.image.digest must be an immutable sha256 digest when the gateway is enabled" -}}
 {{- end -}}
 {{- if not .Values.credentialGateway.wikiSecretName -}}
 {{- fail "credentialGateway.wikiSecretName is required when the gateway is enabled" -}}

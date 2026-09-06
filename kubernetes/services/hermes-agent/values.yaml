@@ -50,7 +50,7 @@ credentialGateway:
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
     tag: latest
-    digest: sha256:2c5edfd1c3da87458d18ec3777517e728245bdf9aad698514a41055e3241b197
+    digest: sha256:5198c9114e3ab2ca6cb39c228c33dca616dbede28ef8c1e29e6c6dca12e7562c
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -58,6 +58,12 @@ credentialGateway:
   wikiGraphqlUrl: ""
   github:
     enabled: false
+
+approvalPlugin:
+  image:
+    repository: ghcr.io/seungbemi/hermes-approval-plugin
+    tag: latest
+    digest: sha256:37d887d798dbffda2a44ab32779aacc1afdd0378e064cacae12815c94bd10eef
 
 defaultPodOptions:
   automountServiceAccountToken: false
@@ -88,15 +94,7 @@ controllers:
           - >-
             cp /opt/bootstrap/config.yaml /opt/data/config.yaml &&
             cp /opt/bootstrap/SOUL.md /opt/data/SOUL.md &&
-            if [ -d /opt/bootstrap/approval-plugin ]; then
-              mkdir -p /opt/data/plugins/approval-gateway &&
-              cp /opt/bootstrap/approval-plugin/plugin.yaml /opt/data/plugins/approval-gateway/plugin.yaml &&
-              cp /opt/bootstrap/approval-plugin/__init__.py /opt/data/plugins/approval-gateway/__init__.py;
-            fi &&
             chown 10000:10000 /opt/data/config.yaml /opt/data/SOUL.md &&
-            if [ -d /opt/data/plugins/approval-gateway ]; then
-              chown -R 10000:10000 /opt/data/plugins/approval-gateway;
-            fi &&
             chmod 0600 /opt/data/config.yaml &&
             chmod 0644 /opt/data/SOUL.md
         securityContext:
@@ -105,6 +103,26 @@ controllers:
           capabilities:
             drop: ["ALL"]
             add: ["CHOWN", "DAC_OVERRIDE", "FOWNER"]
+      install-approval-plugin:
+        enabled: false
+        image:
+          repository: '{{ .Values.approvalPlugin.image.repository }}'
+          tag: '{{ .Values.approvalPlugin.image.tag }}'
+          digest: '{{ .Values.approvalPlugin.image.digest }}'
+          pullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10000
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+          limits:
+            memory: 32Mi
     containers:
       hermes:
         image:
@@ -271,6 +289,8 @@ persistence:
           - path: /opt/data
         bootstrap-config:
           - path: /opt/data
+        install-approval-plugin:
+          - path: /target
   config:
     type: configMap
     name: 'hermes-{{ .Values.profile.name }}-config'
@@ -294,14 +314,6 @@ persistence:
         bootstrap-config:
           - path: /opt/bootstrap/SOUL.md
             subPath: SOUL.md
-            readOnly: true
-  approval-plugin:
-    type: configMap
-    name: 'hermes-{{ .Values.profile.name }}-approval-plugin'
-    advancedMounts:
-      main:
-        bootstrap-config:
-          - path: /opt/bootstrap/approval-plugin
             readOnly: true
   kubernetes-token:
     type: custom
