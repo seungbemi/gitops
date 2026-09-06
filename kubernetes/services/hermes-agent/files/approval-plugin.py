@@ -4,6 +4,7 @@ import json
 import asyncio
 import logging
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 import re
 import urllib.error
 import urllib.parse
@@ -11,6 +12,21 @@ import urllib.request
 
 _ACTION_ID = re.compile(r"^[A-Za-z0-9_-]{24}\.[A-Za-z0-9_-]{16}$")
 _BASE_URL = "http://127.0.0.1:8090/approvals"
+
+
+def _format_card(card, expires):
+    operation = "Create Wiki page?" if card["operation"] == "create" else "Update Wiki page?"
+    parts = [operation, f"{card['title'][:250]}\n{card['path'][:300]}",
+             "Proposed content\n" + str(card.get("content_preview", ""))[:1201]]
+    description = str(card.get("description") or "")
+    if description:
+        parts.append("Proposed page description\n" + description[:300])
+    tags = ", ".join(card.get("tags") or [])
+    if tags:
+        parts.append("Tags: " + tags[:200])
+    local = expires.astimezone(ZoneInfo("Europe/Helsinki"))
+    parts.append(f"Nothing has changed yet.\nApprove by {local:%H:%M} (Helsinki).")
+    return "\n\n".join(parts)
 
 
 def _preview(result):
@@ -85,10 +101,7 @@ class ApprovalButtons:
         expires = datetime.fromisoformat(card["expires_at"].replace("Z", "+00:00"))
         if action_id in self.pending or expires <= now:
             return
-        text = (f"Wiki approval: {card['operation']}\nPath: {card['path'][:300]}\nTitle: {card['title'][:250]}\n"
-                f"Description: {card.get('description', '')[:300]}\nTags: {', '.join(card.get('tags') or [])[:200]}\n\n"
-                f"{card.get('content_preview', '')}\n\nContent SHA-256: {card['content_sha256']}\n"
-                f"Expires: {card['expires_at']}\nApprove only this staged change.")
+        text = _format_card(card, expires)
         # Telegram counts UTF-16 units; keep non-BMP page content within limits.
         text = text.encode("utf-16-le")[:7800].decode("utf-16-le", errors="ignore")
         keyboard = InlineKeyboardMarkup([[
