@@ -37,6 +37,9 @@ knowledgeBase:
 homeAssistant:
   enabled: false
   mcpUrl: ""
+  # Needed only when the service resolves to host-network or external endpoints
+  # and the CNI evaluates NetworkPolicy after destination translation.
+  endpointCidrs: []
 
 paperless:
   enabled: false
