@@ -78,6 +78,7 @@ data:
       platforms:
         telegram:
           extra:
+            rich_messages: true
             allow_from:
               {{- range .Values.profile.telegram.allowedUserIds }}
               - {{ include "hermes.telegramId" . | quote }}

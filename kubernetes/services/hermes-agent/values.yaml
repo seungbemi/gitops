@@ -61,7 +61,7 @@ credentialGateway:
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
     tag: latest
-    digest: sha256:00f292947a12c16009b1fd8bd770cbfc4d212a5834a0d9f6b0dd32e8bdfcffc8
+    digest: sha256:e024eedeeae8eb97df1e51c7f68d351ba63df6059ccbf42bf78b522f070f8cc3
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -76,8 +76,10 @@ credentialGateway:
     allowedOperations: []
     allowedServices: []
     allowedEntityPrefixes: []
+    approvalRequiredEntities: []
   paperlessUrl: ""
   paperlessHost: ""
+  paperlessPublicUrl: ""
   paperlessSecretName: unused
   paperlessAuthorization:
     enabled: false
@@ -89,7 +91,7 @@ approvalPlugin:
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
     tag: latest
-    digest: sha256:0abc1e611ce37a877995c0793ed3659f87d524197b64ba3886b2e5b440efe97f
+    digest: sha256:e945ddd9a73e07d3b39503c4675ed7729121e05b6ee3d6e596affb9f8f12e284
 
 defaultPodOptions:
   automountServiceAccountToken: false
@@ -120,7 +122,8 @@ controllers:
           - >-
             cp /opt/bootstrap/config.yaml /opt/data/config.yaml &&
             cp /opt/bootstrap/SOUL.md /opt/data/SOUL.md &&
-            chown 10000:10000 /opt/data/config.yaml /opt/data/SOUL.md &&
+            mkdir -p /opt/data/cache/documents &&
+            chown 10000:10000 /opt/data/config.yaml /opt/data/SOUL.md /opt/data/cache/documents &&
             chmod 0600 /opt/data/config.yaml &&
             chmod 0644 /opt/data/SOUL.md
         securityContext:
@@ -257,6 +260,10 @@ controllers:
             value: '{{ .Values.credentialGateway.paperlessUrl }}'
           - name: PAPERLESS_HOST
             value: '{{ .Values.credentialGateway.paperlessHost }}'
+          - name: PAPERLESS_PUBLIC_URL
+            value: '{{ .Values.credentialGateway.paperlessPublicUrl }}'
+          - name: DOCUMENT_CACHE_ROOT
+            value: /var/lib/hermes-documents
           - name: PAPERLESS_AUTHORIZATION
             value: '{{ toJson .Values.credentialGateway.paperlessAuthorization }}'
           - name: PAPERLESS_TOKEN
@@ -364,6 +371,10 @@ persistence:
           - path: /opt/data
         install-approval-plugin:
           - path: /target
+        policy-gateway:
+          - path: /var/lib/hermes-documents
+            subPath: cache/documents
+            readOnly: true
   config:
     type: configMap
     name: 'hermes-{{ .Values.profile.name }}-config'

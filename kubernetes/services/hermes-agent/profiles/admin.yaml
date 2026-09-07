@@ -37,9 +37,10 @@ credentialGateway:
     allowedOperations: [list, search, get, create, update, delete, move]
   homeAssistantAuthorization:
     enabled: false
-    allowedOperations: [list_entities, get_state, get_history, list_services, call_service]
+    allowedOperations: [list_entities, get_state, get_history, list_services, set_power, call_service]
     allowedServices: ["*"]
     allowedEntityPrefixes: ["*"]
+    approvalRequiredEntities: []
   paperlessAuthorization:
     enabled: false
-    allowedOperations: [search_documents, get_document, get_document_content, list_tags, list_correspondents, list_document_types, update_document, delete_document]
+    allowedOperations: [search_documents, get_document, get_document_content, list_tags, list_correspondents, list_document_types, download_document, upload_document, update_document, delete_document]
