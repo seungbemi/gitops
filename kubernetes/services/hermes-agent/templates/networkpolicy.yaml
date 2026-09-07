@@ -65,6 +65,22 @@ spec:
       ports:
         - { protocol: TCP, port: 3000 }
     {{- end }}
+    {{- if .Values.homeAssistant.enabled }}
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: home-assistant
+      ports:
+        - { protocol: TCP, port: 8123 }
+    {{- end }}
+    {{- if .Values.paperless.enabled }}
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: paperless
+      ports:
+        - { protocol: TCP, port: 8000 }
+    {{- end }}
     {{- if .Values.credentialGateway.enabled }}
     - to:
         - namespaceSelector:

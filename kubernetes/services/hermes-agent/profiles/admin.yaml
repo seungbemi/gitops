@@ -17,6 +17,12 @@ browser:
 knowledgeBase:
   enabled: false
 
+homeAssistant:
+  enabled: false
+
+paperless:
+  enabled: false
+
 credentialGateway:
   # Enable together with knowledgeBase after rotating the credentials and
   # making the pinned GHCR package pullable by the cluster.
@@ -24,6 +30,16 @@ credentialGateway:
   wikiSecretName: hermes-admin-knowledge
   approvalSecretName: hermes-admin-approval
   imagePullSecretName: hermes-admin-gateway-registry
+  homeAssistantSecretName: hermes-admin-home-assistant
+  paperlessSecretName: hermes-admin-paperless
   wikiAuthorization:
     memberId: sebe
     allowedOperations: [list, search, get, create, update, delete, move]
+  homeAssistantAuthorization:
+    enabled: false
+    allowedOperations: [list_entities, get_state, get_history, list_services, call_service]
+    allowedServices: ["*"]
+    allowedEntityPrefixes: ["*"]
+  paperlessAuthorization:
+    enabled: false
+    allowedOperations: [search_documents, get_document, get_document_content, list_tags, list_correspondents, list_document_types, update_document, delete_document]
