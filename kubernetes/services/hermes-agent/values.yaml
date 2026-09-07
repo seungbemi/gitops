@@ -175,8 +175,6 @@ controllers:
             value: "10000"
           - name: HERMES_GID
             value: "10000"
-          - name: HERMES_GATEWAY_NO_SUPERVISE
-            value: "1"
           - name: TZ
             value: Europe/Helsinki
         envFrom:
@@ -190,6 +188,31 @@ controllers:
             # still needs to traverse and control the hermes-owned paths while
             # dropping supervised services to UID/GID 10000.
             add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+        probes:
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              exec:
+                command:
+                  - pgrep
+                  - -f
+                  - '^/opt/hermes/.venv/bin/python3 /opt/hermes/.venv/bin/hermes gateway run --replace$'
+              periodSeconds: 10
+              timeoutSeconds: 3
+              failureThreshold: 3
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              exec:
+                command:
+                  - pgrep
+                  - -f
+                  - '^/opt/hermes/.venv/bin/python3 /opt/hermes/.venv/bin/hermes gateway run --replace$'
+              periodSeconds: 30
+              timeoutSeconds: 3
+              failureThreshold: 3
         resources:
           requests:
             cpu: 100m
