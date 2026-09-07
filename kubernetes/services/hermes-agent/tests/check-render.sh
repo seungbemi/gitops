@@ -112,6 +112,11 @@ grep -Fq 'name: WIKI_AUTHORIZATION' "$admin_rendered"
 grep -Fq 'allowedOperations' "$admin_rendered"
 grep -Fq 'group_allow_from: []' "$rendered"
 grep -Fq 'rich_messages: true' "$rendered"
+if grep -Fq 'HERMES_GATEWAY_NO_SUPERVISE' "$rendered"; then
+  echo 'Hermes must use the image-supported s6 gateway supervision path' >&2
+  exit 1
+fi
+grep -Fq 'hermes gateway run --replace' "$admin_rendered"
 grep -Fq 'name: hermes-admin-environment' "$rendered"
 grep -Fq 'url: ${BROWSER_MCP_URL}' "$rendered"
 grep -Fq 'name: hermes-admin-runtime' "$admin_rendered"
