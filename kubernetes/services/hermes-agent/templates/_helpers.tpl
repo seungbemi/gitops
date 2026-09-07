@@ -68,8 +68,16 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if not .Values.credentialGateway.wikiGraphqlUrl -}}
 {{- fail "credentialGateway.wikiGraphqlUrl is required when the gateway is enabled" -}}
 {{- end -}}
-{{- if eq (len .Values.credentialGateway.wikiAllowedPrefixes) 0 -}}
-{{- fail "credentialGateway.wikiAllowedPrefixes must not be empty when the gateway is enabled" -}}
+{{- if not (regexMatch "^[a-z0-9][a-z0-9_-]*$" .Values.credentialGateway.wikiAuthorization.memberId) -}}
+{{- fail "credentialGateway.wikiAuthorization.memberId must be one canonical member path segment" -}}
+{{- end -}}
+{{- if eq (len .Values.credentialGateway.wikiAuthorization.allowedOperations) 0 -}}
+{{- fail "credentialGateway.wikiAuthorization.allowedOperations must not be empty when the gateway is enabled" -}}
+{{- end -}}
+{{- range .Values.credentialGateway.wikiAuthorization.allowedOperations -}}
+{{- if not (has . (list "list" "search" "get" "create" "update" "delete" "move")) -}}
+{{- fail "credentialGateway.wikiAuthorization.allowedOperations contains an unknown operation" -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- if and .Values.browser.enabled (not .Values.browser.allowedHosts) -}}

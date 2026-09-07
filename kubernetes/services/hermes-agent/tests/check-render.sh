@@ -58,8 +58,6 @@ helm template hermes-admin "$chart_dir" --namespace services \
   --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
   --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
-  --set 'credentialGateway.wikiAllowedPrefixes[0]=sebe' \
-  --set 'credentialGateway.wikiAllowedPrefixes[1]=shared' \
   --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
   >"$admin_rendered"
 
@@ -89,8 +87,6 @@ helm template hermes-rina "$chart_dir" --namespace services \
   --set 'credentialGateway.wikiSecretName=hermes-rina-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-rina-approval' \
   --set 'credentialGateway.imagePullSecretName=hermes-rina-gateway-registry' \
-  --set 'credentialGateway.wikiAllowedPrefixes[0]=rina' \
-  --set 'credentialGateway.wikiAllowedPrefixes[1]=shared' \
   --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
   >"$rina_rendered"
 
@@ -110,8 +106,10 @@ grep -Fq 'checksum/hermes-config:' "$rendered"
 grep -Fq 'checksum/hermes-agent-profile:' "$rendered"
 grep -Fq 'The Wiki.js knowledge base is the canonical durable knowledge store.' "$rendered"
 grep -Fq 'url: "http://gateway.internal/knowledge/mcp"' "$rendered"
-grep -Fq 'only `sebe/**` and `shared/**`' "$admin_rendered"
-grep -Fq 'only `rina/**` and `shared/**`' "$rina_rendered"
+grep -Fq '`members/sebe` and its descendants' "$admin_rendered"
+grep -Fq '`members/rina` and its descendants' "$rina_rendered"
+grep -Fq 'name: WIKI_AUTHORIZATION' "$admin_rendered"
+grep -Fq 'allowedOperations' "$admin_rendered"
 grep -Fq 'group_allow_from: []' "$rendered"
 grep -Fq 'name: hermes-admin-environment' "$rendered"
 grep -Fq 'url: ${BROWSER_MCP_URL}' "$rendered"
@@ -125,7 +123,7 @@ grep -Fq 'port: 8090' "$admin_rendered"
 grep -Fq 'tcpSocket:' "$admin_rendered"
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
-grep -Fq 'sha256:f938fc90b3adee921383b8f73d2f468aa0ca9b65fb3e5a0f9142dc2ad413a23b' "$admin_rendered"
+grep -Fq 'sha256:3af11453505150a34b4aef62274c6d583637ca838f0a0148c4f981c111cea848' "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1

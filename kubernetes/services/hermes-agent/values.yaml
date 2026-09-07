@@ -50,11 +50,13 @@ credentialGateway:
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
     tag: latest
-    digest: sha256:0f9d733397bc1c801cff65fa7c0fd761ea607483e522196897028fac73698376
+    digest: sha256:89520cdd97b2288fb806e8874e8b4743fdacfe043b86baf370982b27aa7b44db
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
-  wikiAllowedPrefixes: []
+  wikiAuthorization:
+    memberId: ""
+    allowedOperations: []
   wikiGraphqlUrl: ""
   github:
     enabled: false
@@ -63,7 +65,7 @@ approvalPlugin:
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
     tag: latest
-    digest: sha256:f938fc90b3adee921383b8f73d2f468aa0ca9b65fb3e5a0f9142dc2ad413a23b
+    digest: sha256:3af11453505150a34b4aef62274c6d583637ca838f0a0148c4f981c111cea848
 
 defaultPodOptions:
   automountServiceAccountToken: false
@@ -210,8 +212,8 @@ controllers:
             value: 0.0.0.0:8081
           - name: WIKIJS_GRAPHQL_URL
             value: '{{ .Values.credentialGateway.wikiGraphqlUrl }}'
-          - name: WIKI_ALLOWED_PREFIXES
-            value: '{{ join "," .Values.credentialGateway.wikiAllowedPrefixes }}'
+          - name: WIKI_AUTHORIZATION
+            value: '{{ toJson .Values.credentialGateway.wikiAuthorization }}'
           - name: WIKIJS_API_TOKEN
             valueFrom:
               secretKeyRef:

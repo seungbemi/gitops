@@ -23,4 +23,6 @@ credentialGateway:
   wikiSecretName: hermes-rina-knowledge
   approvalSecretName: hermes-rina-approval
   imagePullSecretName: hermes-rina-gateway-registry
-  wikiAllowedPrefixes: [rina, shared]
+  wikiAuthorization:
+    memberId: rina
+    allowedOperations: [list, search, get, create, update, delete, move]

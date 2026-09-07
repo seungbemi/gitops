@@ -76,13 +76,17 @@ non-root, read-only sidecar and is the only container that receives Wiki.js and
 approval credentials. Hermes talks to its loopback MCP endpoint without a
 credential. The current gateway:
 
-1. limits Wiki reads and searches to the profile's normalized path prefixes;
-2. stages creates and updates for ten minutes without changing Wiki.js;
-3. stores the exact payload server-side, includes its content hash in the
+1. exposes only the Wiki operations enabled by the profile;
+2. allows normal Wiki paths while restricting `members/**` to the profile's
+   own member root and its descendants;
+3. limits delete and move to that member root and `shared/**`;
+4. stages writes for ten minutes without changing Wiki.js;
+5. stores the exact payload server-side, includes its content hash in the
    preview, and permits a single execution using an atomic PostgreSQL claim;
-4. rejects approval if an existing page changed after the preview;
-5. exposes no MCP execution or deletion tool; and
-6. accepts execution only through the GitOps-owned `/approve_action <id>`
+6. rejects approval if an existing page changed after the preview;
+7. rechecks the current profile authorization when an approval executes;
+8. exposes no direct MCP execution tool; and
+9. accepts execution only through the GitOps-owned `/approve_action <id>`
    Hermes plugin after Telegram slash-command authorization.
 
 The same process exposes an HTTPS-only, DNS-aware browser proxy. Every DNS
@@ -114,10 +118,11 @@ restart. Durable defaults remain GitOps-owned through `model.main`.
 GitHub repository access remains deferred. It requires a separately reviewed
 tool contract and is not implicitly enabled by the Wiki gateway.
 
-Wiki.js 2.5 requires broader page-management permission than a read-only API
-client should need. The gateway must therefore normalize and enforce the path
-allowlist independently on every query and mutation; Wiki.js permissions are a
-second boundary, not the only boundary.
+Wiki.js 2.5 requires broader page-management permission than the gateway should
+delegate. The gateway therefore normalizes paths and enforces the profile's
+operation and member-space policy independently during tool discovery, every
+query and mutation, and approved execution. Wiki.js permissions are a second
+boundary, not the only boundary.
 
 The GHCR package and source repository remain private. Each profile uses a
 dedicated `kubernetes.io/dockerconfigjson` registry pull Secret backed by a
