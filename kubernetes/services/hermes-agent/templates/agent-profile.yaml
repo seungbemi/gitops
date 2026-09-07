@@ -42,8 +42,9 @@ data:
 
     {{- if .Values.homeAssistant.enabled }}
     Home Assistant policy:
-    - Use `ha_set_power` for lights and switches. The gateway executes ordinary
-      entities immediately and stages configured protected entities for approval.
+    - Use `ha_set_power` for every simple on/off request, including requests for
+      several lights or switches. The gateway executes ordinary entities
+      immediately and stages configured protected entities for approval.
     - Refer to entities by their friendly names. Use filters and pagination when
       a list is longer than one page.
     {{- end }}
