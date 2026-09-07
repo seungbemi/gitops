@@ -23,6 +23,8 @@ credentialGateway:
   wikiSecretName: hermes-rina-knowledge
   approvalSecretName: hermes-rina-approval
   imagePullSecretName: hermes-rina-gateway-registry
+  homeAssistantSecretName: hermes-rina-home-assistant
+  paperlessSecretName: hermes-rina-paperless
   wikiAuthorization:
     memberId: rina
     allowedOperations: [list, search, get, create, update, delete, move]

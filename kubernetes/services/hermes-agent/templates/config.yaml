@@ -48,6 +48,12 @@ data:
         {{- if .Values.knowledgeBase.enabled }}
         - mcp-knowledge-base
         {{- end }}
+        {{- if .Values.homeAssistant.enabled }}
+        - mcp-home-assistant
+        {{- end }}
+        {{- if .Values.paperless.enabled }}
+        - mcp-paperless
+        {{- end }}
     approvals:
       mode: manual
       timeout: 600
@@ -129,5 +135,23 @@ data:
         tools:
           resources: false
           prompts: false
+      {{- end }}
+      {{- if .Values.homeAssistant.enabled }}
+      home-assistant:
+        url: {{ .Values.homeAssistant.mcpUrl | quote }}
+        enabled: true
+        protocol: stateless
+        trust: full
+        supports_parallel_tool_calls: false
+        tools: { resources: false, prompts: false }
+      {{- end }}
+      {{- if .Values.paperless.enabled }}
+      paperless:
+        url: {{ .Values.paperless.mcpUrl | quote }}
+        enabled: true
+        protocol: stateless
+        trust: full
+        supports_parallel_tool_calls: false
+        tools: { resources: false, prompts: false }
       {{- end }}
 {{- end }}

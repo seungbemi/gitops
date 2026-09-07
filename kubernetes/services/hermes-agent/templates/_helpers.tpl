@@ -46,6 +46,14 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if and .Values.knowledgeBase.enabled (not .Values.knowledgeBase.mcpUrl) -}}
 {{- fail "knowledgeBase.mcpUrl is required when the knowledge base is enabled" -}}
 {{- end -}}
+{{- if and .Values.homeAssistant.enabled (not .Values.credentialGateway.enabled) -}}{{- fail "homeAssistant.enabled requires credentialGateway.enabled" -}}{{- end -}}
+{{- if and .Values.homeAssistant.enabled (not .Values.homeAssistant.mcpUrl) -}}{{- fail "homeAssistant.mcpUrl is required when enabled" -}}{{- end -}}
+{{- if and .Values.homeAssistant.enabled (not .Values.credentialGateway.homeAssistantUrl) -}}{{- fail "credentialGateway.homeAssistantUrl is required when enabled" -}}{{- end -}}
+{{- if and .Values.homeAssistant.enabled (not .Values.credentialGateway.homeAssistantSecretName) -}}{{- fail "credentialGateway.homeAssistantSecretName is required when enabled" -}}{{- end -}}
+{{- if and .Values.paperless.enabled (not .Values.credentialGateway.enabled) -}}{{- fail "paperless.enabled requires credentialGateway.enabled" -}}{{- end -}}
+{{- if and .Values.paperless.enabled (not .Values.paperless.mcpUrl) -}}{{- fail "paperless.mcpUrl is required when enabled" -}}{{- end -}}
+{{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessUrl) -}}{{- fail "credentialGateway.paperlessUrl is required when enabled" -}}{{- end -}}
+{{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessSecretName) -}}{{- fail "credentialGateway.paperlessSecretName is required when enabled" -}}{{- end -}}
 {{- if and .Values.browser.enabled (not .Values.credentialGateway.enabled) -}}
 {{- fail "browser.enabled requires credentialGateway.enabled" -}}
 {{- end -}}

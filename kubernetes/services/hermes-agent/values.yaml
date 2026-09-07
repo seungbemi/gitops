@@ -34,6 +34,14 @@ knowledgeBase:
   # reviewed knowledge-base tool contract on this loopback endpoint.
   mcpUrl: ""
 
+homeAssistant:
+  enabled: false
+  mcpUrl: ""
+
+paperless:
+  enabled: false
+  mcpUrl: ""
+
 kubernetes:
   apiServiceCidr: 10.96.0.1/32
   # Some CNIs enforce NetworkPolicy after Service DNAT. Supply the actual API
@@ -58,6 +66,18 @@ credentialGateway:
     memberId: ""
     allowedOperations: []
   wikiGraphqlUrl: ""
+  homeAssistantUrl: ""
+  homeAssistantSecretName: unused
+  homeAssistantAuthorization:
+    enabled: false
+    allowedOperations: []
+    allowedServices: []
+    allowedEntityPrefixes: []
+  paperlessUrl: ""
+  paperlessSecretName: unused
+  paperlessAuthorization:
+    enabled: false
+    allowedOperations: []
   github:
     enabled: false
 
@@ -219,6 +239,26 @@ controllers:
               secretKeyRef:
                 name: '{{ .Values.credentialGateway.wikiSecretName }}'
                 key: WIKIJS_API_TOKEN
+          - name: HOME_ASSISTANT_URL
+            value: '{{ .Values.credentialGateway.homeAssistantUrl }}'
+          - name: HOME_ASSISTANT_AUTHORIZATION
+            value: '{{ toJson .Values.credentialGateway.homeAssistantAuthorization }}'
+          - name: HOME_ASSISTANT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.credentialGateway.homeAssistantSecretName }}'
+                key: HOME_ASSISTANT_TOKEN
+                optional: true
+          - name: PAPERLESS_URL
+            value: '{{ .Values.credentialGateway.paperlessUrl }}'
+          - name: PAPERLESS_AUTHORIZATION
+            value: '{{ toJson .Values.credentialGateway.paperlessAuthorization }}'
+          - name: PAPERLESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.credentialGateway.paperlessSecretName }}'
+                key: PAPERLESS_TOKEN
+                optional: true
           - name: APPROVAL_HMAC_KEY
             valueFrom:
               secretKeyRef:
