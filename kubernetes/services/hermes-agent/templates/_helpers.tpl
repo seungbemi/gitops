@@ -53,6 +53,7 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if and .Values.paperless.enabled (not .Values.credentialGateway.enabled) -}}{{- fail "paperless.enabled requires credentialGateway.enabled" -}}{{- end -}}
 {{- if and .Values.paperless.enabled (not .Values.paperless.mcpUrl) -}}{{- fail "paperless.mcpUrl is required when enabled" -}}{{- end -}}
 {{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessUrl) -}}{{- fail "credentialGateway.paperlessUrl is required when enabled" -}}{{- end -}}
+{{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessPublicUrl) -}}{{- fail "credentialGateway.paperlessPublicUrl is required when enabled" -}}{{- end -}}
 {{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessSecretName) -}}{{- fail "credentialGateway.paperlessSecretName is required when enabled" -}}{{- end -}}
 {{- if and .Values.browser.enabled (not .Values.credentialGateway.enabled) -}}
 {{- fail "browser.enabled requires credentialGateway.enabled" -}}

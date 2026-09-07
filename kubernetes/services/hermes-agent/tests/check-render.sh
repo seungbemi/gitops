@@ -111,6 +111,7 @@ grep -Fq '`members/rina` and its descendants' "$rina_rendered"
 grep -Fq 'name: WIKI_AUTHORIZATION' "$admin_rendered"
 grep -Fq 'allowedOperations' "$admin_rendered"
 grep -Fq 'group_allow_from: []' "$rendered"
+grep -Fq 'rich_messages: true' "$rendered"
 grep -Fq 'name: hermes-admin-environment' "$rendered"
 grep -Fq 'url: ${BROWSER_MCP_URL}' "$rendered"
 grep -Fq 'name: hermes-admin-runtime' "$admin_rendered"
@@ -123,7 +124,7 @@ grep -Fq 'port: 8090' "$admin_rendered"
 grep -Fq 'tcpSocket:' "$admin_rendered"
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
-grep -Fq 'sha256:0abc1e611ce37a877995c0793ed3659f87d524197b64ba3886b2e5b440efe97f' "$admin_rendered"
+grep -Fq 'sha256:e945ddd9a73e07d3b39503c4675ed7729121e05b6ee3d6e596affb9f8f12e284' "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1
