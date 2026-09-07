@@ -122,7 +122,7 @@ grep -Fq 'name: hermes-admin-approval' "$admin_rendered"
 grep -Fq 'key: DATABASE_URL' "$admin_rendered"
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
-grep -Fq 'sha256:37d887d798dbffda2a44ab32779aacc1afdd0378e064cacae12815c94bd10eef' "$admin_rendered"
+grep -Fq 'sha256:f938fc90b3adee921383b8f73d2f468aa0ca9b65fb3e5a0f9142dc2ad413a23b' "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1
