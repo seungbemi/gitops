@@ -77,6 +77,7 @@ credentialGateway:
     allowedServices: []
     allowedEntityPrefixes: []
   paperlessUrl: ""
+  paperlessHost: ""
   paperlessSecretName: unused
   paperlessAuthorization:
     enabled: false
@@ -254,6 +255,8 @@ controllers:
                 optional: true
           - name: PAPERLESS_URL
             value: '{{ .Values.credentialGateway.paperlessUrl }}'
+          - name: PAPERLESS_HOST
+            value: '{{ .Values.credentialGateway.paperlessHost }}'
           - name: PAPERLESS_AUTHORIZATION
             value: '{{ toJson .Values.credentialGateway.paperlessAuthorization }}'
           - name: PAPERLESS_TOKEN
