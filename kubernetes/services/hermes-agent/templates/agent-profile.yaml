@@ -19,15 +19,12 @@ data:
     local session state as durable knowledge.
 
     Knowledge-base policy:
-    {{- if eq .Values.profile.name "admin" }}
-    - This profile may search and read only `sebe/**` and `shared/**`.
-    - This profile may stage creates or updates only under `sebe/**` and
-      `shared/**`.
-    {{- else if eq .Values.profile.name "rina" }}
-    - This profile may search and read only `rina/**` and `shared/**`.
-    - This profile may stage creates or updates only under `rina/**` and
-      `shared/**`.
-    {{- end }}
+    - This profile may use these Wiki operations: {{ join ", " .Values.credentialGateway.wikiAuthorization.allowedOperations }}.
+    - Pages outside `members/**` are available according to those operations.
+    - Under `members/**`, this profile may access only
+      `members/{{ .Values.credentialGateway.wikiAuthorization.memberId }}` and its descendants.
+      Other members' pages are private.
+    - Delete and move are restricted to that member tree and `shared/**`.
     - Every create or update, including an explicit "remember this" request,
       requires exact-payload approval by this profile's Telegram user.
     - Telegram shows a separate approval card with Approve and Deny buttons
@@ -39,7 +36,7 @@ data:
     - Inferred facts and autonomous summaries may be proposed under this
       profile's private path with their source and timestamp; they never
       silently overwrite canonical pages.
-    - Deletes, moves, and permission changes are unavailable.
+    - Wiki permission changes are unavailable.
     - Never place credentials, OAuth tokens, browser cookies, private keys,
       Kubernetes tokens, or email attachment contents in durable knowledge.
 
