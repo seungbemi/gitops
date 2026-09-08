@@ -1,44 +1,575 @@
 {
-  "annotations": {"list": []},
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "graphTooltip": 1,
   "id": null,
   "links": [],
   "panels": [
-    {"type":"row","title":"Overview","gridPos":{"h":1,"w":24,"x":0,"y":0},"collapsed":false,"panels":[]},
-    {"type":"stat","title":"Availability","gridPos":{"h":5,"w":3,"x":0,"y":1},"targets":[{"expr":"min(max by(profile,service)(hermes_dependency_health{profile=~\"$profile\",state=~\"healthy|disabled\"}))","legendFormat":"available"}],"fieldConfig":{"defaults":{"mappings":[{"type":"value","options":{"0":{"text":"Unavailable","color":"red"},"1":{"text":"Healthy","color":"green"}}}],"thresholds":{"mode":"absolute","steps":[{"color":"red"},{"color":"green","value":1}]}}}},
-    {"type":"stat","title":"Completed / failed turns","gridPos":{"h":5,"w":4,"x":3,"y":1},"targets":[{"expr":"sum(increase(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"session_end\",outcome=~\"success|completed\"}[$__range]))","legendFormat":"completed"},{"expr":"sum(increase(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"session_end\",outcome!~\"success|completed\"}[$__range]))","legendFormat":"failed"}]},
-    {"type":"stat","title":"p50 / p95 gateway latency","gridPos":{"h":5,"w":4,"x":7,"y":1},"targets":[{"expr":"histogram_quantile(0.50,sum by(le)(rate(hermes_gateway_request_duration_seconds_bucket{profile=~\"$profile\"}[$__rate_interval])))","legendFormat":"p50"},{"expr":"histogram_quantile(0.95,sum by(le)(rate(hermes_gateway_request_duration_seconds_bucket{profile=~\"$profile\"}[$__rate_interval])))","legendFormat":"p95"}],"fieldConfig":{"defaults":{"unit":"s"}}},
-    {"type":"stat","title":"Provider cost (day / month)","gridPos":{"h":5,"w":4,"x":11,"y":1},"targets":[{"expr":"sum(increase(hermes_model_provider_cost_total{profile=~\"$profile\"}[1d]))","legendFormat":"day"},{"expr":"sum(increase(hermes_model_provider_cost_total{profile=~\"$profile\"}[30d]))","legendFormat":"30 days"}],"fieldConfig":{"defaults":{"unit":"currencyUSD"}}},
-    {"type":"stat","title":"Restarts (1h)","gridPos":{"h":5,"w":4,"x":15,"y":1},"targets":[{"expr":"sum(increase(kube_pod_container_status_restarts_total{namespace=\"services\",pod=~\"hermes-.*|paperless-.*\"}[1h]))","legendFormat":"restarts"}]},
-    {"type":"stat","title":"Dependency state","gridPos":{"h":5,"w":5,"x":19,"y":1},"targets":[{"expr":"hermes_dependency_health{profile=~\"$profile\"} == 1","legendFormat":"{{service}}: {{state}}"}]},
-    {"type":"row","title":"Model efficiency","gridPos":{"h":1,"w":24,"x":0,"y":6},"collapsed":false,"panels":[]},
-    {"type":"timeseries","title":"Model calls and distribution","gridPos":{"h":7,"w":8,"x":0,"y":7},"targets":[{"expr":"sum by(model,provider)(rate(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"api_response\",model=~\"$model\",provider=~\"$provider\"}[$__rate_interval]))","legendFormat":"{{model}} / {{provider}}"}]},
-    {"type":"timeseries","title":"Token categories and cache ratio","gridPos":{"h":7,"w":8,"x":8,"y":7},"targets":[{"expr":"sum by(category)(rate(hermes_model_tokens_total{profile=~\"$profile\",model=~\"$model\",provider=~\"$provider\"}[$__rate_interval]))","legendFormat":"{{category}}"},{"expr":"sum(rate(hermes_model_tokens_total{profile=~\"$profile\",category=\"cached\"}[$__rate_interval])) / sum(rate(hermes_model_tokens_total{profile=~\"$profile\",category=~\"input|cached\"}[$__rate_interval]))","legendFormat":"cache ratio"}]},
-    {"type":"timeseries","title":"Cost per completed turn and retries","gridPos":{"h":7,"w":8,"x":16,"y":7},"targets":[{"expr":"sum(rate(hermes_model_provider_cost_total{profile=~\"$profile\"}[$__rate_interval])) / sum(rate(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"session_end\",outcome=~\"success|completed\"}[$__rate_interval]))","legendFormat":"cost / completed turn"},{"expr":"sum by(model)(rate(hermes_model_retries_total{profile=~\"$profile\"}[$__rate_interval]))","legendFormat":"{{model}} retries"}]},
-    {"type":"row","title":"Tools and integrations","gridPos":{"h":1,"w":24,"x":0,"y":14},"collapsed":false,"panels":[]},
-    {"type":"timeseries","title":"Tool volume and failures","gridPos":{"h":7,"w":12,"x":0,"y":15},"targets":[{"expr":"sum by(tool,outcome)(rate(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"post_tool_call\",tool=~\"$service\"}[$__rate_interval]))","legendFormat":"{{tool}} {{outcome}}"}]},
-    {"type":"timeseries","title":"Upstream latency and categorized failures","gridPos":{"h":7,"w":12,"x":12,"y":15},"targets":[{"expr":"histogram_quantile(0.95,sum by(le,service)(rate(hermes_upstream_request_duration_seconds_bucket{profile=~\"$profile\",service=~\"$service\"}[$__rate_interval])))","legendFormat":"{{service}} p95"},{"expr":"sum by(service,error_category)(rate(hermes_upstream_requests_total{profile=~\"$profile\",service=~\"$service\",outcome=\"failure\"}[$__rate_interval]))","legendFormat":"{{service}} {{error_category}}"}]},
-    {"type":"row","title":"Approvals","gridPos":{"h":1,"w":24,"x":0,"y":22},"collapsed":false,"panels":[]},
-    {"type":"timeseries","title":"Approval outcomes","gridPos":{"h":7,"w":12,"x":0,"y":23},"targets":[{"expr":"sum by(service,outcome)(increase(hermes_approvals_total{profile=~\"$profile\"}[$__rate_interval]))","legendFormat":"{{service}} {{outcome}}"}]},
-    {"type":"timeseries","title":"Approval decision latency","gridPos":{"h":7,"w":12,"x":12,"y":23},"targets":[{"expr":"histogram_quantile(0.95,sum by(le,service,outcome)(rate(hermes_approval_decision_duration_seconds_bucket{profile=~\"$profile\"}[$__rate_interval])))","legendFormat":"{{service}} {{outcome}} p95"}],"fieldConfig":{"defaults":{"unit":"s"}}},
-    {"type":"row","title":"Runtime","gridPos":{"h":1,"w":24,"x":0,"y":30},"collapsed":false,"panels":[]},
-    {"type":"timeseries","title":"CPU and memory","gridPos":{"h":7,"w":8,"x":0,"y":31},"targets":[{"expr":"sum(rate(container_cpu_usage_seconds_total{namespace=\"services\",pod=~\"hermes-$profile-.*\"}[$__rate_interval]))","legendFormat":"CPU"},{"expr":"sum(container_memory_working_set_bytes{namespace=\"services\",pod=~\"hermes-$profile-.*\"})","legendFormat":"memory"}]},
-    {"type":"timeseries","title":"PVC free capacity and telemetry drops","gridPos":{"h":7,"w":8,"x":8,"y":31},"targets":[{"expr":"min(kubelet_volume_stats_available_bytes{namespace=\"services\",persistentvolumeclaim=~\"hermes.*\"} / kubelet_volume_stats_capacity_bytes{namespace=\"services\",persistentvolumeclaim=~\"hermes.*\"})","legendFormat":"PVC free ratio"},{"expr":"sum(increase(hermes_telemetry_dropped_total{profile=~\"$profile\"}[$__rate_interval]))","legendFormat":"telemetry drops"}]},
-    {"type":"stat","title":"Browser availability and proxy decisions","gridPos":{"h":7,"w":8,"x":16,"y":31},"targets":[{"expr":"max(kube_deployment_status_replicas_available{namespace=\"services\",deployment=~\"hermes-browser-($profile)\"})","legendFormat":"available"},{"expr":"sum by(decision)(increase(hermes_browser_proxy_requests_total{profile=~\"$profile\"}[$__range]))","legendFormat":"{{decision}}"}]}
+    {
+      "type": "row",
+      "title": "Overview",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "stat",
+      "title": "Availability",
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "min(max by(profile,service)(hermes_dependency_health{profile=~\"$profile\",state=~\"healthy|disabled\"}))",
+          "legendFormat": "available"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Unavailable",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Healthy",
+                  "color": "green"
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red"
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Completed / failed turns",
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 3,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"session_end\",outcome=~\"success|completed\"}[$__range]))",
+          "legendFormat": "completed"
+        },
+        {
+          "expr": "sum(increase(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"session_end\",outcome!~\"success|completed\"}[$__range]))",
+          "legendFormat": "failed"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "p50 / p95 gateway latency",
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 7,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50,sum by(le)(rate(hermes_gateway_request_duration_seconds_bucket{profile=~\"$profile\"}[$__rate_interval])))",
+          "legendFormat": "p50"
+        },
+        {
+          "expr": "histogram_quantile(0.95,sum by(le)(rate(hermes_gateway_request_duration_seconds_bucket{profile=~\"$profile\"}[$__rate_interval])))",
+          "legendFormat": "p95"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Provider cost (day / month)",
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 11,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(hermes_llm_cost_usd_total{profile=~\"$profile\"}[1d]))",
+          "legendFormat": "day"
+        },
+        {
+          "expr": "sum(increase(hermes_llm_cost_usd_total{profile=~\"$profile\"}[30d]))",
+          "legendFormat": "30 days"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Restarts (1h)",
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 15,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"services\",pod=~\"hermes-.*|paperless-.*\"}[1h]))",
+          "legendFormat": "restarts"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Dependency state",
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "hermes_dependency_health{profile=~\"$profile\"} == 1",
+          "legendFormat": "{{service}}: {{state}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Model efficiency",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Model calls and distribution",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 7
+      },
+      "targets": [
+        {
+          "expr": "sum by(response_model,provider,routing_mode)(rate(hermes_llm_requests_total{profile=~\"$profile\",response_model=~\"$model\",provider=~\"$provider\",outcome=\"success\"}[$__rate_interval]))",
+          "legendFormat": "{{response_model}} / {{provider}} / {{routing_mode}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Token categories and cache ratio",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 7
+      },
+      "targets": [
+        {
+          "expr": "sum by(direction,model)(rate(hermes_llm_tokens_total{profile=~\"$profile\",model=~\"$model\",provider=~\"$provider\"}[$__rate_interval]))",
+          "legendFormat": "{{model}} {{direction}}"
+        },
+        {
+          "expr": "sum(rate(hermes_llm_tokens_total{profile=~\"$profile\",direction=\"cached\"}[$__rate_interval])) / sum(rate(hermes_llm_tokens_total{profile=~\"$profile\",direction=~\"input|cached\"}[$__rate_interval]))",
+          "legendFormat": "cache ratio"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Cost per completed turn and retries",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 7
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(hermes_llm_cost_usd_total{profile=~\"$profile\"}[$__rate_interval])) / sum(rate(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"session_end\",outcome=~\"success|completed\"}[$__rate_interval]))",
+          "legendFormat": "cost / completed turn"
+        },
+        {
+          "expr": "sum by(requested_model,response_model)(rate(hermes_llm_fallbacks_total{profile=~\"$profile\"}[$__rate_interval]))",
+          "legendFormat": "{{requested_model}} \u2192 {{response_model}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Tools and integrations",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Tool volume and failures",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "targets": [
+        {
+          "expr": "sum by(tool,outcome)(rate(hermes_telemetry_events_total{profile=~\"$profile\",event_type=\"post_tool_call\",tool=~\"$service\"}[$__rate_interval]))",
+          "legendFormat": "{{tool}} {{outcome}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Upstream latency and categorized failures",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95,sum by(le,service)(rate(hermes_upstream_request_duration_seconds_bucket{profile=~\"$profile\",service=~\"$service\"}[$__rate_interval])))",
+          "legendFormat": "{{service}} p95"
+        },
+        {
+          "expr": "sum by(service,error_category)(rate(hermes_upstream_requests_total{profile=~\"$profile\",service=~\"$service\",outcome=\"failure\"}[$__rate_interval]))",
+          "legendFormat": "{{service}} {{error_category}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Approvals",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Approval outcomes",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 23
+      },
+      "targets": [
+        {
+          "expr": "sum by(service,outcome)(increase(hermes_approvals_total{profile=~\"$profile\"}[$__rate_interval]))",
+          "legendFormat": "{{service}} {{outcome}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Approval decision latency",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 23
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95,sum by(le,service,outcome)(rate(hermes_approval_decision_duration_seconds_bucket{profile=~\"$profile\"}[$__rate_interval])))",
+          "legendFormat": "{{service}} {{outcome}} p95"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Runtime",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU and memory",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 31
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"services\",pod=~\"hermes-$profile-.*\"}[$__rate_interval]))",
+          "legendFormat": "CPU"
+        },
+        {
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"services\",pod=~\"hermes-$profile-.*\"})",
+          "legendFormat": "memory"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "PVC free capacity and telemetry drops",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 31
+      },
+      "targets": [
+        {
+          "expr": "min(kubelet_volume_stats_available_bytes{namespace=\"services\",persistentvolumeclaim=~\"hermes.*\"} / kubelet_volume_stats_capacity_bytes{namespace=\"services\",persistentvolumeclaim=~\"hermes.*\"})",
+          "legendFormat": "PVC free ratio"
+        },
+        {
+          "expr": "sum(increase(hermes_telemetry_dropped_total{profile=~\"$profile\"}[$__rate_interval]))",
+          "legendFormat": "telemetry drops"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Browser availability and proxy decisions",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 31
+      },
+      "targets": [
+        {
+          "expr": "max(kube_deployment_status_replicas_available{namespace=\"services\",deployment=~\"hermes-browser-($profile)\"})",
+          "legendFormat": "available"
+        },
+        {
+          "expr": "sum by(decision)(increase(hermes_browser_proxy_requests_total{profile=~\"$profile\"}[$__range]))",
+          "legendFormat": "{{decision}}"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Scheduled tasks",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 38
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Scheduled run outcomes",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 39
+      },
+      "targets": [
+        {
+          "expr": "sum by(outcome)(increase(hermes_scheduled_runs_total{profile=~\"$profile\"}[$__range]))",
+          "legendFormat": "{{outcome}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Scheduled run duration",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 39
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95,sum by(le,outcome)(rate(hermes_scheduled_run_duration_seconds_bucket{profile=~\"$profile\"}[$__rate_interval])))",
+          "legendFormat": "{{outcome}} p95"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "LLM routing and fallbacks",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 39
+      },
+      "targets": [
+        {
+          "expr": "sum by(response_model,routing_mode)(rate(hermes_llm_requests_total{profile=~\"$profile\"}[$__rate_interval]))",
+          "legendFormat": "{{response_model}} {{routing_mode}}"
+        },
+        {
+          "expr": "sum by(requested_model,response_model)(increase(hermes_llm_fallbacks_total{profile=~\"$profile\"}[$__range]))",
+          "legendFormat": "fallback {{requested_model}} \u2192 {{response_model}}"
+        }
+      ]
+    }
   ],
   "refresh": "30s",
   "schemaVersion": 41,
-  "tags": ["hermes"],
-  "templating": {"list": [
-    {"name":"profile","type":"query","datasource":{"type":"prometheus","uid":"prometheus"},"query":{"query":"label_values(hermes_gateway_requests_total, profile)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
-    {"name":"service","type":"query","datasource":{"type":"prometheus","uid":"prometheus"},"query":{"query":"label_values(hermes_upstream_requests_total{profile=~\"$profile\"}, service)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
-    {"name":"model","type":"query","datasource":{"type":"prometheus","uid":"prometheus"},"query":{"query":"label_values(hermes_telemetry_events_total{profile=~\"$profile\"}, model)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
-    {"name":"provider","type":"query","datasource":{"type":"prometheus","uid":"prometheus"},"query":{"query":"label_values(hermes_telemetry_events_total{profile=~\"$profile\"}, provider)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2}
-  ]},
-  "time": {"from":"now-24h","to":"now"},
+  "tags": [
+    "hermes"
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "profile",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": {
+          "query": "label_values(hermes_gateway_requests_total, profile)"
+        },
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "allValue": ".*",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2
+      },
+      {
+        "name": "service",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": {
+          "query": "label_values(hermes_upstream_requests_total{profile=~\"$profile\"}, service)"
+        },
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "allValue": ".*",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2
+      },
+      {
+        "name": "model",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": {
+          "query": "label_values(hermes_llm_requests_total{profile=~\"$profile\"}, response_model)"
+        },
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "allValue": ".*",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2
+      },
+      {
+        "name": "provider",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": {
+          "query": "label_values(hermes_llm_requests_total{profile=~\"$profile\"}, provider)"
+        },
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "allValue": ".*",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
   "timezone": "browser",
   "title": "Hermes Stabilization and Observability",
   "uid": "hermes-observability",
-  "version": 1
+  "version": 2
 }

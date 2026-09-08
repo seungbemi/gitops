@@ -9,6 +9,15 @@ apps:
     path: kubernetes/monitoring/prometheus
     skipCrds: true
     sync: true
+    # The Alertmanager CRD prunes an explicit false value, while the upstream
+    # chart renders it. Ignore that API-normalized field to prevent perpetual drift.
+    ignoreDifferences:
+      - group: monitoring.coreos.com
+        kind: Alertmanager
+        name: prometheus-alertmanager
+        namespace: monitoring
+        jsonPointers:
+          - /spec/hostNetwork
 
   - name: prometheus-crds
     repoURL: https://github.com/prometheus-community/helm-charts.git

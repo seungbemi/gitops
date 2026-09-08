@@ -77,4 +77,16 @@ spec:
             severity: warning
           annotations:
             summary: "Hermes telemetry events were dropped"
+        - alert: HermesLLMHighFailureRatio
+          expr: sum(rate(hermes_llm_requests_total{profile="{{ .Values.profile.name }}",outcome!="success"}[15m])) / sum(rate(hermes_llm_requests_total{profile="{{ .Values.profile.name }}"}[15m])) > 0.20 and sum(increase(hermes_llm_requests_total{profile="{{ .Values.profile.name }}"}[15m])) >= 10
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes LLM failure ratio is above 20%"
+        - alert: HermesLLMDailyBudgetExceeded
+          expr: sum(increase(hermes_llm_cost_usd_total{profile="{{ .Values.profile.name }}"}[24h])) > {{ .Values.model.routing.dailyBudgetUSD }}
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes exceeded its configured daily LLM budget"
 {{- end }}
