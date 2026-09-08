@@ -11,6 +11,12 @@ The admin agent sends `openrouter/auto` requests through policy middleware:
 - fallback: `openai/gpt-5.6-luna`
 - daily cost alert: $5
 
+Premium Sonnet is intentionally excluded from the automatic pool after the
+initial canary repeatedly selected it for ordinary browsing. It remains
+available through Hermes's explicit `/model` picker when a task warrants the
+additional cost. Web discovery uses Hermes's dedicated `web_search` tool and
+its result cache; it does not require a model-native paid search feature.
+
 The allowlist is deliberately exact. Review a new model with the evaluation
 suite before adding it; never replace exact IDs with provider-family wildcards.
 The initial entries form a canary pool selected from the live OpenRouter

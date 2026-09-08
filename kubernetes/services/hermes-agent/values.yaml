@@ -26,7 +26,6 @@ model:
       - openai/gpt-5.6-luna-pro
       - openai/gpt-5-mini
       - google/gemini-2.5-flash
-      - anthropic/claude-sonnet-5
     maxPriceUSDPerMillion:
       prompt: 3
       completion: 15
@@ -43,6 +42,15 @@ agent:
   # Bound both spend and runaway tool loops. Expensive or complex work can use
   # a stronger model explicitly for a single turn or session.
   maxTurns: 15
+
+webSearch:
+  enabled: false
+  # Hermes rotates among its bundled anonymous search providers when no
+  # provider key is configured and caches successful results to avoid repeat
+  # lookups during an agent turn.
+  keylessFallback: true
+  cacheEnabled: true
+  cacheTtlMinutes: 20
 
 browser:
   enabled: false

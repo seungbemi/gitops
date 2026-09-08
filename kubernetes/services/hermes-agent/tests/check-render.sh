@@ -151,6 +151,14 @@ if sed -n '/disabled_toolsets:/,/platform_toolsets:/p' "$admin_rendered" | grep 
   exit 1
 fi
 sed -n '/platform_toolsets:/,/approvals:/p' "$admin_rendered" | grep -Fq -- '- cronjob'
+sed -n '/platform_toolsets:/,/approvals:/p' "$admin_rendered" | grep -Fq -- '- web'
+if sed -n '/disabled_toolsets:/,/platform_toolsets:/p' "$admin_rendered" | grep -Fq -- '- web'; then
+  echo 'admin rollout must enable the web toolset' >&2
+  exit 1
+fi
+grep -Fq 'keyless_fallback: true' "$admin_rendered"
+grep -Fq 'cache_enabled: true' "$admin_rendered"
+grep -Fq 'cache_ttl_minutes: 20' "$admin_rendered"
 scheduled_rendered="$(helm template hermes-admin "$chart_dir" --namespace services \
   --values "$chart_dir/profiles/admin.yaml" \
   --set 'profile.telegram.allowedUserIds[0]=123456789' \
@@ -165,6 +173,10 @@ grep -Fq 'default: "openrouter/auto"' <<<"$scheduled_rendered"
 grep -Fq 'model: "openrouter/auto"' <<<"$scheduled_rendered"
 grep -A2 -F 'fallback_model:' <<<"$scheduled_rendered" | grep -Fq 'model: "openai/gpt-5.6-luna"'
 sed -n '/platform_toolsets:/,/approvals:/p' <<<"$scheduled_rendered" | grep -Fq -- '- cronjob'
+if grep -A1 -F 'name: HERMES_ROUTING_ALLOWED_MODELS' "$admin_rendered" | grep -Fq 'anthropic/claude-sonnet-5'; then
+  echo 'premium Sonnet must require explicit model selection' >&2
+  exit 1
+fi
 if helm template hermes-rina "$chart_dir" --namespace services \
   --values "$chart_dir/profiles/rina.yaml" \
   --set 'profile.enabled=true' \

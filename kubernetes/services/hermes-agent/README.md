@@ -156,6 +156,13 @@ OpenRouter's reliability-aware load balancing. The approval plugin adds these
 controls through Hermes's LLM request middleware and captures content-free
 router metadata through execution middleware.
 
+The automatic pool excludes premium Sonnet after the initial canary selected
+it for ordinary browsing. Administrators can still choose it explicitly with
+`/model` for a turn or session. The admin profile enables Hermes's dedicated
+`web_search` and `web_extract` tools with the bundled keyless provider fallback
+and a 20-minute successful-result cache. Search queries are sent to the active
+search provider; prompts and unrelated conversation content are not.
+
 Use [ROUTING_RUNBOOK.md](ROUTING_RUNBOOK.md) for the weekly review and the
 criteria for changing tiers, models, or price ceilings.
 

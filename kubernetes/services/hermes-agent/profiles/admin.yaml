@@ -18,6 +18,9 @@ model:
   routing:
     enabled: true
 
+webSearch:
+  enabled: true
+
 browser:
   enabled: false
 
