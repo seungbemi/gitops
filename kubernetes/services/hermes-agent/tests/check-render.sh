@@ -134,6 +134,8 @@ grep -Fq 'app.kubernetes.io/name: prometheus' "$admin_rendered"
 grep -Fq 'HermesTelemetryDrops' "$admin_rendered"
 grep -Fq 'HermesLLMDailyBudgetExceeded' "$admin_rendered"
 grep -Fq 'model_drift_guard: true' "$admin_rendered"
+grep -Fq 'default: "openrouter/auto"' "$admin_rendered"
+grep -A2 -F 'fallback_model:' "$admin_rendered" | grep -Fq 'model: "openai/gpt-5.6-luna"'
 if sed -n '/disabled_toolsets:/,/platform_toolsets:/p' "$admin_rendered" | grep -Fq -- '- cronjob'; then
   echo 'admin rollout must enable the cronjob toolset' >&2
   exit 1
