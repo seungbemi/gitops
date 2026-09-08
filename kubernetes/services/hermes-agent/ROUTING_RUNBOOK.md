@@ -13,6 +13,8 @@ The admin agent sends `openrouter/auto` requests through policy middleware:
 
 The allowlist is deliberately exact. Review a new model with the evaluation
 suite before adding it; never replace exact IDs with provider-family wildcards.
+The initial entries form a canary pool selected from the live OpenRouter
+catalog; retain each entry only after it meets the weekly evaluation gates.
 
 ## Data collected
 
