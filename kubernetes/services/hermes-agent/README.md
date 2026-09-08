@@ -148,6 +148,17 @@ Provider-reported cost, tokens, response model, latency, retries, and fallback
 counts are exposed through the policy gateway. Prompts and responses are not.
 The configured daily budget is an alert threshold.
 
+The admin profile applies `medium` Auto Router cost tier, an explicit tested
+model allowlist, and provider price ceilings of $3/M input and $15/M output
+tokens. Provider endpoints must support every requested parameter and deny
+data collection. Do not set `provider_routing.sort: price`: that disables
+OpenRouter's reliability-aware load balancing. The approval plugin adds these
+controls through Hermes's LLM request middleware and captures content-free
+router metadata through execution middleware.
+
+Use [ROUTING_RUNBOOK.md](ROUTING_RUNBOOK.md) for the weekly review and the
+criteria for changing tiers, models, or price ceilings.
+
 ## Scheduled tasks
 
 `scheduling.enabled` exposes Hermes's built-in `cronjob` tool while retaining

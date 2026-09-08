@@ -14,7 +14,6 @@ data:
       default: {{ ternary .Values.model.routing.autoModel .Values.model.main .Values.model.routing.enabled | quote }}
       persist_switch_by_default: false
     provider_routing:
-      sort: price
       require_parameters: true
       data_collection: deny
     {{- if .Values.model.routing.enabled }}

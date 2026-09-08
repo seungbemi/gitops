@@ -456,7 +456,7 @@
     },
     {
       "type": "timeseries",
-      "title": "LLM routing and fallbacks",
+      "title": "LLM routing decisions and fallbacks",
       "gridPos": {
         "h": 7,
         "w": 8,
@@ -471,6 +471,18 @@
         {
           "expr": "sum by(requested_model,response_model)(increase(hermes_llm_fallbacks_total{profile=~\"$profile\"}[$__range]))",
           "legendFormat": "fallback {{requested_model}} \u2192 {{response_model}}"
+        },
+        {
+          "expr": "sum by(task_type,response_model,cost_tier)(rate(hermes_llm_router_decisions_total{profile=~\"$profile\"}[$__rate_interval]))",
+          "legendFormat": "{{task_type}} \u2192 {{response_model}} ({{cost_tier}})"
+        },
+        {
+          "expr": "sum by(response_model)(rate(hermes_llm_router_attempts_total{profile=~\"$profile\"}[$__rate_interval]))",
+          "legendFormat": "provider attempts {{response_model}}"
+        },
+        {
+          "expr": "sum(rate(hermes_llm_router_decisions_total{profile=~\"$profile\",metadata_available=\"true\"}[$__rate_interval])) / sum(rate(hermes_llm_router_decisions_total{profile=~\"$profile\"}[$__rate_interval]))",
+          "legendFormat": "metadata coverage"
         }
       ]
     }

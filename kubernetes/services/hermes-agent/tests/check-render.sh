@@ -136,6 +136,16 @@ grep -Fq 'HermesLLMDailyBudgetExceeded' "$admin_rendered"
 grep -Fq 'model_drift_guard: true' "$admin_rendered"
 grep -Fq 'default: "openrouter/auto"' "$admin_rendered"
 grep -A2 -F 'fallback_model:' "$admin_rendered" | grep -Fq 'model: "openai/gpt-5.6-luna"'
+if grep -Fq 'sort: price' "$admin_rendered"; then
+  echo 'explicit price sorting disables reliability-aware provider routing' >&2
+  exit 1
+fi
+grep -Fq 'name: HERMES_AUTO_ROUTING_POLICY_ENABLED' "$admin_rendered"
+grep -A1 -F 'name: HERMES_AUTO_ROUTING_POLICY_ENABLED' "$admin_rendered" | grep -Fq 'value: "true"'
+grep -A1 -F 'name: HERMES_ROUTING_COST_TIER' "$admin_rendered" | grep -Fq 'value: medium'
+grep -A1 -F 'name: HERMES_ROUTING_ALLOWED_MODELS' "$admin_rendered" | grep -Fq 'openai/gpt-5.6-luna'
+grep -A1 -F 'name: HERMES_ROUTING_MAX_PROMPT_USD_PER_MILLION' "$admin_rendered" | grep -Fq 'value: "3"'
+grep -A1 -F 'name: HERMES_ROUTING_MAX_COMPLETION_USD_PER_MILLION' "$admin_rendered" | grep -Fq 'value: "15"'
 if sed -n '/disabled_toolsets:/,/platform_toolsets:/p' "$admin_rendered" | grep -Fq -- '- cronjob'; then
   echo 'admin rollout must enable the cronjob toolset' >&2
   exit 1
@@ -166,8 +176,8 @@ if helm template hermes-rina "$chart_dir" --namespace services \
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
-grep -Fq 'sha256:f0cc9624fdf73951fdbf0913cdb69b6cdbcd5105e649378a59e4fba1df1f36e2' "$admin_rendered"
-grep -Fq 'sha256:481e55422b4fc34d8894d55330dbc5fafc8e786398caef8fedb04a6e019fb37b' "$chart_dir/values.yaml"
+grep -Fq 'sha256:ed0bf51db63ce7f1f58888964a6e86df5c3879473de861be5a8e98b2288a4d44' "$admin_rendered"
+grep -Fq 'sha256:c2fc4b7b6b4effa63e14012c624a0bd1752671abdc36792bf497e22d88d4ca1b' "$chart_dir/values.yaml"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1
