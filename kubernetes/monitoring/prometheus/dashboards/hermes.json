@@ -31,10 +31,10 @@
   "schemaVersion": 41,
   "tags": ["hermes"],
   "templating": {"list": [
-    {"name":"profile","type":"query","datasource":{"type":"prometheus","uid":"${DS_PROMETHEUS}"},"query":{"query":"label_values(hermes_gateway_requests_total, profile)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
-    {"name":"service","type":"query","datasource":{"type":"prometheus","uid":"${DS_PROMETHEUS}"},"query":{"query":"label_values(hermes_upstream_requests_total{profile=~\"$profile\"}, service)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
-    {"name":"model","type":"query","datasource":{"type":"prometheus","uid":"${DS_PROMETHEUS}"},"query":{"query":"label_values(hermes_telemetry_events_total{profile=~\"$profile\"}, model)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
-    {"name":"provider","type":"query","datasource":{"type":"prometheus","uid":"${DS_PROMETHEUS}"},"query":{"query":"label_values(hermes_telemetry_events_total{profile=~\"$profile\"}, provider)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2}
+    {"name":"profile","type":"query","datasource":{"type":"prometheus","uid":"prometheus"},"query":{"query":"label_values(hermes_gateway_requests_total, profile)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
+    {"name":"service","type":"query","datasource":{"type":"prometheus","uid":"prometheus"},"query":{"query":"label_values(hermes_upstream_requests_total{profile=~\"$profile\"}, service)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
+    {"name":"model","type":"query","datasource":{"type":"prometheus","uid":"prometheus"},"query":{"query":"label_values(hermes_telemetry_events_total{profile=~\"$profile\"}, model)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2},
+    {"name":"provider","type":"query","datasource":{"type":"prometheus","uid":"prometheus"},"query":{"query":"label_values(hermes_telemetry_events_total{profile=~\"$profile\"}, provider)"},"current":{"selected":true,"text":"All","value":"$__all"},"allValue":".*","includeAll":true,"multi":true,"refresh":2}
   ]},
   "time": {"from":"now-24h","to":"now"},
   "timezone": "browser",
