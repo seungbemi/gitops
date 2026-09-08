@@ -331,7 +331,7 @@ controllers:
               timeoutSeconds: 3
               failureThreshold: 3
         ports:
-          metrics:
+          - name: metrics
             containerPort: 9090
             protocol: TCP
         securityContext:
