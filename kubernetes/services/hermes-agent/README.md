@@ -148,7 +148,7 @@ Provider-reported cost, tokens, response model, latency, retries, and fallback
 counts are exposed through the policy gateway. Prompts and responses are not.
 The configured daily budget is an alert threshold.
 
-The admin profile applies `medium` Auto Router cost tier, an explicit tested
+The admin profile applies `medium` Auto Router cost tier, a controlled exact
 model allowlist, and provider price ceilings of $3/M input and $15/M output
 tokens. Provider endpoints must support every requested parameter and deny
 data collection. Do not set `provider_routing.sort: price`: that disables
