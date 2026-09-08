@@ -67,6 +67,9 @@ controllers:
               httpGet:
                 path: /api/
                 port: 8000
+                httpHeaders:
+                  - name: Host
+                    value: localhost
               periodSeconds: 30
               timeoutSeconds: 3
               failureThreshold: 3
@@ -77,6 +80,9 @@ controllers:
               httpGet:
                 path: /api/
                 port: 8000
+                httpHeaders:
+                  - name: Host
+                    value: localhost
               periodSeconds: 10
               timeoutSeconds: 3
               failureThreshold: 3
@@ -87,6 +93,9 @@ controllers:
               httpGet:
                 path: /api/
                 port: 8000
+                httpHeaders:
+                  - name: Host
+                    value: localhost
               periodSeconds: 5
               timeoutSeconds: 3
               failureThreshold: 60

@@ -15,5 +15,9 @@ grep -Fq 'failureThreshold: 60' "$rendered"
 grep -Fq 'periodSeconds: 10' "$rendered"
 grep -Fq 'periodSeconds: 30' "$rendered"
 grep -Fq 'timeoutSeconds: 3' "$rendered"
+if [ "$(grep -c 'value: localhost' "$rendered")" -ne 3 ]; then
+  echo "all Paperless probes must use an allowed localhost Host header" >&2
+  exit 1
+fi
 
 echo "Paperless chart probe checks passed"
