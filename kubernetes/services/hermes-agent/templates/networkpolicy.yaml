@@ -11,6 +11,17 @@ spec:
       hermes-profile: {{ .Values.profile.name | quote }}
   policyTypes: [Ingress, Egress]
   ingress:
+    {{- if .Values.credentialGateway.enabled }}
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - { protocol: TCP, port: 9090 }
+    {{- end }}
     {{- if and .Values.credentialGateway.enabled .Values.browser.enabled }}
     - from:
         - podSelector:
@@ -19,7 +30,7 @@ spec:
               hermes-profile: {{ .Values.profile.name | quote }}
       ports:
         - { protocol: TCP, port: 8081 }
-    {{- else }}
+    {{- else if not .Values.credentialGateway.enabled }}
     []
     {{- end }}
   egress:

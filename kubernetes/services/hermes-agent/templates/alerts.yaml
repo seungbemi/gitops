@@ -40,4 +40,41 @@ spec:
             severity: warning
           annotations:
             summary: "Hermes PVC {{ `{{ $labels.persistentvolumeclaim }}` }} has less than 15% free"
+        - alert: HermesUnknownApprovalOutcome
+          expr: increase(hermes_approvals_total{profile="{{ .Values.profile.name }}",outcome="unknown"}[15m]) > 0
+          labels:
+            severity: critical
+          annotations:
+            summary: "Hermes reported an approval with an unknown outcome"
+        - alert: HermesDependencyUnavailable
+          expr: hermes_dependency_health{profile="{{ .Values.profile.name }}",state="unavailable"} == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes dependency {{ `{{ $labels.service }}` }} is unavailable"
+        - alert: HermesGatewayHighErrorRatio
+          expr: sum(rate(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}",status=~"5.."}[15m])) / sum(rate(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}"}[15m])) > 0.20 and sum(increase(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}"}[15m])) >= 10
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes gateway error ratio is above 20%"
+        - alert: HermesToolHighFailureRatio
+          expr: sum(rate(hermes_telemetry_events_total{profile="{{ .Values.profile.name }}",event_type="post_tool_call",outcome=~"error|failed|failure|timeout|unavailable"}[15m])) / sum(rate(hermes_telemetry_events_total{profile="{{ .Values.profile.name }}",event_type="post_tool_call"}[15m])) > 0.25 and sum(increase(hermes_telemetry_events_total{profile="{{ .Values.profile.name }}",event_type="post_tool_call"}[15m])) >= 10
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes tool failure ratio is above 25%"
+        - alert: HermesFrequentRestarts
+          expr: sum(increase(kube_pod_container_status_restarts_total{namespace="services",pod=~"hermes-{{ .Values.profile.name }}-.*|paperless-.*"}[1h])) >= 3
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes or Paperless restarted at least three times in one hour"
+        - alert: HermesTelemetryDrops
+          expr: increase(hermes_telemetry_dropped_total{profile="{{ .Values.profile.name }}"}[15m]) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes telemetry events were dropped"
 {{- end }}

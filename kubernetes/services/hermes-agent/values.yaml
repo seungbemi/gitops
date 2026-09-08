@@ -53,6 +53,8 @@ kubernetes:
   apiEndpointPort: 6443
 
 monitoring:
+  podMonitor:
+    enabled: true
   prometheusRule:
     enabled: true
 
@@ -61,7 +63,7 @@ credentialGateway:
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
     tag: latest
-    digest: sha256:e0803b91a652ba76b64576cd99c4ba28f5003157a77c32ac3818a5a54178d3c9
+    digest: sha256:415582c4e7a1c4623d7f2faee8a478bd6e7d3fb2b71105cee192d75950118466
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -260,6 +262,8 @@ controllers:
             value: 0.0.0.0:8090
           - name: PROXY_ADDR
             value: 0.0.0.0:8081
+          - name: METRICS_ADDR
+            value: 0.0.0.0:9090
           - name: WIKIJS_GRAPHQL_URL
             value: '{{ .Values.credentialGateway.wikiGraphqlUrl }}'
           - name: WIKI_AUTHORIZATION
@@ -310,7 +314,8 @@ controllers:
             enabled: true
             custom: true
             spec:
-              tcpSocket:
+              httpGet:
+                path: /livez
                 port: 8090
               periodSeconds: 30
               timeoutSeconds: 3
@@ -320,11 +325,15 @@ controllers:
             custom: true
             spec:
               httpGet:
-                path: /healthz
+                path: /readyz
                 port: 8090
               periodSeconds: 10
               timeoutSeconds: 3
               failureThreshold: 3
+        ports:
+          metrics:
+            containerPort: 9090
+            protocol: TCP
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true

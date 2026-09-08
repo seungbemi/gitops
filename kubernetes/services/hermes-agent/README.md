@@ -11,6 +11,10 @@ NetworkPolicies, validation, knowledge-base policy, and alerts remain explicit
 templates because they encode authorization policy rather than workload
 boilerplate.
 
+The current rollout has `hermes-admin` active and `hermes-rina` disabled. Do
+not enable Rina as part of stabilization; establish a seven-day admin baseline
+first.
+
 ## Security boundaries
 
 - Each release has a separate Deployment, PVC, ServiceAccount, Telegram bot,
@@ -93,6 +97,19 @@ The same process exposes an HTTPS-only, DNS-aware browser proxy. Every DNS
 answer must be public; private, loopback, link-local, metadata, cluster-local,
 and ambiguous targets are rejected. The browser pod has no direct public
 egress when this gateway is enabled.
+
+Gateway probes use `/livez` for process liveness and `/readyz` for
+PostgreSQL-backed approval readiness. `/healthz` is an operator-facing
+aggregate: Wiki.js, Home Assistant, or Paperless failure degrades status but
+cannot trigger a restart. Prometheus scrapes the dedicated `metrics` container
+port (9090) through a PodMonitor; ingress is limited to labeled Prometheus pods
+in the `monitoring` namespace.
+
+Safe upstream reads use two bounded-jitter retries for resets, rate limiting,
+and transient gateway/service errors. Mutations are never retried. Operational
+smoke testing covers health endpoints, Wiki read, Home Assistant read,
+Paperless search/read/download, and one exact-payload approved update. An
+unknown mutation result requires direct inspection before another write.
 
 The approval UI has its own private `seungbemi/hermes-approval-plugin`
 repository and tested OCI image. This chart only pins that immutable image and
