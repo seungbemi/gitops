@@ -136,7 +136,8 @@ restart. Durable defaults remain GitOps-owned through `model.main`.
 ## Measured model routing
 
 `model.routing.enabled` changes the GitOps-owned default to
-`openrouter/auto`; it is false until the fixed-model baseline is complete.
+`openrouter/auto`. It is enabled for the admin profile with the fixed
+`openai/gpt-5.6-luna` model retained as the automatic fallback.
 Promote it only after seven measured days on `openai/gpt-5.6-luna`, three full
 evaluation-suite runs, and a seven-day auto-router canary. Auto routing must
 reduce cost per successful task by 30%, keep approval safety at 100%, stay
