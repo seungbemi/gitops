@@ -26,3 +26,4 @@ jobs:
       - run: kubernetes/services/hermes-agent/tests/check-render.sh
       - run: kubernetes/services/paperless/tests/check-render.sh
       - run: jq -e . kubernetes/monitoring/prometheus/dashboards/hermes.json >/dev/null
+      - run: jq -e '[.. | objects | .datasource?.uid? // empty] | all(. == "prometheus")' kubernetes/monitoring/prometheus/dashboards/hermes.json >/dev/null
