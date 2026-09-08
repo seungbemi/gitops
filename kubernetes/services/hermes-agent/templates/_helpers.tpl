@@ -31,6 +31,9 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if and (eq .Values.profile.name "rina") (ne .Values.profile.kubernetes.scope "rina-company") -}}
 {{- fail "the rina profile requires profile.kubernetes.scope=rina-company" -}}
 {{- end -}}
+{{- if and .Values.scheduling.enabled (ne .Values.profile.name "admin") -}}
+{{- fail "scheduling may be enabled only for the admin profile during rollout" -}}
+{{- end -}}
 {{- if not .Values.profile.runtimeSecretName -}}
 {{- fail "profile.runtimeSecretName is required when enabled" -}}
 {{- end -}}

@@ -27,7 +27,8 @@ first.
 - The Rina ServiceAccount is bound only in `rina-company` with an explicit
   resource list. It cannot observe another namespace.
 - The built-in terminal, filesystem, code execution, browser/CDP, delegation,
-  cron, skill installation, Kanban, and computer-use toolsets are disabled.
+  skill installation, Kanban, and computer-use toolsets are disabled. Cron is
+  disabled by default and can be enabled independently after its rollout gate.
 - Playwright is exposed through one exact read allowlist. Public navigation,
   snapshots, screenshots, console/network observation, waiting, and close are
   trusted reads. Clicks, typing, forms, dialogs, key presses, selects, tab
@@ -131,6 +132,34 @@ opening the picker, and `/model <provider/model> --once` changes only the next
 turn. Picker choices are session scoped because `model.persist_switch_by_default`
 is false; the session override is stored in Hermes state and survives a gateway
 restart. Durable defaults remain GitOps-owned through `model.main`.
+
+## Measured model routing
+
+`model.routing.enabled` changes the GitOps-owned default to
+`openrouter/auto`; it is false until the fixed-model baseline is complete.
+Promote it only after seven measured days on `openai/gpt-5.6-luna`, three full
+evaluation-suite runs, and a seven-day auto-router canary. Auto routing must
+reduce cost per successful task by 30%, keep approval safety at 100%, stay
+within two percentage points of the baseline evaluation score, and keep p95
+latency within 20%. Revert the values change when those gates fail.
+
+Provider-reported cost, tokens, response model, latency, retries, and fallback
+counts are exposed through the policy gateway. Prompts and responses are not.
+The configured daily budget is an alert threshold.
+
+## Scheduled tasks
+
+`scheduling.enabled` exposes Hermes's built-in `cronjob` tool while retaining
+`approvals.cron_mode: deny`, a concurrency limit of one, model-drift protection,
+and a ten-minute misfire grace. Scheduled agents cannot use terminal, files,
+code execution, scripts, workdirs, attached skills, or self-scheduling. They
+may read from already-authorized MCP integrations; a requested mutation can
+only create an exact-action approval card for the user.
+
+Enable scheduling on admin only after stabilization and LLM telemetry pass.
+Create one harmless read-only job, trigger it manually, verify one Telegram
+delivery and one `hermes_scheduled_runs_total` increment, restart the pod, and
+confirm the next occurrence runs exactly once before allowing further jobs.
 
 GitHub repository access remains deferred. It requires a separately reviewed
 tool contract and is not implicitly enabled by the Wiki gateway.

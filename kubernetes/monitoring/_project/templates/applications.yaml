@@ -30,6 +30,10 @@ spec:
     helm:
       skipCrds: true
     {{- end }}
+  {{- with .ignoreDifferences }}
+  ignoreDifferences:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- if and .sync (eq .sync true) }}
   syncPolicy:
     {{- if .syncOptions }}

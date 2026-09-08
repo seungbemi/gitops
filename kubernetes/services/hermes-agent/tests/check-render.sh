@@ -132,6 +132,32 @@ grep -Fq -- '- containerPort: 9090' "$admin_rendered"
 grep -Fq 'kind: PodMonitor' "$admin_rendered"
 grep -Fq 'app.kubernetes.io/name: prometheus' "$admin_rendered"
 grep -Fq 'HermesTelemetryDrops' "$admin_rendered"
+grep -Fq 'HermesLLMDailyBudgetExceeded' "$admin_rendered"
+grep -Fq 'model_drift_guard: true' "$admin_rendered"
+grep -Fq -- '- cronjob' "$admin_rendered"
+scheduled_rendered="$(helm template hermes-admin "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/admin.yaml" \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'scheduling.enabled=true' \
+  --set 'model.routing.enabled=true')"
+if sed -n '/disabled_toolsets:/,/platform_toolsets:/p' <<<"$scheduled_rendered" | grep -Fq -- '- cronjob'; then
+  echo 'enabled scheduler must remove cronjob from disabled toolsets' >&2
+  exit 1
+fi
+grep -Fq 'default: "openrouter/auto"' <<<"$scheduled_rendered"
+grep -Fq 'model: "openrouter/auto"' <<<"$scheduled_rendered"
+grep -A2 -F 'fallback_model:' <<<"$scheduled_rendered" | grep -Fq 'model: "openai/gpt-5.6-luna"'
+sed -n '/platform_toolsets:/,/approvals:/p' <<<"$scheduled_rendered" | grep -Fq -- '- cronjob'
+if helm template hermes-rina "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/rina.yaml" \
+  --set 'profile.enabled=true' \
+  --set 'profile.telegram.allowedUserIds[0]=222222222' \
+  --set 'profile.telegram.adminUserIds[0]=222222222' \
+  --set 'scheduling.enabled=true' >/dev/null 2>&1; then
+  echo 'scheduler rollout must remain admin-only' >&2
+  exit 1
+fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
 grep -Fq 'sha256:51d1420f1584de0e962a7e451842b1a2aa6fd9ab71a08baa5f5425a02c1d6675' "$admin_rendered"

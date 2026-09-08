@@ -16,6 +16,17 @@ profile:
 model:
   main: openai/gpt-5.6-luna
   auxiliary: google/gemini-2.5-flash
+  routing:
+    # Promotion is gated by the measured baseline/canary procedure in README.
+    enabled: false
+    autoModel: openrouter/auto
+    dailyBudgetUSD: 5
+
+scheduling:
+  # Implemented behind a rollout flag; enable admin only after the P0 gates pass.
+  enabled: false
+  maxParallelJobs: 1
+  misfireGraceMinutes: 10
 
 agent:
   # Bound both spend and runaway tool loops. Expensive or complex work can use
