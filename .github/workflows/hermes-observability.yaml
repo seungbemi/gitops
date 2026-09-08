@@ -19,6 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-helm@v4
+      - run: helm dependency build kubernetes/services/hermes-agent
       - run: helm dependency build kubernetes/services/paperless
       - run: kubernetes/services/hermes-agent/tests/check-render.sh
       - run: kubernetes/services/paperless/tests/check-render.sh
