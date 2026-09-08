@@ -7,6 +7,34 @@ controllers:
     rollingUpdate:
       unavailable: 1
       surge: 0
+    initContainers:
+      verify-nfs-write:
+        image:
+          repository: busybox
+          tag: 1.37.0-uclibc
+        command: ["/bin/sh", "-ec"]
+        args:
+          - |
+            for directory in /usr/src/paperless/data /usr/src/paperless/media /usr/src/paperless/consume /usr/src/paperless/export; do
+              test_file="$directory/.paperless-write-test-$$"
+              : > "$test_file"
+              printf 'write-test\n' >> "$test_file"
+              rm "$test_file"
+            done
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 5m
+            memory: 4Mi
+          limits:
+            memory: 16Mi
     containers:
       main:
         image:
@@ -34,10 +62,34 @@ controllers:
         probes:
           liveness:
             enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/
+                port: 8000
+              periodSeconds: 30
+              timeoutSeconds: 3
+              failureThreshold: 3
           readiness:
             enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/
+                port: 8000
+              periodSeconds: 10
+              timeoutSeconds: 3
+              failureThreshold: 3
           startup:
             enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/
+                port: 8000
+              periodSeconds: 5
+              timeoutSeconds: 3
+              failureThreshold: 60
         resources:
           requests:
             cpu: 16m

@@ -1,0 +1,25 @@
+name: Hermes manifests
+
+on:
+  pull_request:
+    paths:
+      - kubernetes/services/hermes-agent/**
+      - kubernetes/services/paperless/**
+      - kubernetes/monitoring/prometheus/dashboards/hermes.json
+      - .github/workflows/hermes-observability.yaml
+  push:
+    paths:
+      - kubernetes/services/hermes-agent/**
+      - kubernetes/services/paperless/**
+      - kubernetes/monitoring/prometheus/dashboards/hermes.json
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - run: helm dependency build kubernetes/services/paperless
+      - run: kubernetes/services/hermes-agent/tests/check-render.sh
+      - run: kubernetes/services/paperless/tests/check-render.sh
+      - run: jq -e . kubernetes/monitoring/prometheus/dashboards/hermes.json >/dev/null

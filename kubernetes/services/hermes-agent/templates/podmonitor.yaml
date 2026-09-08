@@ -1,0 +1,19 @@
+{{- if and .Values.profile.enabled .Values.credentialGateway.enabled .Values.monitoring.podMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: hermes-{{ .Values.profile.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: hermes-agent
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/controller: main
+      hermes-profile: {{ .Values.profile.name | quote }}
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 5s
+{{- end }}
