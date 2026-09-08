@@ -89,4 +89,18 @@ spec:
             severity: warning
           annotations:
             summary: "Hermes exceeded its configured daily LLM budget"
+        {{- if .Values.model.routing.enabled }}
+        - alert: HermesAutoRoutingMetadataMissing
+          expr: sum(increase(hermes_llm_router_decisions_total{profile="{{ .Values.profile.name }}",metadata_available="false"}[1h])) == sum(increase(hermes_llm_router_decisions_total{profile="{{ .Values.profile.name }}"}[1h])) and sum(increase(hermes_llm_router_decisions_total{profile="{{ .Values.profile.name }}"}[1h])) >= 10
+          labels:
+            severity: warning
+          annotations:
+            summary: "All recent Hermes Auto Router calls lack routing metadata"
+        - alert: HermesAutoRoutingPolicyDrift
+          expr: sum(increase(hermes_llm_router_decisions_total{profile="{{ .Values.profile.name }}",cost_tier!="{{ .Values.model.routing.costTier }}"}[15m])) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes Auto Router telemetry does not match the configured cost tier"
+        {{- end }}
 {{- end }}
