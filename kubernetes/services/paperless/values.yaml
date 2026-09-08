@@ -11,7 +11,7 @@ controllers:
       verify-nfs-write:
         image:
           repository: busybox
-          tag: 1.37.0-uclibc
+          tag: 1.38.0-uclibc
         command: ["/bin/sh", "-ec"]
         args:
           - |
