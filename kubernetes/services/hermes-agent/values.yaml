@@ -74,7 +74,7 @@ credentialGateway:
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
     tag: latest
-    digest: sha256:aab1bd87c80895157e4b9b9a49d0c9afd8d60af8b603633a0acc139485013cb3
+    digest: sha256:86b36098af299b421235e7e05765ae76170e6718c6b6c8bcdba5e14f54e7745f
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -104,7 +104,7 @@ approvalPlugin:
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
     tag: latest
-    digest: sha256:51d1420f1584de0e962a7e451842b1a2aa6fd9ab71a08baa5f5425a02c1d6675
+    digest: sha256:75e4968f1a316b16c1e69f83d2fbc1257c4b797a07d5ff8d1cc2e7a42ccef264
 
 defaultPodOptions:
   automountServiceAccountToken: false

@@ -11,6 +11,9 @@ profile:
   kubernetes:
     scope: cluster
 
+scheduling:
+  enabled: true
+
 browser:
   enabled: false
 

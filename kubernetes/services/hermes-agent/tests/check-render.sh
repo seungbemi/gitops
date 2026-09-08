@@ -134,7 +134,11 @@ grep -Fq 'app.kubernetes.io/name: prometheus' "$admin_rendered"
 grep -Fq 'HermesTelemetryDrops' "$admin_rendered"
 grep -Fq 'HermesLLMDailyBudgetExceeded' "$admin_rendered"
 grep -Fq 'model_drift_guard: true' "$admin_rendered"
-grep -Fq -- '- cronjob' "$admin_rendered"
+if sed -n '/disabled_toolsets:/,/platform_toolsets:/p' "$admin_rendered" | grep -Fq -- '- cronjob'; then
+  echo 'admin rollout must enable the cronjob toolset' >&2
+  exit 1
+fi
+sed -n '/platform_toolsets:/,/approvals:/p' "$admin_rendered" | grep -Fq -- '- cronjob'
 scheduled_rendered="$(helm template hermes-admin "$chart_dir" --namespace services \
   --values "$chart_dir/profiles/admin.yaml" \
   --set 'profile.telegram.allowedUserIds[0]=123456789' \
@@ -160,7 +164,8 @@ if helm template hermes-rina "$chart_dir" --namespace services \
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
-grep -Fq 'sha256:51d1420f1584de0e962a7e451842b1a2aa6fd9ab71a08baa5f5425a02c1d6675' "$admin_rendered"
+grep -Fq 'sha256:75e4968f1a316b16c1e69f83d2fbc1257c4b797a07d5ff8d1cc2e7a42ccef264' "$admin_rendered"
+grep -Fq 'sha256:86b36098af299b421235e7e05765ae76170e6718c6b6c8bcdba5e14f54e7745f' "$chart_dir/values.yaml"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1
