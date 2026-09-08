@@ -91,7 +91,7 @@ approvalPlugin:
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
     tag: latest
-    digest: sha256:a4ed48db6f6ba4435191ad832268936550f4807d1200f5f0c61c456e27e80036
+    digest: sha256:51d1420f1584de0e962a7e451842b1a2aa6fd9ab71a08baa5f5425a02c1d6675
 
 defaultPodOptions:
   automountServiceAccountToken: false
