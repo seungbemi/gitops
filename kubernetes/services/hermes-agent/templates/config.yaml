@@ -28,6 +28,10 @@ data:
       vision:
         provider: openrouter
         model: {{ .Values.model.auxiliary | quote }}
+    web:
+      keyless_fallback: {{ .Values.webSearch.keylessFallback }}
+      cache_enabled: {{ .Values.webSearch.cacheEnabled }}
+      cache_ttl_minutes: {{ .Values.webSearch.cacheTtlMinutes }}
     agent:
       max_turns: {{ .Values.agent.maxTurns }}
       disabled_toolsets:
@@ -37,6 +41,9 @@ data:
         - browser
         - computer_use
         - delegation
+        {{- if not .Values.webSearch.enabled }}
+        - web
+        {{- end }}
         {{- if not .Values.scheduling.enabled }}
         - cronjob
         {{- end }}
@@ -48,6 +55,9 @@ data:
         - clarify
         - session_search
         - mcp-kubernetes
+        {{- if .Values.webSearch.enabled }}
+        - web
+        {{- end }}
         {{- if .Values.scheduling.enabled }}
         - cronjob
         {{- end }}
