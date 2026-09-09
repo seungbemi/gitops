@@ -89,6 +89,12 @@ spec:
             severity: warning
           annotations:
             summary: "Hermes exceeded its configured daily LLM budget"
+        - alert: HermesLLMMonthlyBudgetExceeded
+          expr: sum(increase(hermes_llm_cost_usd_total{profile="{{ .Values.profile.name }}"}[30d])) > {{ .Values.model.routing.monthlyBudgetUSD }}
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes exceeded its configured 30-day LLM budget"
         {{- if .Values.model.routing.enabled }}
         - alert: HermesAutoRoutingMetadataMissing
           expr: sum(increase(hermes_llm_router_decisions_total{profile="{{ .Values.profile.name }}",metadata_available="false"}[1h])) == sum(increase(hermes_llm_router_decisions_total{profile="{{ .Values.profile.name }}"}[1h])) and sum(increase(hermes_llm_router_decisions_total{profile="{{ .Values.profile.name }}"}[1h])) >= 10
