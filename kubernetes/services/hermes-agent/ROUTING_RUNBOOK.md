@@ -9,7 +9,8 @@ The admin agent sends `openrouter/auto` requests through policy middleware:
 - provider policy: all request parameters required, data collection denied
 - price ceilings: $3/M prompt tokens and $15/M completion tokens
 - fallback: `openai/gpt-5.6-luna`
-- daily cost alert: $5
+- daily cost alert: $2
+- rolling 30-day cost alert: $15
 
 Premium Sonnet is intentionally excluded from the automatic pool after the
 initial canary repeatedly selected it for ordinary browsing. It remains

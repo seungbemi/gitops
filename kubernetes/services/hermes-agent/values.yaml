@@ -30,7 +30,8 @@ model:
       prompt: 3
       completion: 15
     metadataEnabled: true
-    dailyBudgetUSD: 5
+    dailyBudgetUSD: 2
+    monthlyBudgetUSD: 15
 
 scheduling:
   # Implemented behind a rollout flag; enable admin only after the P0 gates pass.

@@ -146,7 +146,8 @@ latency within 20%. Revert the values change when those gates fail.
 
 Provider-reported cost, tokens, response model, latency, retries, and fallback
 counts are exposed through the policy gateway. Prompts and responses are not.
-The configured daily budget is an alert threshold.
+The configured $2 daily and $15 rolling 30-day budgets are alert thresholds;
+they do not reject LLM requests after the thresholds are crossed.
 
 The admin profile applies `medium` Auto Router cost tier, a controlled exact
 model allowlist, and provider price ceilings of $3/M input and $15/M output
