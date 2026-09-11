@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/common-4.0.1/charts/library/common/values.yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-5.1.0/charts/library/common/values.schema.json
 defaultPodOptions:
   tolerations:
     - key: node-role.kubernetes.io/control-plane
@@ -12,30 +12,45 @@ controllers:
         image:
           repository: alpine
           pullPolicy: IfNotPresent
-          tag: latest
-        command:
-          [
-            "sh",
-            "-c",
-            "wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$CRICTL_VERSION/crictl-$CRICTL_VERSION-linux-amd64.tar.gz && tar zxvf crictl-$CRICTL_VERSION-linux-amd64.tar.gz -C /usr/local/bin && crontab /config/cronjobs && crond -f -d 8",
-          ]
+          tag: "3.22"
+        command: ["sh", "-c"]
+        args:
+          - |
+            set -eu
+
+            case "$(uname -m)" in
+              x86_64) crictl_arch="amd64" ;;
+              aarch64|arm64) crictl_arch="arm64" ;;
+              *) echo "Unsupported node architecture: $(uname -m)" >&2; exit 1 ;;
+            esac
+
+            archive="crictl-${CRICTL_VERSION}-linux-${crictl_arch}.tar.gz"
+            release_url="https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}"
+
+            wget -q -O "/tmp/${archive}" "${release_url}/${archive}"
+            checksum="$(wget -q -O - "${release_url}/${archive}.sha256")"
+            echo "${checksum}  /tmp/${archive}" | sha256sum -c -
+            tar -xzf "/tmp/${archive}" -C /usr/local/bin crictl
+            rm "/tmp/${archive}"
+
+            crictl --version
+            crictl info >/dev/null
+
+            while true; do
+              echo "Pruning unused images at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+              crictl rmi --prune
+              echo "Prune completed; next run in ${PRUNE_INTERVAL_SECONDS} seconds"
+              sleep "${PRUNE_INTERVAL_SECONDS}"
+            done
         env:
-          TZ: "Europe/Helsinki"
-          CRICTL_VERSION: v1.25.0
+          CRICTL_VERSION: "v{{ .Chart.AppVersion }}"
+          PRUNE_INTERVAL_SECONDS: "604800"
           CONTAINER_RUNTIME_ENDPOINT: unix:///var/run/containerd/containerd.sock
           IMAGE_SERVICE_ENDPOINT: unix:///var/run/containerd/containerd.sock
         resources:
           requests:
             cpu: 100m
             memory: 50Mi
-
-
-configMaps:
-  config:
-    enabled: true
-    data:
-      cronjobs: 0 3 1 * * crictl rmi --prune 2>&1
-    
 
 persistence:
   containerd:
@@ -47,7 +62,3 @@ persistence:
       main:
         main:
           - path: /var/run/containerd/containerd.sock
-  config:
-    enabled: true
-    type: configMap
-    name: image-pruner-config
