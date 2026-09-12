@@ -182,7 +182,7 @@ controllers:
       bootstrap-config:
         image:
           repository: nousresearch/hermes-agent
-          tag: v2026.9.7
+          tag: v2026.9.11
           digest: sha256:64923faeae267792bf9bf87fe3b4c4869e35004e360c7df01730ad801b74d524
           pullPolicy: IfNotPresent
         command: ["/bin/sh", "-c"]
@@ -224,7 +224,7 @@ controllers:
       hermes:
         image:
           repository: nousresearch/hermes-agent
-          tag: v2026.9.7
+          tag: v2026.9.11
           digest: sha256:64923faeae267792bf9bf87fe3b4c4869e35004e360c7df01730ad801b74d524
           pullPolicy: IfNotPresent
         args: ["gateway", "run"]
