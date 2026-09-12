@@ -1,5 +1,5 @@
 module "workspace" {
-  source                 = "../modules/workspace"
+  source                 = "./modules/workspace"
   namespace              = var.namespace
   runner_image           = var.runner_image
   storage_class_name     = var.storage_class_name
