@@ -111,6 +111,18 @@ spec:
         - { protocol: TCP, port: 5432 }
     {{- end }}
     {{- if .Values.codexDelegation.enabled }}
+    # The Coder public URL resolves to the private Traefik Service. Calico
+    # evaluates this flow after Service DNAT, so allow the exact ingress pods
+    # and HTTPS target port as well as the configured load-balancer address.
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - { protocol: TCP, port: 8443 }
     - to:
         - namespaceSelector:
             matchLabels:
