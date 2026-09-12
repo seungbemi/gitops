@@ -11,6 +11,17 @@ defaultPodOptions:
             values:
             - "true"
 
+configHelper:
+  # Frigate is the first read-only canary. Home Assistant remains disabled
+  # until this path has been observed under normal load.
+  enabled: true
+  credentialsSecretName: frigate-config-helper
+  imagePullSecretName: hermes-admin-gateway-registry
+  image:
+    repository: ghcr.io/seungbemi/hermes-config-helper
+    tag: latest
+    digest: sha256:1d3fb461ae171c60cdca88986071fc62719c7bb7ffef3eadd46dece53b6e21df
+
 controllers:
   main:
     enabled: true
@@ -38,6 +49,59 @@ controllers:
             enabled: true
         securityContext:
           privileged:  true
+      config-helper:
+        enabled: false
+        image:
+          repository: '{{ .Values.configHelper.image.repository }}'
+          tag: '{{ .Values.configHelper.image.tag }}'
+          digest: '{{ .Values.configHelper.image.digest }}'
+          pullPolicy: IfNotPresent
+        env:
+          - name: CONFIG_HELPER_SERVICE
+            value: frigate
+          - name: CONFIG_HELPER_ROOT
+            value: /config
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /livez
+                port: 8444
+                scheme: HTTPS
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /livez
+                port: 8444
+                scheme: HTTPS
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /livez
+                port: 8444
+                scheme: HTTPS
+              failureThreshold: 30
+              periodSeconds: 2
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65532
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 5m
+            memory: 16Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
   backup:
     type: cronjob
     cronjob:
@@ -83,8 +147,13 @@ persistence:
   config-folder:
     enabled: true
     storageClass: ceph-block
-    globalMounts: 
-      - path: /config
+    advancedMounts:
+      main:
+        main:
+          - path: /config
+        config-helper:
+          - path: /config
+            readOnly: true
     accessMode: ReadWriteOnce
     size: "1Gi"
   backup:
@@ -109,7 +178,27 @@ persistence:
     enabled: true
     type: hostPath
     hostPath: /dev/bus/usb
+    advancedMounts:
+      main:
+        main:
+          - path: /dev/bus/usb
   hwaccel:
     enabled: true
     type: hostPath
     hostPath: /dev/dri/renderD128
+    advancedMounts:
+      main:
+        main:
+          - path: /dev/dri/renderD128
+  config-helper-credentials:
+    enabled: false
+    type: secret
+    name: '{{ .Values.configHelper.credentialsSecretName }}'
+    # The helper runs as an unprivileged UID and the Secret is mounted only in
+    # that container, so files must be readable without relying on pod fsGroup.
+    defaultMode: 292
+    advancedMounts:
+      main:
+        config-helper:
+          - path: /var/run/hermes-config-helper
+            readOnly: true

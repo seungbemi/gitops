@@ -58,6 +58,34 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessUrl) -}}{{- fail "credentialGateway.paperlessUrl is required when enabled" -}}{{- end -}}
 {{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessPublicUrl) -}}{{- fail "credentialGateway.paperlessPublicUrl is required when enabled" -}}{{- end -}}
 {{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessSecretName) -}}{{- fail "credentialGateway.paperlessSecretName is required when enabled" -}}{{- end -}}
+{{- if .Values.codexDelegation.enabled -}}
+{{- if ne .Values.profile.name "admin" -}}{{- fail "Codex delegation may be enabled only for the admin profile during rollout" -}}{{- end -}}
+{{- if not .Values.credentialGateway.enabled -}}{{- fail "codexDelegation.enabled requires credentialGateway.enabled" -}}{{- end -}}
+{{- if not .Values.codexDelegation.mcpUrl -}}{{- fail "codexDelegation.mcpUrl is required when enabled" -}}{{- end -}}
+{{- if not .Values.codexDelegation.credentialsSecretName -}}{{- fail "codexDelegation.credentialsSecretName is required when enabled" -}}{{- end -}}
+{{- if not .Values.codexDelegation.authorization.requester -}}{{- fail "codexDelegation.authorization.requester is required when enabled" -}}{{- end -}}
+{{- if not .Values.codexDelegation.authorization.coder.url -}}{{- fail "codexDelegation.authorization.coder.url is required when enabled" -}}{{- end -}}
+{{- if not .Values.codexDelegation.authorization.coder.sessionTokenFile -}}{{- fail "codexDelegation.authorization.coder.sessionTokenFile is required when enabled" -}}{{- end -}}
+{{- if not .Values.codexDelegation.authorization.coder.organization -}}{{- fail "codexDelegation.authorization.coder.organization is required when enabled" -}}{{- end -}}
+{{- if not .Values.codexDelegation.authorization.coder.user -}}{{- fail "codexDelegation.authorization.coder.user is required when enabled" -}}{{- end -}}
+{{- if not .Values.codexDelegation.authorization.coder.runnerNamespace -}}{{- fail "codexDelegation.authorization.coder.runnerNamespace is required when enabled" -}}{{- end -}}
+{{- if eq (len .Values.codexDelegation.authorization.targets) 0 -}}{{- fail "codexDelegation.authorization.targets must not be empty when enabled" -}}{{- end -}}
+{{- end -}}
+{{- if .Values.configHelpers.enabled -}}
+{{- if ne .Values.profile.name "admin" -}}{{- fail "configHelpers may be enabled only for the admin profile during rollout" -}}{{- end -}}
+{{- if not .Values.credentialGateway.enabled -}}{{- fail "configHelpers.enabled requires credentialGateway.enabled" -}}{{- end -}}
+{{- if not .Values.configHelpers.mcpUrl -}}{{- fail "configHelpers.mcpUrl is required when enabled" -}}{{- end -}}
+{{- if not .Values.configHelpers.credentialsSecretName -}}{{- fail "configHelpers.credentialsSecretName is required when enabled" -}}{{- end -}}
+{{- if eq (len .Values.configHelpers.configuration.targets) 0 -}}{{- fail "configHelpers.configuration.targets must not be empty when enabled" -}}{{- end -}}
+{{- range $target := .Values.configHelpers.configuration.targets -}}
+{{- if not $target.name -}}{{- fail "each configHelpers target requires name" -}}{{- end -}}
+{{- if not (has $target.service (list "home-assistant" "frigate")) -}}{{- fail "each configHelpers target service must be home-assistant or frigate" -}}{{- end -}}
+{{- if not (regexMatch "^https://" $target.url) -}}{{- fail "each configHelpers target requires an https url" -}}{{- end -}}
+{{- if not (regexMatch "^/" $target.tokenFile) -}}{{- fail "each configHelpers target requires an absolute tokenFile" -}}{{- end -}}
+{{- if not (regexMatch "^/" $target.caFile) -}}{{- fail "each configHelpers target requires an absolute caFile" -}}{{- end -}}
+{{- if eq (len $target.allowedPaths) 0 -}}{{- fail "each configHelpers target requires allowedPaths" -}}{{- end -}}
+{{- end -}}
+{{- end -}}
 {{- if and .Values.browser.enabled (not .Values.credentialGateway.enabled) -}}
 {{- fail "browser.enabled requires credentialGateway.enabled" -}}
 {{- end -}}

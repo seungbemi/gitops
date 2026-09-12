@@ -1,4 +1,12 @@
 ---
+{{- if .Values.configHelper.enabled }}
+{{- $_ := required "configHelper.credentialsSecretName is required when configHelper is enabled" .Values.configHelper.credentialsSecretName }}
+{{- $_ := required "configHelper.imagePullSecretName is required when configHelper is enabled" .Values.configHelper.imagePullSecretName }}
+{{- if not (regexMatch "^sha256:[a-f0-9]{64}$" .Values.configHelper.image.digest) }}
+{{- fail "configHelper.image.digest must be an immutable sha256 digest when configHelper is enabled" }}
+{{- end }}
+{{- $_ := set .Values.defaultPodOptions "imagePullSecrets" (list (dict "name" .Values.configHelper.imagePullSecretName)) }}
+{{- end }}
 {{- include "bjw-s.common.loader.init" . }}
 
 {{- define "frigate.hardcodedValues" -}}
@@ -9,6 +17,8 @@ global:
 {{ end }}
 {{- end -}}
 {{- $_ := mergeOverwrite .Values (include "frigate.hardcodedValues" . | fromYaml) -}}
+{{- $_ := set (index .Values.controllers.main.containers "config-helper") "enabled" .Values.configHelper.enabled }}
+{{- $_ := set (index .Values.persistence "config-helper-credentials") "enabled" .Values.configHelper.enabled }}
 
 {{/* Render the templates */}}
 {{ include "bjw-s.common.loader.generate" . }}

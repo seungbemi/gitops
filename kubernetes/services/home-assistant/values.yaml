@@ -12,6 +12,18 @@ defaultPodOptions:
                 values:
                   - "true"
 
+configHelper:
+  # Home Assistant uses hostNetwork, so port 8444 also binds on the selected
+  # node. Keep this disabled until node ingress to that port is restricted and
+  # the authenticated TLS endpoint has passed its runtime boundary test.
+  enabled: false
+  credentialsSecretName: ""
+  imagePullSecretName: ""
+  image:
+    repository: ghcr.io/seungbemi/hermes-config-helper
+    tag: latest
+    digest: sha256:1d3fb461ae171c60cdca88986071fc62719c7bb7ffef3eadd46dece53b6e21df
+
 controllers:
   main:
     containers:
@@ -30,8 +42,68 @@ controllers:
             enabled: true
           startup:
             enabled: true
+            custom: true
+            spec:
+              tcpSocket:
+                port: 8123
+              periodSeconds: 10
+              timeoutSeconds: 2
+              failureThreshold: 30
         securityContext:
           privileged: true
+      config-helper:
+        enabled: false
+        image:
+          repository: '{{ .Values.configHelper.image.repository }}'
+          tag: '{{ .Values.configHelper.image.tag }}'
+          digest: '{{ .Values.configHelper.image.digest }}'
+          pullPolicy: IfNotPresent
+        env:
+          - name: CONFIG_HELPER_SERVICE
+            value: home-assistant
+          - name: CONFIG_HELPER_ROOT
+            value: /config
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /livez
+                port: 8444
+                scheme: HTTPS
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /livez
+                port: 8444
+                scheme: HTTPS
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /livez
+                port: 8444
+                scheme: HTTPS
+              failureThreshold: 30
+              periodSeconds: 2
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65532
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 5m
+            memory: 16Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
 
 service:
   main:
@@ -59,19 +131,42 @@ persistence:
     storageClass: ceph-block
     accessMode: ReadWriteOnce
     size: "1Gi"
-    globalMounts:
-      - path: /config
+    advancedMounts:
+      main:
+        main:
+          - path: /config
+        config-helper:
+          - path: /config
+            readOnly: true
   config-nfs:
     enabled: true
     type: nfs
     server: diskstation.local
     path: /volume1/LTS/coder/caffeine/Caffeine/home-assistant
-    globalMounts:
-      - path: /config-nfs
+    advancedMounts:
+      main:
+        main:
+          - path: /config-nfs
   usb:
     enabled: true
     type: hostPath
     hostPath: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
+    advancedMounts:
+      main:
+        main:
+          - path: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
+  config-helper-credentials:
+    enabled: false
+    type: secret
+    name: '{{ .Values.configHelper.credentialsSecretName }}'
+    # The helper runs as an unprivileged UID and the Secret is mounted only in
+    # that container, so files must be readable without relying on pod fsGroup.
+    defaultMode: 292
+    advancedMounts:
+      main:
+        config-helper:
+          - path: /var/run/hermes-config-helper
+            readOnly: true
 
 resources:
   requests:
