@@ -13,6 +13,24 @@ variable "storage_class_name" {
   type    = string
   default = ""
 }
+variable "image_pull_secret_name" {
+  type        = string
+  description = "Existing docker-registry Secret used to pull the private runner image."
+  default     = "hermes-codex-runner-registry"
+  validation {
+    condition     = can(regex("^[a-z0-9]([-a-z0-9]*[a-z0-9])?$", var.image_pull_secret_name))
+    error_message = "image_pull_secret_name must be a valid Kubernetes resource name."
+  }
+}
+variable "coder_endpoint_cidrs" {
+  type        = list(string)
+  description = "Exact private Coder ingress CIDRs allowed only from the control agent."
+  default     = []
+  validation {
+    condition     = alltrue([for cidr in var.coder_endpoint_cidrs : can(cidrhost(cidr, 0)) && !can(regex("/0$", cidr))])
+    error_message = "coder_endpoint_cidrs must contain valid, non-default-route CIDRs."
+  }
+}
 variable "gateway_namespace" {
   type    = string
   default = "services"

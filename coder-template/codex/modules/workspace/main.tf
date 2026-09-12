@@ -114,6 +114,9 @@ resource "kubernetes_deployment_v1" "agent" {
       spec {
         automount_service_account_token = false
         enable_service_links            = false
+        image_pull_secrets {
+          name = var.image_pull_secret_name
+        }
         security_context {
           run_as_non_root = true
           run_as_user     = 10000
@@ -181,6 +184,9 @@ resource "kubernetes_deployment_v1" "runner" {
       spec {
         automount_service_account_token = false
         enable_service_links            = false
+        image_pull_secrets {
+          name = var.image_pull_secret_name
+        }
         security_context {
           run_as_non_root = true
           run_as_user     = 10000
@@ -411,6 +417,18 @@ resource "kubernetes_network_policy_v1" "agent" {
       ports {
         protocol = "TCP"
         port     = 443
+      }
+    }
+    dynamic "egress" {
+      for_each = var.coder_endpoint_cidrs
+      content {
+        to {
+          ip_block { cidr = egress.value }
+        }
+        ports {
+          protocol = "TCP"
+          port     = 443
+        }
       }
     }
     egress {
