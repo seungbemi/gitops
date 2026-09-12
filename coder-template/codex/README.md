@@ -15,9 +15,12 @@ lifecycle client. The runner image input must use an immutable `@sha256:` digest
 Provision the separate `hermes-codex-runner-registry` docker-registry Secret so
 the namespace can pull that private image; Terraform references only its name.
 
-The module gives each workspace one retained PVC and mounts distinct subpaths
-for the Codex home, runner control state, and job files. Only the runner Pod
-sees those mounts. The Coder control agent runs in a separate Deployment with
+The module mounts a dedicated per-workspace NFS path and uses distinct
+subdirectories for the Codex home, runner control state, and job files. The
+path must exist on the NFS server, be owned by UID/GID 10000, and be derived
+from a template containing exactly one `{workspace}` placeholder. Only the
+runner Pod sees this mount; never point it at a human Coder home or shared
+repository root. The Coder control agent runs in a separate Deployment with
 an ephemeral home and no runner credentials, authentication, or job mounts.
 Its NetworkPolicy permits the Coder control-plane connection without granting
 that private route to the runner Pod. This preserves login and threads across
@@ -42,10 +45,9 @@ before dispatch, and configures a one-day Coder TTL. It deliberately does not
 stop the workspace after each job; Coder stops it when that TTL expires. Coder
 remains the source of truth for workspace build state.
 
-`prevent_destroy` protects unfinished workspace storage. Completed artifact
-retention and final workspace deletion therefore require an explicit gateway
-cleanup workflow after the 30-day retention window; stopping a workspace does
-not delete its PVC.
+Coder workspace deletion does not delete the NFS directory. Completed artifact
+retention and final storage deletion therefore require an explicit gateway
+cleanup workflow after the 30-day retention window.
 
 After the first workspace start, authenticate once inside the runner container
 with `codex login --device-auth`. This writes subscription authentication only
