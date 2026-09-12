@@ -60,6 +60,10 @@ service:
 persistence:
   data:
     forceRename: hermes-{{ .Values.profile.name }}-data
+  codex-runner-credentials:
+    enabled: {{ .Values.codexDelegation.enabled }}
+  config-helper-credentials:
+    enabled: {{ .Values.configHelpers.enabled }}
   browser-profile:
     enabled: {{ .Values.browser.enabled }}
     forceRename: hermes-browser-{{ .Values.profile.name }}-profile

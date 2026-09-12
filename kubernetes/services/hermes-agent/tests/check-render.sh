@@ -8,7 +8,8 @@ rina_rendered="$(mktemp)"
 invalid="$(mktemp)"
 disabled="$(mktemp)"
 numeric_ids="$(mktemp)"
-trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids"' EXIT INT TERM
+gateway_only="$(mktemp)"
+trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids" "$gateway_only"' EXIT INT TERM
 
 helm lint "$chart_dir"
 
@@ -85,6 +86,26 @@ if helm template hermes "$chart_dir" \
   --set 'profile.telegram.adminUserIds[0]=123456789' \
   --set 'knowledgeBase.enabled=true' >"$invalid" 2>&1; then
   echo "knowledge base rendered without the policy gateway" >&2
+  exit 1
+fi
+
+helm template hermes-gateway-only "$chart_dir" \
+  --values "$chart_dir/profiles/admin.yaml" \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'credentialGateway.enabled=true' \
+  --set 'credentialGateway.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
+  --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
+  --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
+  --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
+  >"$gateway_only"
+if grep -Fq 'codex-runner-credentials' "$gateway_only"; then
+  echo 'disabled Codex credentials rendered into the gateway pod' >&2
+  exit 1
+fi
+if grep -Fq 'config-helper-credentials' "$gateway_only"; then
+  echo 'disabled configuration-helper credentials rendered into the gateway pod' >&2
   exit 1
 fi
 
