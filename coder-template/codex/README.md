@@ -33,9 +33,9 @@ DNS, and public HTTPS excluding private, loopback, link-local, carrier-grade
 NAT, multicast, and cluster ranges. Validate the CNI's post-DNAT behavior before
 production because Kubernetes NetworkPolicy cannot express DNS names.
 
-The local module must be included in the uploaded template archive. Publish
-from a staging directory containing `hermes-codex-runner/` plus `modules/`; do
-not point `coder templates push` at the wrapper directory alone.
+The local module is nested inside `hermes-codex-runner/`, making that directory
+a self-contained upload archive. Point `coder templates push --directory`
+directly at it.
 
 The gateway creates a missing named workspace from this template, starts it
 before dispatch, and configures a one-day Coder TTL. It deliberately does not
