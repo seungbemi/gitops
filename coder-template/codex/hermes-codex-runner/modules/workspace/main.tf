@@ -61,6 +61,25 @@ locals {
     "app.kubernetes.io/part-of"  = "hermes-delegation"
     "hermes.codex/workspace-id"  = data.coder_workspace.me.id
   }
+  # The deployment access URL is intentionally public, but the cluster cannot
+  # hairpin through its ingress address. Bootstrap the control agent directly
+  # from Coder's in-cluster Service instead. This route remains unavailable to
+  # the runner Pod because it has a separate, stricter NetworkPolicy.
+  coder_internal_url      = "http://coder.${var.namespace}.svc.cluster.local"
+  coder_agent_init_script = <<-EOT
+    set -eu
+    agent_binary=/tmp/coder-agent
+
+    until curl -fsSL --compressed "${local.coder_internal_url}/bin/coder-linux-amd64" -o "$agent_binary"; do
+      echo "Coder agent download failed; retrying in 5 seconds" >&2
+      sleep 5
+    done
+
+    chmod 0500 "$agent_binary"
+    export CODER_AGENT_AUTH=token
+    export CODER_AGENT_URL="${local.coder_internal_url}"
+    exec "$agent_binary" agent
+  EOT
 }
 
 resource "coder_agent" "main" {
@@ -129,7 +148,7 @@ resource "kubernetes_deployment_v1" "agent" {
           image             = var.runner_image
           image_pull_policy = "IfNotPresent"
           command           = ["/bin/bash", "-c"]
-          args              = [coder_agent.main.init_script]
+          args              = [local.coder_agent_init_script]
           env {
             name  = "CODER_AGENT_TOKEN"
             value = coder_agent.main.token
@@ -206,7 +225,7 @@ resource "kubernetes_deployment_v1" "runner" {
             run_as_user                = 0
             capabilities {
               drop = ["ALL"]
-              add  = ["CHOWN", "DAC_OVERRIDE"]
+              add  = ["CHOWN", "DAC_OVERRIDE", "FOWNER"]
             }
           }
           volume_mount {
