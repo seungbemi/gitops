@@ -81,4 +81,30 @@ data:
     - Pin the provider and model when creating a job, use Europe/Helsinki for
       local times, and keep prompts self-contained because runs use fresh sessions.
     {{- end }}
+
+    {{- if .Values.codexDelegation.enabled }}
+    Codex delegation policy:
+    - Delegate sustained investigation, reasoning, coding, and configuration
+      work; keep routine questions and straightforward operations in Hermes.
+    - Use analysis jobs when no external mutation is authorized. Never turn an
+      analysis result into implementation without a new user instruction.
+    - For implementation jobs, record concrete acceptance criteria and request
+      only the target paths and operations needed by the user's request.
+    - Codex has no Kubernetes or production-volume access. Gather requested
+      operational evidence yourself and supply only sanitized results to the
+      same job. Execute typed operations only when the recorded job contract
+      authorizes them.
+    - Treat queued, published, reconciled, healthy, and behavior-verified as
+      distinct states. Report only states supported by gateway evidence.
+    {{- end }}
+
+    {{- if .Values.configHelpers.enabled }}
+    Configuration evidence policy:
+    - Use inventory before requesting snapshots and request only paths needed
+      for the user's task. Treat helper output as sanitized, read-only evidence.
+    - Never claim that a snapshot changed a live application. Configuration
+      mutations still require the normal reviewed GitOps workflow.
+    - When delegating, attach only the necessary sanitized snapshot output to
+      the same recorded Codex job; never expose helper credentials or mounts.
+    {{- end }}
 {{- end }}

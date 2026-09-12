@@ -73,6 +73,12 @@ data:
         {{- if .Values.paperless.enabled }}
         - mcp-paperless
         {{- end }}
+        {{- if .Values.codexDelegation.enabled }}
+        - mcp-codex-delegation
+        {{- end }}
+        {{- if .Values.configHelpers.enabled }}
+        - mcp-config-helpers
+        {{- end }}
     approvals:
       mode: manual
       timeout: 600
@@ -176,6 +182,29 @@ data:
         url: {{ .Values.paperless.mcpUrl | quote }}
         enabled: true
         protocol: stateless
+        trust: full
+        supports_parallel_tool_calls: false
+        tools: { resources: false, prompts: false }
+      {{- end }}
+      {{- if .Values.codexDelegation.enabled }}
+      codex-delegation:
+        url: {{ .Values.codexDelegation.mcpUrl | quote }}
+        enabled: true
+        protocol: stateless
+        # Starting a job records bounded authority; the gateway and publisher
+        # remain the enforcement points for every external mutation.
+        trust: full
+        supports_parallel_tool_calls: false
+        tools: { resources: false, prompts: false }
+      {{- end }}
+      {{- if .Values.configHelpers.enabled }}
+      config-helpers:
+        url: {{ .Values.configHelpers.mcpUrl | quote }}
+        enabled: true
+        protocol: stateless
+        # The gateway restricts every request to a configured service and path
+        # subset; the application sidecar performs a second allow-list check
+        # before returning a sanitized snapshot.
         trust: full
         supports_parallel_tool_calls: false
         tools: { resources: false, prompts: false }

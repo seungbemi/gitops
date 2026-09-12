@@ -33,6 +33,15 @@ homeAssistant:
 paperless:
   enabled: false
 
+codexDelegation:
+  # Enable only after the runner template and image, workspace TLS credentials,
+  # and gateway scheduler acceptance tests are deployed.
+  enabled: false
+
+configHelpers:
+  # Activated only by the private profile after credentials are provisioned.
+  enabled: false
+
 credentialGateway:
   # Enable together with knowledgeBase after rotating the credentials and
   # making the pinned GHCR package pullable by the cluster.

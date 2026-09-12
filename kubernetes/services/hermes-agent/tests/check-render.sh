@@ -37,6 +37,52 @@ if helm template hermes "$chart_dir" \
   --set 'profile.runtimeSecretName=hermes-admin-runtime' \
   --set 'profile.telegram.allowedUserIds[0]=123456789' \
   --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'credentialGateway.enabled=true' \
+  --set 'approvalPlugin.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set 'credentialGateway.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
+  --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
+  --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
+  --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
+  --set 'credentialGateway.wikiAuthorization.memberId=sebe' \
+  --set 'credentialGateway.wikiAuthorization.allowedOperations[0]=get' \
+  --set 'codexDelegation.credentialsSecretName=hermes-admin-codex' \
+  --set 'codexDelegation.enabled=true' >"$invalid" 2>&1; then
+  echo "Codex delegation rendered without its lifecycle configuration" >&2
+  exit 1
+fi
+grep -Fq 'codexDelegation.authorization.requester is required' "$invalid"
+
+if helm template hermes "$chart_dir" \
+  --set 'profile.enabled=true' \
+  --set 'profile.name=admin' \
+  --set 'profile.kubernetes.scope=cluster' \
+  --set 'profile.runtimeSecretName=hermes-admin-runtime' \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'credentialGateway.enabled=true' \
+  --set 'approvalPlugin.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set 'credentialGateway.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
+  --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
+  --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
+  --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
+  --set 'credentialGateway.wikiAuthorization.memberId=sebe' \
+  --set 'credentialGateway.wikiAuthorization.allowedOperations[0]=get' \
+  --set 'configHelpers.enabled=true' \
+  --set 'configHelpers.credentialsSecretName=hermes-admin-config-helpers' >"$invalid" 2>&1; then
+  echo "configuration helpers rendered without target authorization" >&2
+  exit 1
+fi
+grep -Fq 'configHelpers.configuration.targets must not be empty' "$invalid"
+
+if helm template hermes "$chart_dir" \
+  --set 'profile.enabled=true' \
+  --set 'profile.name=admin' \
+  --set 'profile.kubernetes.scope=cluster' \
+  --set 'profile.runtimeSecretName=hermes-admin-runtime' \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
   --set 'knowledgeBase.enabled=true' >"$invalid" 2>&1; then
   echo "knowledge base rendered without the policy gateway" >&2
   exit 1
@@ -59,6 +105,27 @@ helm template hermes-admin "$chart_dir" --namespace services \
   --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
   --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
   --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
+  --set 'codexDelegation.enabled=true' \
+  --set 'codexDelegation.credentialsSecretName=hermes-admin-codex' \
+  --set 'codexDelegation.authorization.requester=telegram:123456789' \
+  --set 'codexDelegation.authorization.coder.url=https://coder.internal' \
+  --set 'codexDelegation.authorization.coder.user=admin' \
+  --set 'codexDelegation.coderEndpointCidrs[0]=10.20.30.40/32' \
+  --set 'codexDelegation.authorization.targets[0].name=analysis' \
+  --set 'codexDelegation.authorization.targets[0].template=hermes-codex-runner' \
+  --set 'codexDelegation.authorization.targets[0].workspace=hermes' \
+  --set 'codexDelegation.authorization.targets[0].runnerTokenFile=/var/run/hermes-codex/runner-token' \
+  --set 'codexDelegation.authorization.targets[0].runnerCaFile=/var/run/hermes-codex/runner-ca.crt' \
+  --set 'codexDelegation.authorization.targets[0].modes[0]=analysis' \
+  --set 'configHelpers.enabled=true' \
+  --set 'configHelpers.credentialsSecretName=hermes-admin-config-helpers' \
+  --set 'configHelpers.endpointCidrs[0]=10.20.30.50/32' \
+  --set 'configHelpers.configuration.targets[0].name=home-assistant' \
+  --set 'configHelpers.configuration.targets[0].service=home-assistant' \
+  --set 'configHelpers.configuration.targets[0].url=https://home-assistant-config-helper.services.svc:8444' \
+  --set 'configHelpers.configuration.targets[0].tokenFile=/var/run/hermes-config-helpers/home-assistant-token' \
+  --set 'configHelpers.configuration.targets[0].caFile=/var/run/hermes-config-helpers/home-assistant-ca.crt' \
+  --set 'configHelpers.configuration.targets[0].allowedPaths[0]=configuration.yaml' \
   >"$admin_rendered"
 
 # YAML parsers can load an unquoted Telegram ID as a float64. The chart must
@@ -124,6 +191,28 @@ grep -Fq 'name: hermes-rina-runtime' "$rina_rendered"
 grep -Fq 'name: hermes-admin-knowledge' "$admin_rendered"
 grep -Fq 'name: hermes-admin-approval' "$admin_rendered"
 grep -Fq 'key: DATABASE_URL' "$admin_rendered"
+grep -Fq 'name: CODEX_DELEGATION' "$admin_rendered"
+grep -Fq 'runnerTokenFile' "$admin_rendered"
+grep -Fq 'sessionTokenFile' "$admin_rendered"
+grep -Fq 'workspaceStartTimeoutSeconds' "$admin_rendered"
+grep -Fq 'workspaceTtlSeconds' "$admin_rendered"
+grep -Fq 'secretName: hermes-admin-codex' "$admin_rendered"
+grep -Fq 'mountPath: /var/run/hermes-codex' "$admin_rendered"
+grep -Fq 'url: "http://127.0.0.1:8090/delegation/mcp"' "$admin_rendered"
+grep -Fq -- '- mcp-codex-delegation' "$admin_rendered"
+grep -Fq 'kubernetes.io/metadata.name: "coder"' "$admin_rendered"
+grep -Fq 'cidr: "10.20.30.40/32"' "$admin_rendered"
+grep -Fq 'app.kubernetes.io/name: codex-runner' "$admin_rendered"
+grep -Fq 'name: CONFIG_HELPERS' "$admin_rendered"
+grep -Fq 'home-assistant-config-helper.services.svc:8444' "$admin_rendered"
+grep -Fq 'tokenFile' "$admin_rendered"
+grep -Fq 'secretName: hermes-admin-config-helpers' "$admin_rendered"
+grep -Fq 'mountPath: /var/run/hermes-config-helpers' "$admin_rendered"
+grep -Fq 'url: "http://127.0.0.1:8090/config-helper/mcp"' "$admin_rendered"
+grep -Fq -- '- mcp-config-helpers' "$admin_rendered"
+grep -Fq 'values: [home-assistant, frigate]' "$admin_rendered"
+grep -Fq 'cidr: "10.20.30.50/32"' "$admin_rendered"
+grep -Fq 'Configuration evidence policy:' "$admin_rendered"
 grep -Fq 'path: /livez' "$admin_rendered"
 grep -Fq 'path: /readyz' "$admin_rendered"
 grep -Fq 'port: 8090' "$admin_rendered"
@@ -192,7 +281,7 @@ fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
 grep -Fq 'sha256:ed0bf51db63ce7f1f58888964a6e86df5c3879473de861be5a8e98b2288a4d44' "$admin_rendered"
-grep -Fq 'sha256:4e500690e9e35859dd7e1dbf0bc841435ec69aeac37ca402ac4c98a95d459361' "$chart_dir/values.yaml"
+grep -Fq 'sha256:cc3fa05418198ade1ef9c9934df191107a63bd2d96ae75313119974c6a7ebb06' "$chart_dir/values.yaml"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1

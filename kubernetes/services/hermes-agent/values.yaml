@@ -76,6 +76,41 @@ paperless:
   enabled: false
   mcpUrl: ""
 
+codexDelegation:
+  enabled: false
+  mcpUrl: http://127.0.0.1:8090/delegation/mcp
+  # Add the private ingress/load-balancer CIDR when coder.url resolves inside
+  # RFC1918 space. Public HTTPS is already covered by the baseline policy.
+  coderEndpointCidrs: []
+  credentialsSecretName: ""
+  authorization:
+    requester: ""
+    activeTurnSeconds: 3600
+    jobBudgetSeconds: 28800
+    coder:
+      url: ""
+      sessionTokenFile: /var/run/hermes-codex/coder-token
+      caFile: /var/run/hermes-codex/coder-ca.crt
+      organization: default
+      user: me
+      runnerNamespace: coder
+      workspaceStartTimeoutSeconds: 300
+      workspaceTtlSeconds: 86400
+    targets: []
+
+configHelpers:
+  # Read-only, sanitized configuration inventory and snapshot access. The
+  # helpers run beside the owning applications; only the gateway gets their
+  # bearer tokens and private CA certificates.
+  enabled: false
+  mcpUrl: http://127.0.0.1:8090/config-helper/mcp
+  credentialsSecretName: ""
+  # Add exact node/host addresses here for host-network helpers when the CNI
+  # evaluates NetworkPolicy after destination translation.
+  endpointCidrs: []
+  configuration:
+    targets: []
+
 kubernetes:
   apiServiceCidr: 10.96.0.1/32
   # Some CNIs enforce NetworkPolicy after Service DNAT. Supply the actual API
@@ -94,7 +129,7 @@ credentialGateway:
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
     tag: latest
-    digest: sha256:4e500690e9e35859dd7e1dbf0bc841435ec69aeac37ca402ac4c98a95d459361
+    digest: sha256:cc3fa05418198ade1ef9c9934df191107a63bd2d96ae75313119974c6a7ebb06
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -352,6 +387,10 @@ controllers:
               secretKeyRef:
                 name: '{{ .Values.credentialGateway.approvalSecretName }}'
                 key: DATABASE_URL
+          - name: CODEX_DELEGATION
+            value: '{{ ternary (toJson .Values.codexDelegation.authorization) "" .Values.codexDelegation.enabled }}'
+          - name: CONFIG_HELPERS
+            value: '{{ ternary (toJson .Values.configHelpers.configuration) "" .Values.configHelpers.enabled }}'
         probes:
           liveness:
             enabled: true
@@ -497,6 +536,24 @@ persistence:
       main:
         kubernetes-mcp:
           - path: /var/run/secrets/kubernetes.io/serviceaccount
+            readOnly: true
+  codex-runner-credentials:
+    enabled: '{{ .Values.codexDelegation.enabled }}'
+    type: secret
+    name: '{{ .Values.codexDelegation.credentialsSecretName }}'
+    advancedMounts:
+      main:
+        policy-gateway:
+          - path: /var/run/hermes-codex
+            readOnly: true
+  config-helper-credentials:
+    enabled: '{{ .Values.configHelpers.enabled }}'
+    type: secret
+    name: '{{ .Values.configHelpers.credentialsSecretName }}'
+    advancedMounts:
+      main:
+        policy-gateway:
+          - path: /var/run/hermes-config-helpers
             readOnly: true
   browser-profile:
     type: persistentVolumeClaim
