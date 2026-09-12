@@ -538,7 +538,7 @@ persistence:
           - path: /var/run/secrets/kubernetes.io/serviceaccount
             readOnly: true
   codex-runner-credentials:
-    enabled: '{{ .Values.codexDelegation.enabled }}'
+    enabled: false
     type: secret
     name: '{{ .Values.codexDelegation.credentialsSecretName }}'
     advancedMounts:
@@ -547,7 +547,7 @@ persistence:
           - path: /var/run/hermes-codex
             readOnly: true
   config-helper-credentials:
-    enabled: '{{ .Values.configHelpers.enabled }}'
+    enabled: false
     type: secret
     name: '{{ .Values.configHelpers.credentialsSecretName }}'
     advancedMounts:
