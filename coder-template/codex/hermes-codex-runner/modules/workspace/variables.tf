@@ -9,9 +9,21 @@ variable "runner_image" {
     error_message = "runner_image must be pinned by sha256 digest."
   }
 }
-variable "storage_class_name" {
-  type    = string
-  default = ""
+variable "nfs_server" {
+  type        = string
+  description = "NFS server used for retained Codex and job state."
+  validation {
+    condition     = length(trimspace(var.nfs_server)) > 0
+    error_message = "nfs_server must not be empty."
+  }
+}
+variable "nfs_path_template" {
+  type        = string
+  description = "Absolute dedicated NFS path containing exactly one {workspace} placeholder."
+  validation {
+    condition     = startswith(var.nfs_path_template, "/") && length(regexall("\\{workspace\\}", var.nfs_path_template)) == 1
+    error_message = "nfs_path_template must be absolute and contain exactly one {workspace} placeholder."
+  }
 }
 variable "image_pull_secret_name" {
   type        = string

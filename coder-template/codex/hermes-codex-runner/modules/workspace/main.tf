@@ -32,18 +32,6 @@ data "coder_parameter" "memory" {
   }
 }
 
-data "coder_parameter" "disk" {
-  name         = "disk"
-  display_name = "Persistent disk (GiB)"
-  type         = "number"
-  default      = 20
-  mutable      = false
-  validation {
-    min = 10
-    max = 100
-  }
-}
-
 locals {
   # Workspace names are stable before first creation, allowing the encrypted
   # runner Secret and gateway trust bundle to be provisioned without putting
@@ -66,6 +54,7 @@ locals {
   # from Coder's in-cluster Service instead. This route remains unavailable to
   # the runner Pod because it has a separate, stricter NetworkPolicy.
   coder_internal_url      = "http://coder.${var.namespace}.svc.cluster.local"
+  nfs_path                = replace(var.nfs_path_template, "{workspace}", data.coder_workspace.me.name)
   coder_agent_init_script = <<-EOT
     set -eu
     agent_binary=/tmp/coder-agent
@@ -99,20 +88,6 @@ resource "coder_agent" "main" {
     interval     = 10
     timeout      = 1
   }
-}
-
-resource "kubernetes_persistent_volume_claim_v1" "state" {
-  metadata {
-    name      = local.name
-    namespace = var.namespace
-    labels    = local.labels
-  }
-  spec {
-    access_modes       = ["ReadWriteOnce"]
-    storage_class_name = var.storage_class_name == "" ? null : var.storage_class_name
-    resources { requests = { storage = "${data.coder_parameter.disk.value}Gi" } }
-  }
-  lifecycle { prevent_destroy = true }
 }
 
 resource "kubernetes_deployment_v1" "agent" {
@@ -217,16 +192,14 @@ resource "kubernetes_deployment_v1" "runner" {
           name    = "prepare-state"
           image   = var.runner_image
           command = ["/bin/sh", "-c"]
-          args    = ["install -d -o 10000 -g 10000 -m 0700 /state/home /state/runner-state /state/jobs"]
+          args    = ["install -d -m 0700 /state/home /state/runner-state /state/jobs"]
           security_context {
             allow_privilege_escalation = false
             read_only_root_filesystem  = true
-            run_as_non_root            = false
-            run_as_user                = 0
-            capabilities {
-              drop = ["ALL"]
-              add  = ["CHOWN", "DAC_OVERRIDE", "FOWNER"]
-            }
+            run_as_non_root            = true
+            run_as_user                = 10000
+            run_as_group               = 10000
+            capabilities { drop = ["ALL"] }
           }
           volume_mount {
             name       = "state"
@@ -317,8 +290,9 @@ resource "kubernetes_deployment_v1" "runner" {
         }
         volume {
           name = "state"
-          persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim_v1.state.metadata[0].name
+          nfs {
+            server = var.nfs_server
+            path   = local.nfs_path
           }
         }
         volume {
