@@ -15,3 +15,13 @@ coder:
     service:
       enable: true
       type: ClusterIP
+    serviceAccount:
+      workspacePerms: true
+      enableDeployments: true
+      extraRules:
+        - apiGroups: [""]
+          resources: ["services"]
+          verbs: ["create", "delete", "deletecollection", "get", "list", "patch", "update", "watch"]
+        - apiGroups: ["networking.k8s.io"]
+          resources: ["networkpolicies"]
+          verbs: ["create", "delete", "deletecollection", "get", "list", "patch", "update", "watch"]
