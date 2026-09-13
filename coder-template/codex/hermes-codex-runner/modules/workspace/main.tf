@@ -172,7 +172,8 @@ resource "kubernetes_deployment_v1" "runner" {
     selector { match_labels = local.labels }
     template {
       metadata {
-        labels = local.labels
+        labels      = local.labels
+        annotations = { "container.apparmor.security.beta.kubernetes.io/runner" = "unconfined" }
       }
       spec {
         automount_service_account_token = false
@@ -239,7 +240,6 @@ resource "kubernetes_deployment_v1" "runner" {
             allow_privilege_escalation = false
             read_only_root_filesystem  = true
             capabilities { drop = ["ALL"] }
-            app_armor_profile { type = "Unconfined" }
             seccomp_profile { type = "Unconfined" }
           }
           resources {
