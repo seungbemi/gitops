@@ -70,6 +70,17 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if not .Values.codexDelegation.authorization.coder.user -}}{{- fail "codexDelegation.authorization.coder.user is required when enabled" -}}{{- end -}}
 {{- if not .Values.codexDelegation.authorization.coder.runnerNamespace -}}{{- fail "codexDelegation.authorization.coder.runnerNamespace is required when enabled" -}}{{- end -}}
 {{- if eq (len .Values.codexDelegation.authorization.targets) 0 -}}{{- fail "codexDelegation.authorization.targets must not be empty when enabled" -}}{{- end -}}
+{{- range $target := .Values.codexDelegation.authorization.targets -}}
+{{- if has "implementation" $target.modes -}}
+{{- if not $.Values.credentialGateway.github.enabled -}}{{- fail "implementation Codex targets require credentialGateway.github.enabled" -}}{{- end -}}
+{{- if not $target.repository -}}{{- fail "implementation Codex targets require repository" -}}{{- end -}}
+{{- if eq (len $target.allowedPaths) 0 -}}{{- fail "implementation Codex targets require allowedPaths" -}}{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- if .Values.credentialGateway.github.enabled -}}
+{{- if not .Values.credentialGateway.enabled -}}{{- fail "credentialGateway.github.enabled requires credentialGateway.enabled" -}}{{- end -}}
+{{- if not .Values.credentialGateway.github.secretName -}}{{- fail "credentialGateway.github.secretName is required when direct Codex GitHub access is enabled" -}}{{- end -}}
 {{- end -}}
 {{- if .Values.configHelpers.enabled -}}
 {{- if ne .Values.profile.name "admin" -}}{{- fail "configHelpers may be enabled only for the admin profile during rollout" -}}{{- end -}}
