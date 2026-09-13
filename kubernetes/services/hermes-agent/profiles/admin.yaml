@@ -49,6 +49,9 @@ credentialGateway:
   wikiSecretName: hermes-admin-knowledge
   approvalSecretName: hermes-admin-approval
   imagePullSecretName: hermes-admin-gateway-registry
+  github:
+    enabled: false
+    secretName: hermes-admin-github-publisher
   homeAssistantSecretName: hermes-admin-home-assistant
   paperlessSecretName: hermes-admin-paperless
   wikiAuthorization:

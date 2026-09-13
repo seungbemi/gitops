@@ -64,6 +64,8 @@ persistence:
     enabled: {{ .Values.codexDelegation.enabled }}
   config-helper-credentials:
     enabled: {{ .Values.configHelpers.enabled }}
+  github-broker-credentials:
+    enabled: {{ and .Values.credentialGateway.enabled .Values.credentialGateway.github.enabled }}
   browser-profile:
     enabled: {{ .Values.browser.enabled }}
     forceRename: hermes-browser-{{ .Values.profile.name }}-profile

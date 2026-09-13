@@ -129,7 +129,7 @@ credentialGateway:
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
     tag: latest
-    digest: sha256:dcabdab3818e4c7cda71e3e1bc33e12c20c802c46b5ab1d8b4fceebdd968f0ba
+    digest: sha256:9b03ab0b020e6af8e0c820ae9c21005ed93fecf3bb4703a89a30de2d84ef9cdd
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -154,6 +154,7 @@ credentialGateway:
     allowedOperations: []
   github:
     enabled: false
+    secretName: unused
 
 approvalPlugin:
   image:
@@ -387,6 +388,26 @@ controllers:
               secretKeyRef:
                 name: '{{ .Values.credentialGateway.approvalSecretName }}'
                 key: DATABASE_URL
+          - name: TELEGRAM_BOT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.profile.runtimeSecretName }}'
+                key: TELEGRAM_BOT_TOKEN
+                optional: true
+          - name: GITHUB_APP_ID
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.credentialGateway.github.secretName }}'
+                key: GITHUB_APP_ID
+                optional: true
+          - name: GITHUB_INSTALLATION_ID
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.credentialGateway.github.secretName }}'
+                key: GITHUB_INSTALLATION_ID
+                optional: true
+          - name: GITHUB_PRIVATE_KEY_FILE
+            value: /var/run/hermes-github/GITHUB_PRIVATE_KEY
           - name: CODEX_DELEGATION
             value: '{{ ternary (toJson .Values.codexDelegation.authorization) "" .Values.codexDelegation.enabled }}'
           - name: CONFIG_HELPERS
@@ -554,6 +575,15 @@ persistence:
       main:
         policy-gateway:
           - path: /var/run/hermes-config-helpers
+            readOnly: true
+  github-broker-credentials:
+    enabled: false
+    type: secret
+    name: '{{ .Values.credentialGateway.github.secretName }}'
+    advancedMounts:
+      main:
+        policy-gateway:
+          - path: /var/run/hermes-github
             readOnly: true
   browser-profile:
     type: persistentVolumeClaim
