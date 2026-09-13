@@ -36,6 +36,12 @@ DNS, and public HTTPS excluding private, loopback, link-local, carrier-grade
 NAT, multicast, and cluster ranges. Validate the CNI's post-DNAT behavior before
 production because Kubernetes NetworkPolicy cannot express DNS names.
 
+The runner container uses unconfined Kubernetes seccomp and AppArmor profiles
+because Codex's Linux filesystem sandbox uses bubblewrap user namespaces. The
+container remains non-root, drops every Linux capability, forbids privilege
+escalation, uses a read-only root filesystem, and has no service-account token.
+The control agent and init container retain the runtime-default profiles.
+
 The local module is nested inside `hermes-codex-runner/`, making that directory
 a self-contained upload archive. Point `coder templates push --directory`
 directly at it.
