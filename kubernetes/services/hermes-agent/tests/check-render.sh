@@ -192,6 +192,9 @@ if [ "$(grep -Fc 'resources: ["pods/log"]' "$admin_rendered")" -ne 1 ] || grep -
   exit 1
 fi
 grep -Fq 'name: hermes-codex-runner-hermes' "$admin_rendered"
+grep -Fq 'name: hermes-codex-runner-hermes-kubeconfig' "$admin_rendered"
+grep -Fq 'automountServiceAccountToken: false' "$admin_rendered"
+grep -Fq 'tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token' "$admin_rendered"
 
 grep -Fq 'namespace: rina-company' "$rendered"
 grep -Fq 'trust: full' "$rendered"
@@ -330,8 +333,8 @@ grep -Fq 'port: 5432' "$admin_rendered"
 grep -Fq 'hermes-profile: admin' "$admin_rendered"
 grep -Fq 'hermes-profile: rina' "$rina_rendered"
 
-if [ "$(grep -c '^kind: ServiceAccount$' "$admin_rendered")" -ne 1 ]; then
-  echo "admin release must render exactly one ServiceAccount" >&2
+if [ "$(grep -c '^kind: ServiceAccount$' "$admin_rendered")" -ne 2 ]; then
+  echo "admin release must render the Hermes and Codex runner ServiceAccounts" >&2
   exit 1
 fi
 
