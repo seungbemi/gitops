@@ -1,0 +1,47 @@
+name: Hermes validation
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Hermes validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@v5
+      - uses: opentofu/setup-opentofu@v2
+      - name: Select validations
+        id: paths
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          {
+            echo "hermes=$(grep -Eq '^(kubernetes/services/hermes-agent/|kubernetes/services/paperless/|kubernetes/monitoring/prometheus/dashboards/hermes.json|\.github/workflows/hermes-observability.yaml)' <<<"$changed" && echo true || echo false)"
+            echo "rina=$(grep -Eq '^kubernetes/services/rina-company/' <<<"$changed" && echo true || echo false)"
+            echo "terraform=$(grep -Eq '^coder-template/.*\.tf$' <<<"$changed" && echo true || echo false)"
+          } >>"$GITHUB_OUTPUT"
+      - name: Validate Hermes manifests
+        if: steps.paths.outputs.hermes == 'true'
+        run: |
+          set -euo pipefail
+          kubernetes/services/hermes-agent/tests/check-render.sh
+          kubernetes/services/paperless/tests/check-render.sh
+          jq -e . kubernetes/monitoring/prometheus/dashboards/hermes.json >/dev/null
+      - name: Validate Rina chart
+        if: steps.paths.outputs.rina == 'true'
+        run: helm template rina-company kubernetes/services/rina-company >/dev/null
+      - name: Validate Coder Terraform formatting
+        if: steps.paths.outputs.terraform == 'true'
+        run: tofu fmt -check -recursive coder-template
+      - name: Record unmapped validation
+        if: steps.paths.outputs.hermes != 'true' && steps.paths.outputs.rina != 'true' && steps.paths.outputs.terraform != 'true'
+        run: echo "No path-specific validation is mapped; merge policy permits local validation evidence."
