@@ -7,6 +7,9 @@ rules:
   - apiGroups: [""]
     resources: ["nodes", "namespaces", "pods", "services", "endpoints", "events", "persistentvolumeclaims", "persistentvolumes", "resourcequotas", "limitranges"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
   - apiGroups: ["apps"]
     resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
     verbs: ["get", "list", "watch"]
@@ -49,6 +52,9 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: hermes-admin
+    namespace: services
+  - kind: ServiceAccount
+    name: hermes-codex-runner-hermes
     namespace: services
 {{- end }}
 {{- if and .Values.profile.enabled (eq .Values.profile.name "rina") }}

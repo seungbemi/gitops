@@ -180,12 +180,18 @@ helm template hermes-rina "$chart_dir" --namespace services \
 
 cat "$admin_rendered" "$rina_rendered" >"$rendered"
 
-for forbidden in 'resources: \["secrets"\]' 'pods/log' 'verbs: \["create"' 'verbs: \["update"' 'verbs: \["patch"' 'verbs: \["delete"'; do
+for forbidden in 'resources: \["secrets"\]' 'verbs: \["create"' 'verbs: \["update"' 'verbs: \["patch"' 'verbs: \["delete"'; do
   if grep -Eq "$forbidden" "$rendered"; then
     echo "forbidden RBAC capability found: $forbidden" >&2
     exit 1
   fi
 done
+
+if [ "$(grep -Fc 'resources: ["pods/log"]' "$admin_rendered")" -ne 1 ] || grep -Fq 'resources: ["pods/log"]' "$rina_rendered"; then
+  echo "pod log access must be granted only to the admin profile" >&2
+  exit 1
+fi
+grep -Fq 'name: hermes-codex-runner-hermes' "$admin_rendered"
 
 grep -Fq 'namespace: rina-company' "$rendered"
 grep -Fq 'trust: full' "$rendered"
