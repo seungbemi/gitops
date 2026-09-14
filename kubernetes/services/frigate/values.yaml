@@ -104,6 +104,17 @@ controllers:
             memory: 64Mi
   backup:
     type: cronjob
+    pod:
+      affinity:
+        # Share the Ceph RWO config claim on Frigate's node.
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: '{{ .Release.Name }}'
+                  app.kubernetes.io/name: '{{ .Values.global.nameOverride }}'
+                  app.kubernetes.io/controller: main
+              topologyKey: kubernetes.io/hostname
     cronjob:
       backoffLimit: 3
       concurrencyPolicy: Forbid
@@ -121,7 +132,14 @@ controllers:
           - sh
           - -c
           - |
-            tar -czvf /backups/backups.tar.gz -C / config
+            set -eu
+            umask 077
+            temporary=$(mktemp /backups/.backups.tar.gz.XXXXXX)
+            trap 'rm -f "$temporary"' EXIT
+            trap 'exit 1' HUP INT TERM
+            tar -czf "$temporary" -C / config
+            test -s "$temporary"
+            mv -f "$temporary" /backups/backups.tar.gz
 
 service:
   main:
@@ -152,6 +170,10 @@ persistence:
         main:
           - path: /config
         config-helper:
+          - path: /config
+            readOnly: true
+      backup:
+        main:
           - path: /config
             readOnly: true
     accessMode: ReadWriteOnce
