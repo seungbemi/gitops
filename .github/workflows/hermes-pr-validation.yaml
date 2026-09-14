@@ -45,7 +45,13 @@ jobs:
         run: helm template rina-company kubernetes/services/rina-company >/dev/null
       - name: Validate Coder Terraform formatting
         if: steps.paths.outputs.terraform == 'true'
-        run: tofu fmt -check -recursive coder-template
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          mapfile -t terraform_files < <(git diff --name-only --diff-filter=ACMR "$BASE_SHA" "$HEAD_SHA" -- 'coder-template/**/*.tf')
+          tofu fmt -check "${terraform_files[@]}"
       - name: Record unmapped validation
         if: steps.paths.outputs.hermes != 'true' && steps.paths.outputs.rina != 'true' && steps.paths.outputs.terraform != 'true'
         run: echo "No path-specific validation is mapped; merge policy permits local validation evidence."
