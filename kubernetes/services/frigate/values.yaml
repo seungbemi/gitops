@@ -47,6 +47,9 @@ controllers:
             enabled: true
           startup:
             enabled: true
+            spec:
+              failureThreshold: 60
+              periodSeconds: 5
         securityContext:
           privileged:  true
       config-helper:
@@ -104,8 +107,20 @@ controllers:
             memory: 64Mi
   backup:
     type: cronjob
+    pod:
+      affinity:
+        # Ceph RWO can be shared by pods on the same node only.
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: '{{ .Release.Name }}'
+                  app.kubernetes.io/name: '{{ .Values.global.nameOverride }}'
+                  app.kubernetes.io/controller: main
+              topologyKey: kubernetes.io/hostname
     cronjob:
-      backoffLimit: 3
+      backoffLimit: 1
+      activeDeadlineSeconds: 1800
       concurrencyPolicy: Forbid
       failedJobsHistory: 3
       schedule: "0 6 * * *" # daily at 6:00 utc
@@ -115,13 +130,15 @@ controllers:
     containers:
       main:
         image:
-          repository: alpine
-          tag: latest
-        command:
-          - sh
-          - -c
-          - |
-            tar -czvf /backups/backups.tar.gz -C / config
+          repository: python
+          tag: 3.13.7-alpine3.22
+          digest: sha256:9ba6d8cbebf0fb6546ae71f2a1c14f6ffd2fdab83af7fa5669734ef30ad48844
+        command: [python3, /scripts/backup.py]
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
 
 service:
   main:
@@ -152,6 +169,10 @@ persistence:
         main:
           - path: /config
         config-helper:
+          - path: /config
+            readOnly: true
+      backup:
+        main:
           - path: /config
             readOnly: true
     accessMode: ReadWriteOnce
@@ -202,3 +223,19 @@ persistence:
         config-helper:
           - path: /var/run/hermes-config-helper
             readOnly: true
+
+  backup-script:
+    type: configMap
+    name: '{{ .Release.Name }}-backup-script'
+    advancedMounts:
+      backup:
+        main:
+          - path: /scripts
+            readOnly: true
+  backup-tmp:
+    type: emptyDir
+    sizeLimit: 2Gi
+    advancedMounts:
+      backup:
+        main:
+          - path: /tmp
