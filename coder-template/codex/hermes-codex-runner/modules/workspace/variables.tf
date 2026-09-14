@@ -17,6 +17,15 @@ variable "nfs_server" {
     error_message = "nfs_server must not be empty."
   }
 }
+
+variable "kubernetes_api_cidr" {
+  type        = string
+  description = "Single Kubernetes API service address allowed for read-only deployment verification."
+  validation {
+    condition     = can(cidrhost(var.kubernetes_api_cidr, 0)) && tonumber(split("/", var.kubernetes_api_cidr)[1]) == 32
+    error_message = "kubernetes_api_cidr must be one IPv4 /32 CIDR."
+  }
+}
 variable "nfs_path_template" {
   type        = string
   description = "Absolute dedicated NFS path containing exactly one {workspace} placeholder."

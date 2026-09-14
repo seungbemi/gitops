@@ -71,6 +71,44 @@ locals {
   EOT
 }
 
+resource "kubernetes_service_account_v1" "runner" {
+  metadata {
+    name      = local.name
+    namespace = var.namespace
+    labels    = local.labels
+  }
+  automount_service_account_token = false
+}
+
+resource "kubernetes_config_map_v1" "runner_kubeconfig" {
+  metadata {
+    name      = "${local.name}-kubeconfig"
+    namespace = var.namespace
+    labels    = local.labels
+  }
+  data = {
+    config = <<-YAML
+      apiVersion: v1
+      kind: Config
+      clusters:
+        - name: homelab
+          cluster:
+            server: https://kubernetes.default.svc
+            certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      users:
+        - name: runner
+          user:
+            tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      contexts:
+        - name: homelab
+          context:
+            cluster: homelab
+            user: runner
+      current-context: homelab
+    YAML
+  }
+}
+
 resource "coder_agent" "main" {
   os   = "linux"
   arch = "amd64"
@@ -176,7 +214,8 @@ resource "kubernetes_deployment_v1" "runner" {
         annotations = { "container.apparmor.security.beta.kubernetes.io/runner" = "unconfined" }
       }
       spec {
-        automount_service_account_token = false
+        automount_service_account_token = true
+        service_account_name            = kubernetes_service_account_v1.runner.metadata[0].name
         enable_service_links            = false
         image_pull_secrets {
           name = var.image_pull_secret_name
@@ -192,7 +231,7 @@ resource "kubernetes_deployment_v1" "runner" {
           name    = "prepare-state"
           image   = var.runner_image
           command = ["/bin/sh", "-c"]
-          args    = ["install -d -m 0700 /state/home /state/runner-state /state/jobs"]
+          args    = ["install -d -m 0700 /state/home /state/home/.local/hermes-tools /state/runner-state /state/jobs"]
           security_context {
             allow_privilege_escalation = false
             read_only_root_filesystem  = true
@@ -218,6 +257,22 @@ resource "kubernetes_deployment_v1" "runner" {
           env {
             name  = "RUNNER_WORKSPACE_ROOT"
             value = "/workspace/jobs"
+          }
+          env {
+            name  = "RUNNER_TOOL_ROOT"
+            value = "/home/coder/.local/hermes-tools"
+          }
+          env {
+            name  = "RUNNER_TOOL_SOURCE_HOSTS"
+            value = "github.com,objects.githubusercontent.com,releases.hashicorp.com,get.helm.sh,dl.k8s.io,astral.sh,nodejs.org,go.dev"
+          }
+          env {
+            name  = "RUNNER_KUBECONFIG_PATH"
+            value = "/runner-kubeconfig/config"
+          }
+          env {
+            name  = "PATH"
+            value = "/home/coder/.local/hermes-tools/bin:/home/coder/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
           }
           env {
             name  = "RUNNER_TLS_CERT_FILE"
@@ -288,6 +343,11 @@ resource "kubernetes_deployment_v1" "runner" {
             mount_path = "/runner-credentials"
             read_only  = true
           }
+          volume_mount {
+            name       = "kubeconfig"
+            mount_path = "/runner-kubeconfig"
+            read_only  = true
+          }
         }
         volume {
           name = "state"
@@ -306,6 +366,13 @@ resource "kubernetes_deployment_v1" "runner" {
             secret_name = local.name
             # Secret volumes are root-owned. fsGroup 10000 plus group-read is
             # required for the non-root runner to read its TLS key.
+            default_mode = "0440"
+          }
+        }
+        volume {
+          name = "kubeconfig"
+          config_map {
+            name         = kubernetes_config_map_v1.runner_kubeconfig.metadata[0].name
             default_mode = "0440"
           }
         }
@@ -346,6 +413,15 @@ resource "kubernetes_network_policy_v1" "runner" {
       ports {
         protocol = "TCP"
         port     = "8443"
+      }
+    }
+    egress {
+      to {
+        ip_block { cidr = var.kubernetes_api_cidr }
+      }
+      ports {
+        protocol = "TCP"
+        port     = 443
       }
     }
     egress {
