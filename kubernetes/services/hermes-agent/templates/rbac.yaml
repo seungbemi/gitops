@@ -1,4 +1,36 @@
 {{- if and .Values.profile.enabled (eq .Values.profile.name "admin") }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hermes-codex-runner-hermes
+  namespace: services
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-codex-runner-hermes-kubeconfig
+  namespace: services
+data:
+  config: |
+    apiVersion: v1
+    kind: Config
+    clusters:
+      - name: homelab
+        cluster:
+          server: https://kubernetes.default.svc
+          certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    users:
+      - name: runner
+        user:
+          tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    contexts:
+      - name: homelab
+        context:
+          cluster: homelab
+          user: runner
+    current-context: homelab
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
