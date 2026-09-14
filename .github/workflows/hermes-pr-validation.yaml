@@ -16,6 +16,10 @@ jobs:
           fetch-depth: 0
       - uses: azure/setup-helm@v5
       - uses: opentofu/setup-opentofu@v2
+      - name: Build chart dependencies
+        run: |
+          helm dependency build kubernetes/services/hermes-agent
+          helm dependency build kubernetes/services/paperless
       - name: Select validations
         id: paths
         env:
