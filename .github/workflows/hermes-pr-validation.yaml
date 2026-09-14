@@ -2,6 +2,14 @@ name: Hermes validation
 
 on:
   pull_request:
+    paths:
+      - kubernetes/services/hermes-agent/**
+      - kubernetes/services/paperless/**
+      - kubernetes/monitoring/prometheus/dashboards/hermes.json
+      - kubernetes/services/rina-company/**
+      - coder-template/**/*.tf
+      - .github/workflows/hermes-observability.yaml
+      - .github/workflows/hermes-pr-validation.yaml
 
 permissions:
   contents: read
@@ -14,12 +22,6 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: azure/setup-helm@v5
-      - uses: opentofu/setup-opentofu@v2
-      - name: Build chart dependencies
-        run: |
-          helm dependency build kubernetes/services/hermes-agent
-          helm dependency build kubernetes/services/paperless
       - name: Select validations
         id: paths
         env:
@@ -33,6 +35,15 @@ jobs:
             echo "rina=$(grep -Eq '^kubernetes/services/rina-company/' <<<"$changed" && echo true || echo false)"
             echo "terraform=$(grep -Eq '^coder-template/.*\.tf$' <<<"$changed" && echo true || echo false)"
           } >>"$GITHUB_OUTPUT"
+      - uses: azure/setup-helm@v5
+        if: steps.paths.outputs.hermes == 'true' || steps.paths.outputs.rina == 'true'
+      - uses: opentofu/setup-opentofu@v2
+        if: steps.paths.outputs.terraform == 'true'
+      - name: Build chart dependencies
+        if: steps.paths.outputs.hermes == 'true'
+        run: |
+          helm dependency build kubernetes/services/hermes-agent
+          helm dependency build kubernetes/services/paperless
       - name: Validate Hermes manifests
         if: steps.paths.outputs.hermes == 'true'
         run: |
