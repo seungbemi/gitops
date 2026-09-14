@@ -71,44 +71,6 @@ locals {
   EOT
 }
 
-resource "kubernetes_service_account_v1" "runner" {
-  metadata {
-    name      = local.name
-    namespace = var.namespace
-    labels    = local.labels
-  }
-  automount_service_account_token = false
-}
-
-resource "kubernetes_config_map_v1" "runner_kubeconfig" {
-  metadata {
-    name      = "${local.name}-kubeconfig"
-    namespace = var.namespace
-    labels    = local.labels
-  }
-  data = {
-    config = <<-YAML
-      apiVersion: v1
-      kind: Config
-      clusters:
-        - name: homelab
-          cluster:
-            server: https://kubernetes.default.svc
-            certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-      users:
-        - name: runner
-          user:
-            tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-      contexts:
-        - name: homelab
-          context:
-            cluster: homelab
-            user: runner
-      current-context: homelab
-    YAML
-  }
-}
-
 resource "coder_agent" "main" {
   os   = "linux"
   arch = "amd64"
@@ -215,7 +177,7 @@ resource "kubernetes_deployment_v1" "runner" {
       }
       spec {
         automount_service_account_token = true
-        service_account_name            = kubernetes_service_account_v1.runner.metadata[0].name
+        service_account_name            = local.name
         enable_service_links            = false
         image_pull_secrets {
           name = var.image_pull_secret_name
@@ -372,7 +334,7 @@ resource "kubernetes_deployment_v1" "runner" {
         volume {
           name = "kubeconfig"
           config_map {
-            name         = kubernetes_config_map_v1.runner_kubeconfig.metadata[0].name
+            name         = "${local.name}-kubeconfig"
             default_mode = "0440"
           }
         }
