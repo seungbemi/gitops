@@ -39,8 +39,17 @@ production because Kubernetes NetworkPolicy cannot express DNS names.
 The runner container uses unconfined Kubernetes seccomp and AppArmor profiles
 because Codex's Linux filesystem sandbox uses bubblewrap user namespaces. The
 container remains non-root, drops every Linux capability, forbids privilege
-escalation, uses a read-only root filesystem, and has no service-account token.
-The control agent and init container retain the runtime-default profiles.
+escalation, and uses a read-only root filesystem. Its dedicated service account
+has cluster-wide read-only status access (including pod logs) and no Secret or
+mutation permissions. The control agent and init container retain the
+runtime-default profiles and do not receive that service-account token.
+
+The base runner image includes Codex, Node.js, Git, GitHub CLI, curl, jq,
+Python 3, and ripgrep. Additional exact CLI artifacts are installed into the
+persistent NFS-backed tool directory only after Hermes records approval of the
+name, version, official HTTPS URL, SHA-256, archive format, and executable path.
+The exact artifact remains available across workspace rebuilds; upgrades or
+different sources require a new approval.
 
 The local module is nested inside `hermes-codex-runner/`, making that directory
 a self-contained upload archive. Point `coder templates push --directory`

@@ -264,7 +264,7 @@ resource "kubernetes_deployment_v1" "runner" {
           }
           env {
             name  = "RUNNER_TOOL_SOURCE_HOSTS"
-            value = "github.com,objects.githubusercontent.com,releases.hashicorp.com,get.helm.sh,dl.k8s.io,astral.sh,nodejs.org,go.dev"
+            value = "github.com,objects.githubusercontent.com,releases.hashicorp.com,get.helm.sh,dl.k8s.io,astral.sh,nodejs.org,go.dev,dl.google.com"
           }
           env {
             name  = "RUNNER_KUBECONFIG_PATH"
