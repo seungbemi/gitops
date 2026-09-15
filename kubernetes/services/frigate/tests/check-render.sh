@@ -31,7 +31,7 @@ assert f"app.kubernetes.io/instance: '{release}'" in cron
 assert f"app.kubernetes.io/name: '{release}'" in cron
 assert 'concurrencyPolicy: Forbid' in cron
 assert 'image: alpine:latest' in cron and 'python' not in cron
-assert 'ghcr.io/blakeblackshear/frigate:0.17.2' in deploy
-print(f"Verified {release}: shared PVC, read-only source, NFS scope, affinity, unchanged Frigate version")
+assert 'ghcr.io/blakeblackshear/frigate:0.18.0' in deploy
+print(f"Verified {release}: shared PVC, read-only source, NFS scope, affinity, Frigate 0.18.0")
 PY
 done
