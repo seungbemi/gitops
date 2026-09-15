@@ -32,6 +32,15 @@ assert f"app.kubernetes.io/name: '{release}'" in cron
 assert 'concurrencyPolicy: Forbid' in cron
 assert 'image: alpine:latest' in cron and 'python' not in cron
 assert 'ghcr.io/blakeblackshear/frigate:0.18.0' in deploy
-print(f"Verified {release}: shared PVC, read-only source, NFS scope, affinity, Frigate 0.18.0")
+# Isolate the main container: the helper has independent HTTPS probes.
+main = deploy.split('        - env:')[-1]
+for probe in ('livenessProbe', 'readinessProbe', 'startupProbe'):
+    block = re.search(r"^          " + probe + r":\n((?:^            .*\n)+)", main, re.M)[1]
+    assert 'httpGet:' in block and 'path: /api/' in block
+    assert 'port: 5000' in block and 'tcpSocket:' not in block
+    assert 'timeoutSeconds: 5' in block and 'periodSeconds: 10' in block
+    assert f"failureThreshold: {30 if probe == 'startupProbe' else 3}" in block
+assert 'maxSurge: 0' in deploy and 'maxUnavailable: 1' in deploy
+print(f"Verified {release}: shared PVC, read-only source, NFS scope, affinity, 0.18.0 API probes and migration startup budget")
 PY
 done

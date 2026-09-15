@@ -41,12 +41,40 @@ controllers:
           - secretRef:
               name: frigate-secrets
         probes:
+          # Check the API, not just nginx's open TCP socket. The internal
+          # listener avoids TLS/auth on the external UI port (8971).
           liveness:
             enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/
+                port: 5000
+              timeoutSeconds: 5
+              periodSeconds: 10
+              failureThreshold: 3
           readiness:
             enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/
+                port: 5000
+              timeoutSeconds: 5
+              periodSeconds: 10
+              failureThreshold: 3
           startup:
             enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/
+                port: 5000
+              timeoutSeconds: 5
+              periodSeconds: 10
+              # Allow five minutes for config/database migrations before
+              # liveness can restart Frigate or readiness admits traffic.
+              failureThreshold: 30
         securityContext:
           privileged:  true
       config-helper:
