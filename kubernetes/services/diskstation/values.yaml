@@ -9,3 +9,5 @@ webServices:
   port: 7720
 - name: file
   port: 7740
+- name: webdav
+  port: 7776
