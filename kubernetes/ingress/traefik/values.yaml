@@ -1,16 +1,16 @@
-# https://github.com/traefik/traefik-helm-chart/blob/v36.0.0/traefik/values.yaml
+# https://github.com/traefik/traefik-helm-chart/blob/v41.5.0/traefik/values.yaml
 traefik:
   service:
     spec:
       loadBalancerIP: "172.20.0.200"
-  logs:
+  # Chart v41 renamed logs.general to log to match Traefik's static config.
+  log:
     # Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
-    general:
-      # By default, the logs use a text format (common), but you can
-      # also ask for the json format in the format option
-      # format: json
-      # By default, the level is set to ERROR. Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
-      level: ERROR
+    # By default, the logs use a text format (common), but you can
+    # also ask for the json format in the format option
+    # format: json
+    # By default, the level is set to ERROR. Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+    level: ERROR
   deployment:
     podLabels:
       app: traefik
