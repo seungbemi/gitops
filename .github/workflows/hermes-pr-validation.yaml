@@ -22,17 +22,18 @@ jobs:
         run: |
           set -euo pipefail
           changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          checkable="$(git diff --name-only --diff-filter=ACMR "$BASE_SHA" "$HEAD_SHA")"
           {
             echo "workflow=$(grep -Fxq '.github/workflows/hermes-pr-validation.yaml' <<<"$changed" && echo true || echo false)"
             echo "hermes=$(grep -Eq '^(kubernetes/services/hermes-agent/|kubernetes/services/paperless/|kubernetes/monitoring/prometheus/dashboards/hermes.json|\.github/workflows/hermes-observability.yaml)' <<<"$changed" && echo true || echo false)"
             echo "frigate=$(grep -Eq '^kubernetes/services/frigate/' <<<"$changed" && echo true || echo false)"
             echo "rina=$(grep -Eq '^kubernetes/services/rina-company/' <<<"$changed" && echo true || echo false)"
-            echo "terraform=$(grep -Eq '^coder-template/.*\.tf$' <<<"$changed" && echo true || echo false)"
+            echo "terraform=$(grep -Eq '^coder-template/.*\.tf$' <<<"$checkable" && echo true || echo false)"
           } >>"$GITHUB_OUTPUT"
       - uses: azure/setup-helm@v5
         if: steps.paths.outputs.workflow == 'true' || steps.paths.outputs.hermes == 'true' || steps.paths.outputs.frigate == 'true' || steps.paths.outputs.rina == 'true'
       - uses: opentofu/setup-opentofu@v2
-        if: steps.paths.outputs.workflow == 'true' || steps.paths.outputs.terraform == 'true'
+        if: steps.paths.outputs.terraform == 'true'
       - name: Register shared Helm repository
         if: steps.paths.outputs.workflow == 'true' || steps.paths.outputs.hermes == 'true' || steps.paths.outputs.frigate == 'true'
         run: helm repo add bjw-s-labs https://bjw-s-labs.github.io/helm-charts
@@ -61,18 +62,14 @@ jobs:
         if: steps.paths.outputs.workflow == 'true' || steps.paths.outputs.frigate == 'true'
         run: kubernetes/services/frigate/tests/check-render.sh
       - name: Validate Coder Terraform formatting
-        if: steps.paths.outputs.workflow == 'true' || steps.paths.outputs.terraform == 'true'
+        if: steps.paths.outputs.terraform == 'true'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          if [[ "${{ steps.paths.outputs.workflow }}" == true ]]; then
-            tofu fmt -check -recursive coder-template
-          else
-            mapfile -t terraform_files < <(git diff --name-only --diff-filter=ACMR "$BASE_SHA" "$HEAD_SHA" -- 'coder-template/**/*.tf')
-            tofu fmt -check "${terraform_files[@]}"
-          fi
+          mapfile -t terraform_files < <(git diff --name-only --diff-filter=ACMR "$BASE_SHA" "$HEAD_SHA" -- 'coder-template/**/*.tf')
+          tofu fmt -check "${terraform_files[@]}"
       - name: Record unmapped validation
         if: steps.paths.outputs.workflow != 'true' && steps.paths.outputs.hermes != 'true' && steps.paths.outputs.frigate != 'true' && steps.paths.outputs.rina != 'true' && steps.paths.outputs.terraform != 'true'
         run: echo "No path-specific validation is mapped; merge policy permits local validation evidence."
