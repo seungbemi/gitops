@@ -48,6 +48,9 @@ jobs:
           kubernetes/services/hermes-agent/tests/check-render.sh
           kubernetes/services/paperless/tests/check-render.sh
           jq -e . kubernetes/monitoring/prometheus/dashboards/hermes.json >/dev/null
+      - name: Build Rina chart dependencies
+        if: steps.paths.outputs.workflow == 'true' || steps.paths.outputs.rina == 'true'
+        run: helm dependency build kubernetes/services/rina-company
       - name: Validate Rina chart
         if: steps.paths.outputs.workflow == 'true' || steps.paths.outputs.rina == 'true'
         run: helm template rina-company kubernetes/services/rina-company >/dev/null
