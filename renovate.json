@@ -6,8 +6,14 @@
   ],
   "packageRules": [
     {
+      "description": "Automerge patch updates only",
       "matchUpdateTypes": ["patch"],
       "automerge": true
+    },
+    {
+      "description": "Require manual review for minor, major, and replacement updates",
+      "matchUpdateTypes": ["minor", "major", "replacement"],
+      "automerge": false
     }
   ],
   "customManagers": [
