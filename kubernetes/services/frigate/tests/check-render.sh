@@ -27,8 +27,12 @@ assert '/media/frigate' not in cron and '/volume1/LTS/frigate' not in cron
 assert '/volume1/LTS/frigate' in deploy
 assert 'topologyKey: kubernetes.io/hostname' in cron
 assert 'app.kubernetes.io/controller: main' in cron
-assert f"app.kubernetes.io/instance: '{release}'" in cron
-assert f"app.kubernetes.io/name: '{release}'" in cron
+for label in ('instance', 'name'):
+    assert re.search(
+        rf"^\s+app\.kubernetes\.io/{label}:\s+['\"]?{re.escape(release)}['\"]?\s*$",
+        cron,
+        re.M,
+    )
 assert 'concurrencyPolicy: Forbid' in cron
 assert 'image: alpine:latest' in cron and 'python' not in cron
 assert 'ghcr.io/blakeblackshear/frigate:0.18.0' in deploy
