@@ -9,6 +9,10 @@ invalid="$(mktemp)"
 disabled="$(mktemp)"
 numeric_ids="$(mktemp)"
 gateway_only="$(mktemp)"
+# Distinct fixed digests verify value propagation without coupling this test to
+# whichever release digests are currently pinned in values.yaml.
+test_plugin_digest="sha256:1111111111111111111111111111111111111111111111111111111111111111"
+test_gateway_digest="sha256:2222222222222222222222222222222222222222222222222222222222222222"
 trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids" "$gateway_only"' EXIT INT TERM
 
 helm lint "$chart_dir"
@@ -39,8 +43,8 @@ if helm template hermes "$chart_dir" \
   --set 'profile.telegram.allowedUserIds[0]=123456789' \
   --set 'profile.telegram.adminUserIds[0]=123456789' \
   --set 'credentialGateway.enabled=true' \
-  --set 'approvalPlugin.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
-  --set 'credentialGateway.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set "approvalPlugin.image.digest=$test_plugin_digest" \
+  --set "credentialGateway.image.digest=$test_gateway_digest" \
   --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
   --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
@@ -62,8 +66,8 @@ if helm template hermes "$chart_dir" \
   --set 'profile.telegram.allowedUserIds[0]=123456789' \
   --set 'profile.telegram.adminUserIds[0]=123456789' \
   --set 'credentialGateway.enabled=true' \
-  --set 'approvalPlugin.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
-  --set 'credentialGateway.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set "approvalPlugin.image.digest=$test_plugin_digest" \
+  --set "credentialGateway.image.digest=$test_gateway_digest" \
   --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
   --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
@@ -94,7 +98,6 @@ helm template hermes-gateway-only "$chart_dir" \
   --set 'profile.telegram.allowedUserIds[0]=123456789' \
   --set 'profile.telegram.adminUserIds[0]=123456789' \
   --set 'credentialGateway.enabled=true' \
-  --set 'credentialGateway.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
   --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
   --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
@@ -106,6 +109,16 @@ if grep -Fq 'codex-runner-credentials' "$gateway_only"; then
 fi
 if grep -Fq 'config-helper-credentials' "$gateway_only"; then
   echo 'disabled configuration-helper credentials rendered into the gateway pod' >&2
+  exit 1
+fi
+# This render intentionally keeps the chart defaults, independently checking
+# that deployable production values remain immutable SHA-256 references.
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:latest@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+  echo 'default policy-gateway image must be pinned by a valid sha256 digest' >&2
+  exit 1
+fi
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-approval-plugin:latest@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+  echo 'default approval-plugin image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
 
@@ -121,7 +134,8 @@ helm template hermes-admin "$chart_dir" --namespace services \
   --set 'knowledgeBase.enabled=true' \
   --set 'knowledgeBase.mcpUrl=http://gateway.internal/knowledge/mcp' \
   --set 'credentialGateway.enabled=true' \
-  --set 'credentialGateway.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set "approvalPlugin.image.digest=$test_plugin_digest" \
+  --set "credentialGateway.image.digest=$test_gateway_digest" \
   --set 'credentialGateway.wikiSecretName=hermes-admin-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-admin-approval' \
   --set 'credentialGateway.imagePullSecretName=hermes-admin-gateway-registry' \
@@ -171,7 +185,8 @@ helm template hermes-rina "$chart_dir" --namespace services \
   --set 'knowledgeBase.enabled=true' \
   --set 'knowledgeBase.mcpUrl=http://gateway.internal/knowledge/mcp' \
   --set 'credentialGateway.enabled=true' \
-  --set 'credentialGateway.image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000' \
+  --set "approvalPlugin.image.digest=$test_plugin_digest" \
+  --set "credentialGateway.image.digest=$test_gateway_digest" \
   --set 'credentialGateway.wikiSecretName=hermes-rina-knowledge' \
   --set 'credentialGateway.approvalSecretName=hermes-rina-approval' \
   --set 'credentialGateway.imagePullSecretName=hermes-rina-gateway-registry' \
@@ -312,9 +327,8 @@ if helm template hermes-rina "$chart_dir" --namespace services \
   exit 1
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
-grep -Fq 'ghcr.io/seungbemi/hermes-approval-plugin' "$admin_rendered"
-grep -Fq 'sha256:ed0bf51db63ce7f1f58888964a6e86df5c3879473de861be5a8e98b2288a4d44' "$admin_rendered"
-grep -Fq 'sha256:2569242c6eb5fb653746e9165dd8acbefcb797dd8d33f12ceb559a11188b9ae9' "$chart_dir/values.yaml"
+grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:latest@$test_plugin_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-policy-gateway:latest@$test_gateway_digest" "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1
