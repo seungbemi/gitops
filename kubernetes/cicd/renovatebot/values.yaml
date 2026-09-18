@@ -2,6 +2,10 @@
 controllers:
   main:
     type: cronjob
+    pod:
+      securityContext:
+        fsGroup: 12021
+        fsGroupChangePolicy: OnRootMismatch
     cronjob:
       backoffLimit: 1
       concurrencyPolicy: Forbid
@@ -10,11 +14,40 @@ controllers:
       startingDeadlineSeconds: 30
       successfulJobsHistory: 3
       suspend: false
+    initContainers:
+      github-app-token:
+        image:
+          repository: ghcr.io/mshekow/github-app-installation-token
+          tag: latest
+          digest: sha256:ce05179657bd6eccb0745cfd0b48a339e63076299055b6e64f22cc824883e323
+        command: ["/bin/sh", "-ec"]
+        args:
+          - >-
+            umask 027;
+            node /app/index.js
+            "$(cat /var/run/secrets/renovate-github-app/RENOVATE_GITHUB_APP_ID)"
+            "$(cat /var/run/secrets/renovate-github-app/RENOVATE_GITHUB_APP_INSTALLATION_ID)"
+            /var/run/secrets/renovate-github-app/RENOVATE_GITHUB_APP_PRIVATE_KEY
+            > /var/run/renovate-token/token
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 12021
+          capabilities:
+            drop: ["ALL"]
     containers:
       main:
         image:
           repository: renovate/renovate
           tag: "{{ .Chart.AppVersion }}"
+        command: ["/bin/sh", "-ec"]
+        args:
+          - |
+            RENOVATE_TOKEN="$(cat /var/run/renovate-token/token)"
+            export RENOVATE_TOKEN
+            exec renovate
         env:
           - name: LOG_LEVEL
             value: debug
@@ -26,10 +59,10 @@ controllers:
             value: "github"
           - name: RENOVATE_BASE_DIR
             value: "/tmp/renovate"
-        envFrom:
-          - secretRef:
-              name: renovatebot-secrets
-              optional: false
+          - name: RENOVATE_REVIEWERS
+            value: seungbemi
+          - name: RENOVATE_ASSIGN_AUTOMERGE
+            value: "true"
 configMaps:
   config:
     enabled: true
@@ -40,6 +73,24 @@ configMaps:
         }
 
 persistence:
+  github-app:
+    enabled: true
+    type: secret
+    name: renovatebot-secrets
+    advancedMounts:
+      main:
+        github-app-token:
+          - path: /var/run/secrets/renovate-github-app
+            readOnly: true
+  token:
+    enabled: true
+    type: emptyDir
+    advancedMounts:
+      main:
+        github-app-token:
+          - path: /var/run/renovate-token
+        main:
+          - path: /var/run/renovate-token
   config:
     enabled: true
     type: configMap
