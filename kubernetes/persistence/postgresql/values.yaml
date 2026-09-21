@@ -1,5 +1,6 @@
 # https://github.com/bitnami/charts/blob/9e15346368a58970bfe079d242e8ea78bc2618ef/bitnami/postgresql/values.yaml
 postgresql:
+  enabled: true
   image:
     registry: ghcr.io
     repository: seungbemi/bitnami-postgres-pgvector-rs
@@ -33,3 +34,50 @@ postgresql:
       tag: 0.17.1-debian-12-r16
     serviceMonitor:
       enabled: true
+
+# PostgreSQL 17 is deployed beside the current PostgreSQL 14 instance while the
+# logical migration is rehearsed. The stable `postgresql` Service remains owned
+# by the legacy dependency until `cutover` is explicitly enabled as part of the
+# maintenance-window change.
+postgresql17:
+  enabled: true
+  cutover: false
+  image:
+    repository: ghcr.io/seungbemi/postgres-vectorchord
+    tag: 17.11-pgvector0.8.6-vchord1.1.1
+    digest: sha256:f0f3b52a14563ee4e87e91a906b17ab70a35fcfdb01eaa7885abde3e9377f74a
+    pullPolicy: IfNotPresent
+  auth:
+    existingSecret: postgres-secrets
+    passwordKey: postgres-password
+  persistence:
+    storageClass: ceph-block
+    size: 16Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  metrics:
+    enabled: true
+    image:
+      repository: quay.io/prometheuscommunity/postgres-exporter
+      tag: v0.17.1
+      digest: sha256:38606faa38c54787525fb0ff2fd6b41b4cfb75d455c1df294927c5f611699b17
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+
+backup:
+  schedule: "30 */6 * * *"
+  retentionDays: 7
+  nfs:
+    server: diskstation.local
+    path: /volume1/LTS/backups

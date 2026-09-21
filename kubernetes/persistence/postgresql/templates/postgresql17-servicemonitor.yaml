@@ -1,0 +1,19 @@
+{{- if and .Values.postgresql17.enabled .Values.postgresql17.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: postgresql-v17
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "postgresql17.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgresql
+      app.kubernetes.io/instance: postgresql-v17
+      app.kubernetes.io/component: primary
+  endpoints:
+    - port: metrics
+      interval: 30s
+      scrapeTimeout: 10s
+{{- end }}
