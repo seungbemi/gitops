@@ -1,6 +1,6 @@
 # https://github.com/bitnami/charts/blob/9e15346368a58970bfe079d242e8ea78bc2618ef/bitnami/postgresql/values.yaml
 postgresql:
-  enabled: true
+  enabled: false
   image:
     registry: ghcr.io
     repository: seungbemi/bitnami-postgres-pgvector-rs
@@ -41,7 +41,7 @@ postgresql:
 # maintenance-window change.
 postgresql17:
   enabled: true
-  cutover: false
+  cutover: true
   image:
     repository: ghcr.io/seungbemi/postgres-vectorchord
     tag: 17.11-pgvector0.8.6-vchord1.1.1

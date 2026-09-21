@@ -7,7 +7,9 @@ cutover_rendered="$(mktemp)"
 trap 'rm -f "$rendered" "$cutover_rendered"' EXIT
 
 helm lint "$chart_dir"
-helm template postgresql "$chart_dir" --namespace persistence >"$rendered"
+helm template postgresql "$chart_dir" --namespace persistence \
+  --set postgresql.enabled=true \
+  --set postgresql17.cutover=false >"$rendered"
 
 grep -Fq 'name: postgresql-v17' "$rendered"
 grep -Fq 'name: postgresql-v17-hl' "$rendered"
@@ -21,6 +23,7 @@ stable_services="$(awk '$0 == "kind: Service" { service = 1; next } service && $
 test "$stable_services" -eq 1
 
 if helm template postgresql "$chart_dir" --namespace persistence \
+  --set postgresql.enabled=true \
   --set postgresql17.cutover=true >/dev/null 2>&1; then
   echo 'unsafe cutover rendered while the PostgreSQL 14 dependency was enabled' >&2
   exit 1
