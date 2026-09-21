@@ -1,0 +1,20 @@
+{{- if and .Values.postgresql17.cutover .Values.postgresql.enabled }}
+{{- fail "postgresql.enabled must be false before postgresql17.cutover can be enabled" }}
+{{- end }}
+{{- if and .Values.postgresql17.enabled .Values.postgresql17.cutover }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "postgresql17.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: postgresql
+  selector:
+    {{- include "postgresql17.selectorLabels" . | nindent 4 }}
+{{- end }}

@@ -1,0 +1,52 @@
+{{- if .Values.postgresql17.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-v17-hl
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "postgresql17.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: postgresql
+  selector:
+    {{- include "postgresql17.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-v17
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "postgresql17.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: postgresql
+  selector:
+    {{- include "postgresql17.selectorLabels" . | nindent 4 }}
+{{- if .Values.postgresql17.metrics.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-v17-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "postgresql17.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: metrics
+      port: 9187
+      targetPort: metrics
+  selector:
+    {{- include "postgresql17.selectorLabels" . | nindent 4 }}
+{{- end }}
+{{- end }}
