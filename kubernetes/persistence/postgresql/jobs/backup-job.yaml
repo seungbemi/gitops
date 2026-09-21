@@ -94,7 +94,7 @@ spec:
       volumes:
         - name: database
           nfs:
-            path: /volume1/LTS/database
+            path: /volume1/LTS/backups
             server: diskstation.local
         - name: tmp
           emptyDir: {}
