@@ -2,15 +2,6 @@
 # https://github.com/bjw-s/helm-charts/blob/common-3.1.0/charts/library/common/values.yaml
 defaultPodOptions:
   hostNetwork: true
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: zigbee-node
-                operator: In
-                values:
-                  - "true"
 
 configHelper:
   # Home Assistant uses hostNetwork, so port 8444 also binds on the selected
@@ -49,8 +40,6 @@ controllers:
               periodSeconds: 10
               timeoutSeconds: 2
               failureThreshold: 30
-        securityContext:
-          privileged: true
       config-helper:
         enabled: false
         image:
@@ -147,14 +136,6 @@ persistence:
       main:
         main:
           - path: /config-nfs
-  usb:
-    enabled: true
-    type: hostPath
-    hostPath: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
-    advancedMounts:
-      main:
-        main:
-          - path: /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2233659-if00
   config-helper-credentials:
     enabled: false
     type: secret
