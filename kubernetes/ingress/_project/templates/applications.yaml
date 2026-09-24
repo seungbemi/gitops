@@ -26,7 +26,10 @@ spec:
     {{- else }}
     targetRevision: HEAD
     {{- end }}
-    {{- if .skipCrds }}
+    {{- if .plugin }}
+    plugin:
+      name: {{ .plugin }}
+    {{- else if .skipCrds }}
     helm:
       skipCrds: true
     {{- end }}

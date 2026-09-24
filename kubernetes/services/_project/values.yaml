@@ -98,4 +98,5 @@ apps:
     namespace: services
     repoURL: git@github.com:seungbemi/gitops-secrets.git
     path: kubernetes/services/secrets
+    plugin: sops-helm
     sync: true

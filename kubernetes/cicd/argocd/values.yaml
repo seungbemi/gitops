@@ -36,6 +36,55 @@ argo-cd:
     cm:
       admin.enabled: false
       accounts.seungbemi: apiKey, login
+    cmp:
+      create: true
+      plugins:
+        sops-helm:
+          allowConcurrency: true
+          discover:
+            find:
+              command:
+                - sh
+                - -c
+                - find . -type f -name '*.enc' -print -quit
+          init:
+            command: [sh, -c]
+            args:
+              - |
+                set -eu
+                umask 077
+                encrypted_list=$(mktemp)
+                trap 'rm -f "$encrypted_list"' EXIT HUP INT TERM
+                find . -type f -name '*.enc' -print >"$encrypted_list"
+                test -s "$encrypted_list"
+                while IFS= read -r encrypted; do
+                  plaintext=${encrypted%.enc}
+                  test ! -e "$plaintext"
+                  /custom-tools/sops --decrypt \
+                    --input-type yaml \
+                    --output-type binary \
+                    "$encrypted" >"$plaintext"
+                  rm -f "$encrypted"
+                done <"$encrypted_list"
+                /usr/local/bin/helm dependency build . >&2
+          generate:
+            command: [sh, -c]
+            args:
+              - |
+                set -eu
+                set -- /usr/local/bin/helm template "$ARGOCD_APP_NAME" . \
+                  --namespace "$ARGOCD_APP_NAMESPACE" \
+                  --include-crds \
+                  --skip-tests
+                if [ -n "${KUBE_VERSION:-}" ]; then
+                  set -- "$@" --kube-version "$KUBE_VERSION"
+                fi
+                for api_version in ${KUBE_API_VERSIONS:-}; do
+                  set -- "$@" --api-versions "$api_version"
+                done
+                exec "$@"
+          preserveFileMode: false
+          provideGitCreds: false
     rbac:
       policy.default: role:readonly
       policy.csv: |
@@ -85,6 +134,93 @@ argo-cd:
 
   repoServer:
     replicas: 2
+    automountServiceAccountToken: false
+    initContainers:
+      - name: install-sops
+        image: ghcr.io/getsops/sops:v3.13.3-alpine@sha256:ae501277bf742f1662e0f881f43dd8fd6798b489a8058e921dbf6cda597140ea
+        imagePullPolicy: IfNotPresent
+        command: [/bin/sh, -ec]
+        args:
+          - |
+            install -m 0555 /usr/local/bin/sops /custom-tools/sops
+            install -m 0444 /sops-age-source/keys.txt /sops-age-runtime/keys.txt
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: false
+          runAsUser: 0
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+          - name: custom-tools
+            mountPath: /custom-tools
+          - name: sops-age-source
+            mountPath: /sops-age-source
+            readOnly: true
+          - name: sops-age-runtime
+            mountPath: /sops-age-runtime
+    extraContainers:
+      - name: cmp-sops-helm
+        image: quay.io/argoproj/argocd:v3.5.3@sha256:dd3f47d5a5e4da563a7a398506e892481b358a7cec50abdf320c71aa55904bfa
+        imagePullPolicy: IfNotPresent
+        command: [/var/run/argocd/argocd-cmp-server]
+        env:
+          - name: SOPS_AGE_KEY_FILE
+            value: /sops-age-runtime/keys.txt
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+          runAsGroup: 999
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        volumeMounts:
+          - name: var-files
+            mountPath: /var/run/argocd
+          - name: plugins
+            mountPath: /home/argocd/cmp-server/plugins
+          - name: argocd-cmp-cm
+            mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: sops-helm.yaml
+            readOnly: true
+          - name: cmp-sops-helm-tmp
+            mountPath: /tmp
+          - name: custom-tools
+            mountPath: /custom-tools
+            readOnly: true
+          - name: sops-age-runtime
+            mountPath: /sops-age-runtime
+            readOnly: true
+    volumes:
+      - name: argocd-cmp-cm
+        configMap:
+          name: argocd-cmp-cm
+      - name: cmp-sops-helm-tmp
+        emptyDir:
+          sizeLimit: 64Mi
+      - name: custom-tools
+        emptyDir:
+          sizeLimit: 64Mi
+      - name: sops-age-source
+        secret:
+          secretName: argocd-sops-age
+          defaultMode: 0400
+      - name: sops-age-runtime
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Mi
     resources:
       limits:
         cpu: 1
@@ -125,4 +261,3 @@ argo-cd:
           - matchExpressions:
             - key: node-role.kubernetes.io/control-plane
               operator: Exists
-  

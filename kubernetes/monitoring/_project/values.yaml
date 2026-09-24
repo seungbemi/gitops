@@ -31,4 +31,5 @@ apps:
     namespace: monitoring
     repoURL: git@github.com:seungbemi/gitops-secrets.git
     path: kubernetes/monitoring/secrets
+    plugin: sops-helm
     sync: true
