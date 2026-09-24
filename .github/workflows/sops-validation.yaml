@@ -1,0 +1,38 @@
+name: SOPS integration
+
+on:
+  pull_request:
+    paths:
+      - bootstrap.sh
+      - kubernetes/cicd/argocd/**
+      - kubernetes/cicd/applications/**
+      - kubernetes/ingress/_project/**
+      - kubernetes/messaging/_project/**
+      - kubernetes/monitoring/_project/**
+      - kubernetes/persistence/_project/**
+      - kubernetes/services/_project/**
+      - .github/workflows/sops-validation.yaml
+  push:
+    branches: [main]
+    paths:
+      - bootstrap.sh
+      - kubernetes/cicd/argocd/**
+      - kubernetes/cicd/applications/**
+      - kubernetes/ingress/_project/**
+      - kubernetes/messaging/_project/**
+      - kubernetes/monitoring/_project/**
+      - kubernetes/persistence/_project/**
+      - kubernetes/services/_project/**
+      - .github/workflows/sops-validation.yaml
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: azure/setup-helm@v5
+      - run: helm repo add argo-cd https://argoproj.github.io/argo-helm
+      - run: kubernetes/cicd/argocd/tests/check-sops-render.sh
