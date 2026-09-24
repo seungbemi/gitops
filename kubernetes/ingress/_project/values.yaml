@@ -29,4 +29,5 @@ apps:
     namespace: ingress
     repoURL: git@github.com:seungbemi/gitops-secrets.git
     path: kubernetes/ingress/secrets
+    plugin: sops-helm
     sync: true

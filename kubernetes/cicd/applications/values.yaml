@@ -13,6 +13,7 @@ apps:
     namespace: cicd
     repoURL: git@github.com:seungbemi/gitops-secrets.git
     path: kubernetes/cicd/secrets
+    plugin: sops-helm
     sync: true
 
   - name: monitoring

@@ -39,7 +39,10 @@ spec:
     path: {{ .path }}
     repoURL: {{ .repoURL | default "https://github.com/seungbemi/gitops.git" }}
     targetRevision: {{ .targetRevision | default "HEAD" }}
-    {{- if or .skipCrds .valueFiles }}
+    {{- if .plugin }}
+    plugin:
+      name: {{ .plugin }}
+    {{- else if or .skipCrds .valueFiles }}
     helm:
       {{- if .valueFiles }}
       valueFiles:
