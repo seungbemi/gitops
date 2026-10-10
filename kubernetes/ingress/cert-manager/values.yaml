@@ -3,11 +3,11 @@ cert-manager:
   installCRDs: true
   resources:
     limits:
-      cpu: 30m
-      memory: 64Mi
+      cpu: 500m
+      memory: 128Mi
     requests:
-      cpu: 10m
-      memory: 32Mi
+      cpu: 100m
+      memory: 64Mi
   prometheus:
     enabled: true
     servicemonitor:
