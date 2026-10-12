@@ -19,9 +19,8 @@ controllers:
           pullPolicy: IfNotPresent
         env:
           TZ: "Europe/Helsinki"
-        envFrom:
-          - secretRef:
-              name: rina-company-secrets
+          HTTP_ADDR: ":3000"
+          SITE_URL: "https://rina.funservice.net"
         resources:
           requests:
             cpu: 16m
@@ -35,11 +34,3 @@ service:
     ports:
       http:
         port: 3000
-
-persistence:
-  content:
-    type: configMap
-    name: rina-company-content
-    globalMounts:
-      - path: /app/page.yaml
-        subPath: page.yaml
