@@ -176,6 +176,12 @@ rook-ceph-cluster:
   monitoring:
     enabled: true
   cephClusterSpec:
+    healthCheck:
+      livenessProbe:
+        osd:
+          disabled: false
+          probe:
+            timeoutSeconds: 15
     placement:
       all:
         nodeAffinity:
