@@ -37,6 +37,15 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if not .Values.profile.runtimeSecretName -}}
 {{- fail "profile.runtimeSecretName is required when enabled" -}}
 {{- end -}}
+{{- if .Values.dashboard.enabled -}}
+{{- if ne .Values.profile.name "admin" -}}{{- fail "dashboard may be enabled only for the admin profile" -}}{{- end -}}
+{{- if not (has .Values.dashboard.auth.provider (list "basic" "nous" "oidc")) -}}{{- fail "dashboard.auth.provider must be basic, nous, or oidc" -}}{{- end -}}
+{{- if not .Values.dashboard.auth.secretName -}}{{- fail "dashboard.auth.secretName is required when the dashboard is enabled" -}}{{- end -}}
+{{- if and .Values.dashboard.ingress.enabled .Values.dashboard.ingress.public (eq .Values.dashboard.auth.provider "basic") -}}{{- fail "public dashboard ingress requires nous or oidc; basic auth is local/VPN-only" -}}{{- end -}}
+{{- if and .Values.dashboard.ingress.enabled (not (regexMatch "^https://[^/]+/?$" .Values.dashboard.publicUrl)) -}}{{- fail "dashboard.publicUrl must be an origin-only https URL when dashboard ingress is enabled" -}}{{- end -}}
+{{- if not .Values.dashboard.ingress.entryPoint -}}{{- fail "dashboard.ingress.entryPoint is required when the dashboard is enabled" -}}{{- end -}}
+{{- if not .Values.dashboard.ingress.clusterIssuer -}}{{- fail "dashboard.ingress.clusterIssuer is required when the dashboard is enabled" -}}{{- end -}}
+{{- end -}}
 {{- if eq (len .Values.profile.telegram.allowedUserIds) 0 -}}
 {{- fail "profile.telegram.allowedUserIds must contain numeric Telegram user IDs" -}}
 {{- end -}}

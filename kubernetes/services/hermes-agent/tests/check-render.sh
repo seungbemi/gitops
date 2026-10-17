@@ -9,11 +9,12 @@ invalid="$(mktemp)"
 disabled="$(mktemp)"
 numeric_ids="$(mktemp)"
 gateway_only="$(mktemp)"
+dashboard_rendered="$(mktemp)"
 # Distinct fixed digests verify value propagation without coupling this test to
 # whichever release digests are currently pinned in values.yaml.
 test_plugin_digest="sha256:1111111111111111111111111111111111111111111111111111111111111111"
 test_gateway_digest="sha256:2222222222222222222222222222222222222222222222222222222222222222"
-trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids" "$gateway_only"' EXIT INT TERM
+trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids" "$gateway_only" "$dashboard_rendered"' EXIT INT TERM
 
 helm lint "$chart_dir"
 
@@ -57,6 +58,54 @@ if helm template hermes "$chart_dir" \
   exit 1
 fi
 grep -Fq 'codexDelegation.authorization.requester is required' "$invalid"
+
+if helm template hermes "$chart_dir" \
+  --set 'profile.enabled=true' \
+  --set 'profile.name=admin' \
+  --set 'profile.kubernetes.scope=cluster' \
+  --set 'profile.runtimeSecretName=hermes-admin-runtime' \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'dashboard.enabled=true' \
+  --set 'dashboard.ingress.enabled=true' \
+  --set 'dashboard.ingress.public=true' \
+  --set 'dashboard.auth.provider=basic' \
+  --set 'dashboard.auth.secretName=hermes-admin-dashboard-auth' \
+  --set 'dashboard.publicUrl=https://hermes.example.com' >"$invalid" 2>&1; then
+  echo "public dashboard rendered without an approved auth provider" >&2
+  exit 1
+fi
+grep -Fq 'public dashboard ingress requires nous or oidc' "$invalid"
+
+helm template hermes-dashboard-local "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/admin.yaml" \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'dashboard.enabled=true' \
+  --set 'dashboard.auth.provider=basic' \
+  --set 'dashboard.auth.secretName=hermes-admin-dashboard-auth' >"$dashboard_rendered"
+grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_USERNAME' "$dashboard_rendered"
+grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_PASSWORD' "$dashboard_rendered"
+grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_SECRET' "$dashboard_rendered"
+if grep -Fq 'kind: IngressRoute' "$dashboard_rendered"; then
+  echo "local basic-auth dashboard rendered a public ingress" >&2
+  exit 1
+fi
+
+helm template hermes-dashboard "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/admin.yaml" \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'dashboard.enabled=true' \
+  --set 'dashboard.ingress.enabled=true' \
+  --set 'dashboard.ingress.create=true' \
+  --set 'dashboard.ingress.public=true' \
+  --set 'dashboard.auth.provider=nous' \
+  --set 'dashboard.auth.secretName=hermes-admin-dashboard-auth' \
+  --set 'dashboard.publicUrl=https://hermes.example.com' >"$dashboard_rendered"
+grep -Fq 'name: HERMES_DASHBOARD_OAUTH_CLIENT_ID' "$dashboard_rendered"
+grep -Fq 'name: hermes-admin-dashboard-auth' "$dashboard_rendered"
+grep -Fq 'match: Host(`hermes.example.com`)' "$dashboard_rendered"
 
 if helm template hermes "$chart_dir" \
   --set 'profile.enabled=true' \

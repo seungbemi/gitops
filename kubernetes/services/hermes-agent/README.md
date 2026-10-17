@@ -15,6 +15,35 @@ The current rollout has `hermes-admin` active and `hermes-rina` disabled. Do
 not enable Rina as part of stabilization; establish a seven-day admin baseline
 first.
 
+## Web dashboard
+
+The built-in dashboard is disabled by default and may be enabled only for the
+admin profile. It runs as a sidecar on port 9119. With ingress disabled, use
+the ClusterIP Service through `kubectl port-forward` for initial local
+evaluation. With ingress enabled, it is reachable only from Traefik under the
+workload NetworkPolicy. The route and certificate can be owned by this chart or
+by the shared routes chart. The chart rejects ingress marked public unless its
+public URL is HTTPS and its auth provider is `nous` or `oidc`; upstream basic
+auth is accepted only for an explicitly internal route.
+
+The Secret named by `dashboard.auth.secretName` must contain exactly the
+provider variables required by Hermes:
+
+- Nous OAuth: `HERMES_DASHBOARD_OAUTH_CLIENT_ID`
+- Self-hosted OIDC: `HERMES_DASHBOARD_OIDC_ISSUER` and
+  `HERMES_DASHBOARD_OIDC_CLIENT_ID` (optionally
+  `HERMES_DASHBOARD_OIDC_SCOPES`)
+- Local username/password: `HERMES_DASHBOARD_BASIC_AUTH_USERNAME`,
+  `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD`, and
+  `HERMES_DASHBOARD_BASIC_AUTH_SECRET`
+
+For public ingress, set `dashboard.publicUrl` to the origin used by Traefik, for example
+`https://hermes.example.com`. Register `<publicUrl>/auth/callback` at the
+provider. A missing Secret or key prevents the pod from becoming ready, and
+Hermes itself refuses a non-loopback bind when no auth provider registers.
+After rollout, verify `/api/status` reports `auth_required: true` and the
+expected provider before relying on the route.
+
 ## Security boundaries
 
 - Each release has a separate Deployment, PVC, ServiceAccount, Telegram bot,

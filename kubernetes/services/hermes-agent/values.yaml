@@ -44,6 +44,26 @@ agent:
   # a stronger model explicitly for a single turn or session.
   maxTurns: 15
 
+# The dashboard is a privileged administration surface: it can edit Hermes
+# configuration, credentials, hooks, and run operational commands. Public
+# exposure is therefore allowed only with Hermes' built-in OAuth/OIDC gate.
+dashboard:
+  enabled: false
+  port: 9119
+  publicUrl: ""
+  auth:
+    # basic is allowed only while ingress is disabled. Public ingress requires
+    # nous or oidc because upstream documents basic auth as LAN/VPN-only.
+    provider: ""
+    secretName: ""
+  ingress:
+    enabled: false
+    # Set create=false when the shared routes chart owns the IngressRoute.
+    create: true
+    public: true
+    entryPoint: websecure
+    clusterIssuer: letsencrypt-prod
+
 webSearch:
   enabled: false
   # Hermes rotates among its bundled anonymous search providers when no
@@ -300,6 +320,47 @@ controllers:
             memory: 256Mi
           limits:
             memory: 1Gi
+      dashboard:
+        enabled: false
+        image:
+          repository: nousresearch/hermes-agent
+          tag: v2026.9.24
+          digest: sha256:64923faeae267792bf9bf87fe3b4c4869e35004e360c7df01730ad801b74d524
+          pullPolicy: IfNotPresent
+        args: ["dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--skip-build", "--isolated"]
+        env: []
+        probes:
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/status
+                port: 9119
+              periodSeconds: 10
+              timeoutSeconds: 3
+              failureThreshold: 3
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api/status
+                port: 9119
+              periodSeconds: 30
+              timeoutSeconds: 3
+              failureThreshold: 3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+            add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
       kubernetes-mcp:
         image:
           repository: quay.io/containers/kubernetes_mcp_server
@@ -479,6 +540,12 @@ controllers:
             memory: 2Gi
 
 service:
+  dashboard:
+    controller: main
+    ports:
+      http:
+        port: 9119
+        targetPort: 9119
   browser:
     controller: browser
     ports:

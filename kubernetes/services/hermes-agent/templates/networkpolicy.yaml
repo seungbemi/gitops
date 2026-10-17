@@ -11,6 +11,17 @@ spec:
       hermes-profile: {{ .Values.profile.name | quote }}
   policyTypes: [Ingress, Egress]
   ingress:
+    {{- if .Values.dashboard.ingress.enabled }}
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - { protocol: TCP, port: {{ .Values.dashboard.port }} }
+    {{- end }}
     {{- if .Values.credentialGateway.enabled }}
     - from:
         - namespaceSelector:
@@ -30,7 +41,7 @@ spec:
               hermes-profile: {{ .Values.profile.name | quote }}
       ports:
         - { protocol: TCP, port: 8081 }
-    {{- else if not .Values.credentialGateway.enabled }}
+    {{- else if and (not .Values.credentialGateway.enabled) (not .Values.dashboard.ingress.enabled) }}
     []
     {{- end }}
   egress:

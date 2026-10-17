@@ -21,6 +21,55 @@ controllers:
       labels:
         hermes-profile: {{ .Values.profile.name | quote }}
     containers:
+      dashboard:
+        enabled: {{ .Values.dashboard.enabled }}
+        args: ["dashboard", "--host", "0.0.0.0", "--port", {{ .Values.dashboard.port | quote }}, "--no-open", "--skip-build", "--isolated"]
+        env:
+          - name: HERMES_DASHBOARD_PUBLIC_URL
+            value: {{ .Values.dashboard.publicUrl | quote }}
+          {{- if eq .Values.dashboard.auth.provider "nous" }}
+          - name: HERMES_DASHBOARD_OAUTH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dashboard.auth.secretName | quote }}
+                key: HERMES_DASHBOARD_OAUTH_CLIENT_ID
+          {{- else if eq .Values.dashboard.auth.provider "oidc" }}
+          - name: HERMES_DASHBOARD_OIDC_ISSUER
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dashboard.auth.secretName | quote }}
+                key: HERMES_DASHBOARD_OIDC_ISSUER
+          - name: HERMES_DASHBOARD_OIDC_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dashboard.auth.secretName | quote }}
+                key: HERMES_DASHBOARD_OIDC_CLIENT_ID
+          {{- else if eq .Values.dashboard.auth.provider "basic" }}
+          - name: HERMES_DASHBOARD_BASIC_AUTH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dashboard.auth.secretName | quote }}
+                key: HERMES_DASHBOARD_BASIC_AUTH_USERNAME
+          - name: HERMES_DASHBOARD_BASIC_AUTH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dashboard.auth.secretName | quote }}
+                key: HERMES_DASHBOARD_BASIC_AUTH_PASSWORD
+          - name: HERMES_DASHBOARD_BASIC_AUTH_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dashboard.auth.secretName | quote }}
+                key: HERMES_DASHBOARD_BASIC_AUTH_SECRET
+          {{- end }}
+        probes:
+          readiness:
+            spec:
+              httpGet:
+                port: {{ .Values.dashboard.port }}
+          liveness:
+            spec:
+              httpGet:
+                port: {{ .Values.dashboard.port }}
       policy-gateway:
         enabled: {{ .Values.credentialGateway.enabled }}
     initContainers:
@@ -51,6 +100,13 @@ controllers:
           - --proxy-server={{ .Values.browser.proxyUrl }}
           {{- end }}
 service:
+  dashboard:
+    enabled: {{ .Values.dashboard.enabled }}
+    forceRename: hermes-{{ .Values.profile.name }}-dashboard
+    ports:
+      http:
+        port: {{ .Values.dashboard.port }}
+        targetPort: {{ .Values.dashboard.port }}
   browser:
     enabled: {{ .Values.browser.enabled }}
     forceRename: hermes-browser-{{ .Values.profile.name }}
