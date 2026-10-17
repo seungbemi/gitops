@@ -35,7 +35,7 @@ for label in ('instance', 'name'):
     )
 assert 'concurrencyPolicy: Forbid' in cron
 assert 'image: alpine:latest' in cron and 'python' not in cron
-assert 'ghcr.io/blakeblackshear/frigate:0.18.0' in deploy
+assert 'ghcr.io/blakeblackshear/frigate:0.18.2' in deploy
 # Isolate the main container: the helper has independent HTTPS probes.
 main = deploy.split('        - env:')[-1]
 for probe in ('livenessProbe', 'readinessProbe', 'startupProbe'):
@@ -45,6 +45,6 @@ for probe in ('livenessProbe', 'readinessProbe', 'startupProbe'):
     assert 'timeoutSeconds: 5' in block and 'periodSeconds: 10' in block
     assert f"failureThreshold: {30 if probe == 'startupProbe' else 3}" in block
 assert 'maxSurge: 0' in deploy and 'maxUnavailable: 1' in deploy
-print(f"Verified {release}: shared PVC, read-only source, NFS scope, affinity, 0.18.0 API probes and migration startup budget")
+print(f"Verified {release}: shared PVC, read-only source, NFS scope, affinity, 0.18.2 API probes and migration startup budget")
 PY
 done
