@@ -135,6 +135,11 @@ argo-cd:
   repoServer:
     replicas: 2
     automountServiceAccountToken: false
+    readinessProbe:
+      timeoutSeconds: 5
+    livenessProbe:
+      failureThreshold: 6
+      timeoutSeconds: 5
     initContainers:
       - name: install-sops
         image: ghcr.io/getsops/sops:v3.13.3-alpine@sha256:ae501277bf742f1662e0f881f43dd8fd6798b489a8058e921dbf6cda597140ea
