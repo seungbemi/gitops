@@ -214,7 +214,7 @@ argo-cd:
           name: argocd-cmp-cm
       - name: cmp-sops-helm-tmp
         emptyDir:
-          sizeLimit: 64Mi
+          sizeLimit: 512Mi
       - name: custom-tools
         emptyDir:
           sizeLimit: 64Mi

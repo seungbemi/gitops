@@ -150,6 +150,8 @@ kube-prometheus-stack:
         cpu: 30m
         memory: 60Mi
   grafana:
+    readinessProbe:
+      timeoutSeconds: 5
     env:
       GF_SECURITY_ALLOW_EMBEDDING: true
     admin:
@@ -162,8 +164,8 @@ kube-prometheus-stack:
         label: grafana_notifier
     resources:
       limits:
-        cpu: 60m
+        cpu: 500m
         memory: 1Gi
       requests:
-        cpu: 30m
+        cpu: 100m
         memory: 500Mi
