@@ -23,8 +23,10 @@ controllers:
     containers:
       dashboard:
         enabled: {{ .Values.dashboard.enabled }}
-        args: ["dashboard", "--host", "0.0.0.0", "--port", {{ .Values.dashboard.port | quote }}, "--no-open", "--skip-build", "--isolated"]
+        args: ["dashboard", "--host", "0.0.0.0", "--port", {{ .Values.dashboard.port | quote }}, "--no-open", "--skip-build"]
         env:
+          - name: HERMES_HOME
+            value: /opt/data
           - name: HERMES_DASHBOARD_PUBLIC_URL
             value: {{ .Values.dashboard.publicUrl | quote }}
           {{- if eq .Values.dashboard.auth.provider "nous" }}

@@ -327,7 +327,7 @@ controllers:
           tag: v2026.9.24
           digest: sha256:64923faeae267792bf9bf87fe3b4c4869e35004e360c7df01730ad801b74d524
           pullPolicy: IfNotPresent
-        args: ["dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--skip-build", "--isolated"]
+        args: ["dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--skip-build"]
         env: []
         probes:
           readiness:

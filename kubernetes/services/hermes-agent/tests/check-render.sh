@@ -85,6 +85,7 @@ helm template hermes-dashboard-local "$chart_dir" --namespace services \
   --set 'dashboard.auth.provider=basic' \
   --set 'dashboard.auth.secretName=hermes-admin-dashboard-auth' >"$dashboard_rendered"
 grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_USERNAME' "$dashboard_rendered"
+grep -A1 -F 'name: HERMES_HOME' "$dashboard_rendered" | grep -Fq 'value: /opt/data'
 grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_PASSWORD' "$dashboard_rendered"
 grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_SECRET' "$dashboard_rendered"
 if grep -Fq 'kind: IngressRoute' "$dashboard_rendered"; then
