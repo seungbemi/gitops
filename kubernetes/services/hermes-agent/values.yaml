@@ -569,6 +569,8 @@ persistence:
       main:
         hermes:
           - path: /opt/data
+        dashboard:
+          - path: /opt/data
         bootstrap-config:
           - path: /opt/data
         install-approval-plugin:
