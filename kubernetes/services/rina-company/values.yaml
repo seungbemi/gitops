@@ -20,7 +20,11 @@ controllers:
         env:
           TZ: "Europe/Helsinki"
           HTTP_ADDR: ":3000"
-          SITE_URL: "https://rina.example.invalid"
+          SITE_URL:
+            valueFrom:
+              secretKeyRef:
+                name: rina-company-private-config
+                key: SITE_URL
         resources:
           requests:
             cpu: 16m
