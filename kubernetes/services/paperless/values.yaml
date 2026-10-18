@@ -59,6 +59,10 @@ controllers:
         envFrom:
           - secretRef:
               name: paperless-secrets
+          # OIDC configuration and credentials are SOPS-encrypted in the
+          # private GitOps repository. Keep domains out of this public repo.
+          - secretRef:
+              name: paperless-oidc
         probes:
           liveness:
             enabled: true
