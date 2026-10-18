@@ -71,6 +71,7 @@ Services are the applications that are running in the home network to provide th
 | Name | Description |
 | --- | --- |
 | [AdGuard Home](https://adguard.com/en/adguard-home/overview.html) | Network-wide ads & trackers blocking DNS server. |
+| [Authentik](https://goauthentik.io/) | Central OpenID Connect identity provider for human-facing services. |
 | [Coder](https://coder.com/) | Coder is an open-source remote development environment serving Visual Studio Code. |
 | [Frigate](https://blakeblackshear.github.io/frigate/) | Real-time object detection for IP cameras. |
 | [Home Assistant](https://www.home-assistant.io/) | Open-source home automation platform. |

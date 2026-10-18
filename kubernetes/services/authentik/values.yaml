@@ -1,0 +1,46 @@
+authentik:
+  authentik:
+    error_reporting:
+      enabled: false
+    postgresql:
+      host: postgresql.persistence
+      port: 5432
+      name: authentik
+      user: authentik
+
+  global:
+    envFrom:
+      - secretRef:
+          name: authentik-secrets
+    volumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: authentik-media
+    volumeMounts:
+      - name: media
+        mountPath: /media
+
+  server:
+    replicas: 1
+    ingress:
+      enabled: false
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+  worker:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+  postgresql:
+    enabled: false

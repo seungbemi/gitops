@@ -1,0 +1,11 @@
+apiVersion: v2
+name: authentik
+description: Central OpenID Connect identity provider
+type: application
+version: 1.0.0
+appVersion: "2026.8.4"
+
+dependencies:
+  - name: authentik
+    repository: https://charts.goauthentik.io
+    version: 2026.8.4

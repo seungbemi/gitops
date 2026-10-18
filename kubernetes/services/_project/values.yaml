@@ -39,6 +39,11 @@ apps:
     path: kubernetes/services/coder
     sync: true
 
+  - name: authentik
+    namespace: services
+    path: kubernetes/services/authentik
+    sync: true
+
   - name: frigate
     namespace: services
     path: kubernetes/services/frigate
