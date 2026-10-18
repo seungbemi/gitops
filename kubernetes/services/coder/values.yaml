@@ -29,6 +29,8 @@ coder:
             key: oidc-client-secret
       - name: CODER_OIDC_SIGN_IN_TEXT
         value: Authentik
+      - name: CODER_DISABLE_PASSWORD_AUTH
+        value: "true"
     service:
       enable: true
       type: ClusterIP
