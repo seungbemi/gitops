@@ -152,6 +152,9 @@ kube-prometheus-stack:
   grafana:
     readinessProbe:
       timeoutSeconds: 5
+    # OIDC settings, including all deployment-specific endpoints and the client
+    # secret, are supplied by the private monitoring-secrets application.
+    envFromSecret: grafana-oidc
     env:
       GF_SECURITY_ALLOW_EMBEDDING: true
     admin:

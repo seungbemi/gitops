@@ -1,4 +1,7 @@
 authentik:
+  blueprints:
+    secrets:
+      - authentik-blueprints
   authentik:
     error_reporting:
       enabled: false
