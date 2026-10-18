@@ -18,7 +18,7 @@ authentik:
     volumes:
       - name: media
         persistentVolumeClaim:
-          claimName: authentik-media
+          claimName: authentik-media-rwx
     volumeMounts:
       - name: media
         mountPath: /media
