@@ -1,0 +1,102 @@
+{{- if and .Values.wikijs.enabled .Values.authMigration.internalEndpointsV1.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wikijs-auth-internal-endpoints-v1
+  labels:
+    app.kubernetes.io/name: wikijs
+    app.kubernetes.io/component: auth-migration
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wikijs-auth-migration
+        app.kubernetes.io/component: auth-migration
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: "{{ .Values.authMigration.internalEndpointsV1.image.repository }}:{{ .Values.authMigration.internalEndpointsV1.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: PGHOST
+              value: postgresql.persistence.svc.cluster.local
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: wikijs
+            - name: PGUSER
+              value: wikijs
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-secrets
+                  key: DB_PASS
+          command: ["/bin/sh", "-euc"]
+          args:
+            - |
+              psql --no-psqlrc --set=ON_ERROR_STOP=1 <<'SQL'
+              BEGIN;
+
+              DO $migration$
+              DECLARE
+                provider authentication%ROWTYPE;
+              BEGIN
+                SELECT * INTO provider
+                FROM authentication
+                WHERE key = 'wikijs-oidc'
+                FOR UPDATE;
+
+                IF NOT FOUND THEN
+                  RAISE EXCEPTION 'Wiki.js Authentik provider wikijs-oidc was not found';
+                END IF;
+
+                IF provider."strategyKey" <> 'oauth2' THEN
+                  RAISE EXCEPTION 'Refusing migration: expected oauth2, found %', provider."strategyKey";
+                END IF;
+
+                IF NOT (provider.config::jsonb ?& ARRAY['tokenURL', 'userInfoURL']) THEN
+                  RAISE EXCEPTION 'Refusing migration: provider endpoints are missing';
+                END IF;
+
+                INSERT INTO authentication_migration_backup (
+                  migration, provider_key, provider_row
+                ) VALUES (
+                  'oauth2-internal-endpoints-v1', provider.key, to_jsonb(provider)
+                ) ON CONFLICT (migration) DO NOTHING;
+
+                UPDATE authentication
+                SET config = (
+                  provider.config::jsonb || jsonb_build_object(
+                    'tokenURL', 'http://authentik-server.services.svc.cluster.local/application/o/token/',
+                    'userInfoURL', 'http://authentik-server.services.svc.cluster.local/application/o/userinfo/'
+                  )
+                )::json
+                WHERE key = provider.key;
+              END
+              $migration$;
+
+              COMMIT;
+              SQL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+{{- end }}

@@ -33,7 +33,7 @@ controllers:
           LOG_FORMAT: json
           TZ: Europe/Helsinki
           # Bump only after the matching database migration Job has succeeded.
-          AUTH_CONFIG_REVISION: oauth2-v1
+          AUTH_CONFIG_REVISION: oauth2-internal-endpoints-v1
           DB_PASS:
             valueFrom:
               secretKeyRef:
@@ -110,6 +110,11 @@ monitoring:
 
 authMigration:
   oauth2V1:
+    enabled: true
+    image:
+      repository: postgres
+      tag: "17.6-alpine"
+  internalEndpointsV1:
     enabled: true
     image:
       repository: postgres

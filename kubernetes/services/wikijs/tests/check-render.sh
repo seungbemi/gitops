@@ -28,6 +28,10 @@ grep -Fq 'claimName: wikijs-data' "$enabled"
 grep -Fq 'name: wikijs-auth-oauth2-migration-v1' "$enabled"
 grep -Fq "provider.\"strategyKey\" <> 'oidc'" "$enabled"
 grep -Fq "'enableCSRFProtection', true" "$enabled"
+grep -Fq 'name: wikijs-auth-internal-endpoints-v1' "$enabled"
+grep -Fq "'tokenURL', 'http://authentik-server.services.svc.cluster.local/application/o/token/'" "$enabled"
+grep -Fq 'app.kubernetes.io/component: server' "$enabled"
+grep -Fq 'port: 9000' "$enabled"
 grep -Fq 'kubernetes.io/metadata.name: persistence' "$enabled"
 
 if grep -Eq 'diskstation|volume1|^[[:space:]]+nfs:' "$enabled"; then

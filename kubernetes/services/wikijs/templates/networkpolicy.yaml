@@ -43,6 +43,15 @@ spec:
               kubernetes.io/metadata.name: persistence
       ports:
         - { protocol: TCP, port: 5432 }
+    # OAuth code exchange and userinfo lookup stay inside the cluster. Browser
+    # authorization continues to use the public Authentik endpoint.
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: authentik
+              app.kubernetes.io/component: server
+      ports:
+        - { protocol: TCP, port: 9000 }
     # Wiki.js retrieves locale/update metadata during setup and operation.
     - to:
         - ipBlock:
