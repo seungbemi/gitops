@@ -81,12 +81,13 @@ spec:
                 false,
                 now()::text,
                 now()::text,
-                '/'
+                {{ .redirectOnLogin | default "/" | squote }}
               WHERE NOT EXISTS (SELECT 1 FROM groups WHERE name = {{ .name | squote }});
 
               UPDATE groups
               SET permissions = {{ .permissions | toJson | squote }}::json,
                   "pageRules" = {{ .pageRules | toJson | squote }}::json,
+                  "redirectOnLogin" = {{ .redirectOnLogin | default "/" | squote }},
                   "updatedAt" = now()::text
               WHERE name = {{ .name | squote }};
               {{- end }}
