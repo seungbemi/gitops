@@ -19,12 +19,15 @@ fi
 helm template wikijs "$chart_dir" --namespace services \
   --set wikijs.enabled=true >"$enabled"
 
-grep -Fq 'image: ghcr.io/requarks/wiki:2.5.314@sha256:68f0d1848261ae76492ba358e30a96a76fed5d97a3fff381656082bf90f70d7e' "$enabled"
+grep -Fq 'image: ghcr.io/requarks/wiki:2.5.316@sha256:68f0d1848261ae76492ba358e30a96a76fed5d97a3fff381656082bf90f70d7e' "$enabled"
 grep -Fq 'name: wikijs-secrets' "$enabled"
 grep -Fq 'value: postgresql.persistence.svc.cluster.local' "$enabled"
 grep -Fq 'value: postgres' "$enabled"
 grep -Fq 'path: /healthz' "$enabled"
 grep -Fq 'claimName: wikijs-data' "$enabled"
+grep -Fq 'name: wikijs-auth-oauth2-migration-v1' "$enabled"
+grep -Fq "provider.\"strategyKey\" <> 'oidc'" "$enabled"
+grep -Fq "'enableCSRFProtection', true" "$enabled"
 grep -Fq 'kubernetes.io/metadata.name: persistence' "$enabled"
 
 if grep -Eq 'diskstation|volume1|^[[:space:]]+nfs:' "$enabled"; then

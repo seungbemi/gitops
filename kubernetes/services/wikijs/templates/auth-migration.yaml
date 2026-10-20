@@ -1,0 +1,124 @@
+{{- if and .Values.wikijs.enabled .Values.authMigration.oauth2V1.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wikijs-auth-oauth2-migration-v1
+  labels:
+    app.kubernetes.io/name: wikijs
+    app.kubernetes.io/component: auth-migration
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wikijs-auth-migration
+        app.kubernetes.io/component: auth-migration
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: "{{ .Values.authMigration.oauth2V1.image.repository }}:{{ .Values.authMigration.oauth2V1.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: PGHOST
+              value: postgresql.persistence.svc.cluster.local
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: wikijs
+            - name: PGUSER
+              value: wikijs
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-secrets
+                  key: DB_PASS
+          command: ["/bin/sh", "-euc"]
+          args:
+            - |
+              psql --no-psqlrc --set=ON_ERROR_STOP=1 <<'SQL'
+              BEGIN;
+
+              CREATE TABLE IF NOT EXISTS authentication_migration_backup (
+                migration text PRIMARY KEY,
+                backed_up_at timestamptz NOT NULL DEFAULT now(),
+                provider_key text NOT NULL,
+                provider_row jsonb NOT NULL
+              );
+
+              DO $migration$
+              DECLARE
+                provider authentication%ROWTYPE;
+              BEGIN
+                SELECT * INTO provider
+                FROM authentication
+                WHERE key = 'wikijs-oidc'
+                FOR UPDATE;
+
+                IF NOT FOUND THEN
+                  RAISE EXCEPTION 'Wiki.js Authentik provider wikijs-oidc was not found';
+                END IF;
+
+                IF provider."strategyKey" = 'oauth2' THEN
+                  RAISE NOTICE 'Wiki.js Authentik provider is already on oauth2';
+                  RETURN;
+                END IF;
+
+                IF provider."strategyKey" <> 'oidc' THEN
+                  RAISE EXCEPTION 'Refusing migration: expected oidc, found %', provider."strategyKey";
+                END IF;
+
+                IF NOT (provider.config::jsonb ?& ARRAY[
+                  'clientId', 'clientSecret', 'authorizationURL', 'tokenURL',
+                  'userInfoURL', 'emailClaim'
+                ]) THEN
+                  RAISE EXCEPTION 'Refusing migration: required provider settings are missing';
+                END IF;
+
+                INSERT INTO authentication_migration_backup (
+                  migration, provider_key, provider_row
+                ) VALUES (
+                  'oauth2-v1', provider.key, to_jsonb(provider)
+                ) ON CONFLICT (migration) DO NOTHING;
+
+                UPDATE authentication
+                SET "strategyKey" = 'oauth2',
+                    config = (
+                      provider.config::jsonb
+                      - 'issuer'
+                      - 'acrValues'
+                      - 'skipUserProfile'
+                      || jsonb_build_object(
+                        'userIdClaim', 'sub',
+                        'scope', 'openid profile email',
+                        'useQueryStringForAccessToken', false,
+                        'enableCSRFProtection', true
+                      )
+                    )::json
+                WHERE key = provider.key;
+              END
+              $migration$;
+
+              COMMIT;
+              SQL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+{{- end }}
