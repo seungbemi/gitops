@@ -4,8 +4,10 @@ Wiki.js is the human-facing, canonical knowledge base for Hermes. Page content,
 users, permissions, and history live in the existing PostgreSQL service. The
 writable cache and temporary-content directory uses the NFS-backed
 `wikijs-data` claim defined in the private GitOps repository; no Ceph volume or
-NFS endpoint appears here. Human users sign in with local accounts, so no
-Google or OIDC provider is required.
+NFS endpoint appears here. Human users sign in through the Authentik OIDC
+provider. Provider endpoints, client credentials, and the public hostname stay
+in the private GitOps repository or the Wiki.js database and must not be added
+here.
 
 ## Activation
 
@@ -17,9 +19,15 @@ Google or OIDC provider is required.
    and make it writable by UID/GID `1000` before deployment.
 4. Deploy this chart, visit the private knowledge route, and complete Wiki.js
    setup with Sebe's local administrator account.
-5. Disable public registration and remove all page access from Guests.
-6. Create the top-level pages `sebe`, `rina`, and `shared`.
-7. Create Rina's local human account and the groups described below.
+5. Deploy the encrypted Authentik application blueprint from the private
+   GitOps repository, enable the Wiki.js OIDC strategy, and link the existing
+   administrator by matching its verified email address.
+6. Keep self-registration disabled and remove all permissions and page rules
+   from the system `Guests` group. Anonymous requests must not be able to list,
+   read, or fetch page assets.
+7. Create the top-level pages `sebe`, `rina`, and `shared`.
+8. Add additional users to both the Authentik application group and the
+   matching Wiki.js authorization groups described below.
 
 PostgreSQL backups are the authoritative Wiki.js backup. Include the NFS folder
 only to preserve transient files and any future filesystem storage module; it
