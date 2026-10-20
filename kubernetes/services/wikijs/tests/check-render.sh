@@ -32,6 +32,11 @@ grep -Fq 'name: wikijs-auth-internal-endpoints-v1' "$enabled"
 grep -Fq "'tokenURL', 'http://authentik-server.services.svc.cluster.local/application/o/token/'" "$enabled"
 grep -Fq 'app.kubernetes.io/component: server' "$enabled"
 grep -Fq 'port: 9000' "$enabled"
+
+if grep -Fq 'kind: Job' "$enabled" && grep -Fq 'wikijs-access-policy-' "$enabled"; then
+  echo "identity-specific Wiki.js access policy rendered without private values" >&2
+  exit 1
+fi
 grep -Fq 'kubernetes.io/metadata.name: persistence' "$enabled"
 
 if grep -Eq 'diskstation|volume1|^[[:space:]]+nfs:' "$enabled"; then

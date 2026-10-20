@@ -73,6 +73,13 @@ apps:
   - name: wikijs
     namespace: services
     path: kubernetes/services/wikijs
+    valueFiles:
+      - values.yaml
+      - $private/kubernetes/services/wikijs/values.yaml
+    valueSources:
+      - repoURL: git@github.com:seungbemi/gitops-secrets.git
+        targetRevision: HEAD
+        ref: private
     sync: true
 
   - name: hermes-admin

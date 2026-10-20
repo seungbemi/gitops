@@ -34,6 +34,7 @@ controllers:
           TZ: Europe/Helsinki
           # Bump only after the matching database migration Job has succeeded.
           AUTH_CONFIG_REVISION: oauth2-internal-endpoints-v1
+          AUTH_ACCESS_POLICY_REVISION: "{{ .Values.accessPolicy.revision }}"
           DB_PASS:
             valueFrom:
               secretKeyRef:
@@ -119,3 +120,13 @@ authMigration:
     image:
       repository: postgres
       tag: "17.6-alpine"
+
+# Identity-specific policy is supplied by the private GitOps values source.
+accessPolicy:
+  enabled: false
+  revision: disabled
+  image:
+    repository: postgres
+    tag: "17.6-alpine"
+  groups: []
+  users: []

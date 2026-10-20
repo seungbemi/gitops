@@ -1,0 +1,141 @@
+{{- if and .Values.wikijs.enabled .Values.accessPolicy.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wikijs-access-policy-{{ .Values.accessPolicy.revision | lower | replace "_" "-" }}
+  labels:
+    app.kubernetes.io/name: wikijs
+    app.kubernetes.io/component: access-policy
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wikijs-access-policy
+        app.kubernetes.io/component: access-policy
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: "{{ .Values.accessPolicy.image.repository }}:{{ .Values.accessPolicy.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: PGHOST
+              value: postgresql.persistence.svc.cluster.local
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: wikijs
+            - name: PGUSER
+              value: wikijs
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-secrets
+                  key: DB_PASS
+          command: ["/bin/sh", "-euc"]
+          args:
+            - |
+              psql --no-psqlrc --set=ON_ERROR_STOP=1 <<'SQL'
+              BEGIN;
+
+              CREATE TABLE IF NOT EXISTS access_policy_migration_backup (
+                migration text PRIMARY KEY,
+                backed_up_at timestamptz NOT NULL DEFAULT now(),
+                users_snapshot jsonb NOT NULL,
+                groups_snapshot jsonb NOT NULL,
+                memberships_snapshot jsonb NOT NULL
+              );
+
+              INSERT INTO access_policy_migration_backup (
+                migration, users_snapshot, groups_snapshot, memberships_snapshot
+              )
+              SELECT
+                {{ .Values.accessPolicy.revision | squote }},
+                COALESCE((SELECT jsonb_agg(to_jsonb(u)) FROM users u), '[]'::jsonb),
+                COALESCE((SELECT jsonb_agg(to_jsonb(g)) FROM groups g), '[]'::jsonb),
+                COALESCE((SELECT jsonb_agg(to_jsonb(ug)) FROM "userGroups" ug), '[]'::jsonb)
+              ON CONFLICT (migration) DO NOTHING;
+
+              {{- range .Values.accessPolicy.groups }}
+              INSERT INTO groups (
+                name, permissions, "pageRules", "isSystem", "createdAt", "updatedAt", "redirectOnLogin"
+              ) SELECT
+                {{ .name | squote }},
+                {{ .permissions | toJson | squote }}::json,
+                {{ .pageRules | toJson | squote }}::json,
+                false,
+                now()::text,
+                now()::text,
+                '/'
+              WHERE NOT EXISTS (SELECT 1 FROM groups WHERE name = {{ .name | squote }});
+
+              UPDATE groups
+              SET permissions = {{ .permissions | toJson | squote }}::json,
+                  "pageRules" = {{ .pageRules | toJson | squote }}::json,
+                  "updatedAt" = now()::text
+              WHERE name = {{ .name | squote }};
+              {{- end }}
+
+              {{- range .Values.accessPolicy.users }}
+              {{- $user := . }}
+              INSERT INTO users (
+                email, name, "providerId", password, "tfaIsActive", "jobTitle", location,
+                timezone, "isSystem", "isActive", "isVerified", "mustChangePwd",
+                "createdAt", "updatedAt", "providerKey", "localeCode", "defaultEditor",
+                "dateFormat", appearance
+              ) VALUES (
+                {{ .email | squote }}, {{ .name | squote }}, NULL, NULL, false, '', '',
+                'Europe/Helsinki', false, true, true, false,
+                now()::text, now()::text, 'wikijs-oidc', 'en', 'markdown', '', ''
+              )
+              ON CONFLICT ("providerKey", email) DO UPDATE
+              SET name = EXCLUDED.name,
+                  "isActive" = true,
+                  "isVerified" = true,
+                  "updatedAt" = now()::text;
+
+              {{- range .removeFromGroups }}
+              DELETE FROM "userGroups"
+              WHERE "userId" = (
+                SELECT id FROM users WHERE email = {{ $user.email | squote }} AND "providerKey" = 'wikijs-oidc'
+              ) AND "groupId" = (
+                SELECT id FROM groups WHERE name = {{ . | squote }}
+              );
+              {{- end }}
+
+              INSERT INTO "userGroups" ("userId", "groupId")
+              SELECT u.id, g.id
+              FROM users u, groups g
+              WHERE u.email = {{ .email | squote }}
+                AND u."providerKey" = 'wikijs-oidc'
+                AND g.name = {{ .group | squote }}
+                AND NOT EXISTS (
+                  SELECT 1 FROM "userGroups" ug
+                  WHERE ug."userId" = u.id AND ug."groupId" = g.id
+                );
+              {{- end }}
+
+              COMMIT;
+              SQL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+{{- end }}
