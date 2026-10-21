@@ -114,12 +114,12 @@ authMigration:
     enabled: true
     image:
       repository: postgres
-      tag: "17.6-alpine"
+      tag: "17.11-alpine"
   internalEndpointsV1:
     enabled: true
     image:
       repository: postgres
-      tag: "17.6-alpine"
+      tag: "17.11-alpine"
 
 # Identity-specific policy is supplied by the private GitOps values source.
 accessPolicy:
@@ -127,6 +127,6 @@ accessPolicy:
   revision: disabled
   image:
     repository: postgres
-    tag: "17.6-alpine"
+    tag: "17.11-alpine"
   groups: []
   users: []
