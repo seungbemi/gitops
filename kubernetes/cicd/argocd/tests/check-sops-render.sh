@@ -17,7 +17,7 @@ grep -Fq 'name: SOPS_AGE_KEY_FILE' "$argocd_render"
 grep -Fq 'secretName: argocd-sops-age' "$argocd_render"
 grep -Fq 'automountServiceAccountToken: false' "$argocd_render"
 grep -Fq 'ghcr.io/getsops/sops:v3.13.3-alpine@sha256:ae501277bf742f1662e0f881f43dd8fd6798b489a8058e921dbf6cda597140ea' "$argocd_render"
-grep -Fq 'quay.io/argoproj/argocd:v3.5.5@sha256:13db7b10db23283b1b36f855046602e18539a8a8204c9f6f039e8896c8897518' "$argocd_render"
+grep -Fq 'quay.io/argoproj/argocd:v3.5.6@sha256:8e5cc5bb008df8a09dba439462e58c94c55b7735888d3ebde0c25fc05e4e5335' "$argocd_render"
 
 for project_chart in \
   kubernetes/cicd/applications \
