@@ -30,7 +30,7 @@ grep -Fq 'name: wikijs-auth-oauth2-migration-v1' "$enabled"
 grep -Fq "provider.\"strategyKey\" <> 'oidc'" "$enabled"
 grep -Fq "'enableCSRFProtection', true" "$enabled"
 grep -Fq 'name: wikijs-auth-internal-endpoints-v1' "$enabled"
-if [[ "$(grep -Fc 'argocd.argoproj.io/sync-options: Replace=true' "$enabled")" -ne 2 ]]; then
+if [[ "$(grep -Fc 'argocd.argoproj.io/sync-options: Force=true,Replace=true' "$enabled")" -ne 2 ]]; then
   echo "expected both default Wiki.js migration Jobs to use Argo CD replacement syncs" >&2
   exit 1
 fi
@@ -47,7 +47,7 @@ helm template wikijs "$chart_dir" --namespace services \
   --set wikijs.enabled=true \
   --set accessPolicy.enabled=true \
   --set accessPolicy.revision=test >"$access_policy_enabled"
-if [[ "$(grep -Fc 'argocd.argoproj.io/sync-options: Replace=true' "$access_policy_enabled")" -ne 3 ]]; then
+if [[ "$(grep -Fc 'argocd.argoproj.io/sync-options: Force=true,Replace=true' "$access_policy_enabled")" -ne 3 ]]; then
   echo "expected all three Wiki.js migration Jobs to use Argo CD replacement syncs" >&2
   exit 1
 fi
