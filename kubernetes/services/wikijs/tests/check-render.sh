@@ -4,7 +4,8 @@ set -euo pipefail
 chart_dir="$(cd "$(dirname "$0")/.." && pwd)"
 disabled="$(mktemp)"
 enabled="$(mktemp)"
-trap 'rm -f -- "$disabled" "$enabled"' EXIT INT TERM
+access_policy_enabled="$(mktemp)"
+trap 'rm -f -- "$disabled" "$enabled" "$access_policy_enabled"' EXIT INT TERM
 
 helm lint "$chart_dir"
 helm lint "$chart_dir" --set wikijs.enabled=true
@@ -29,12 +30,25 @@ grep -Fq 'name: wikijs-auth-oauth2-migration-v1' "$enabled"
 grep -Fq "provider.\"strategyKey\" <> 'oidc'" "$enabled"
 grep -Fq "'enableCSRFProtection', true" "$enabled"
 grep -Fq 'name: wikijs-auth-internal-endpoints-v1' "$enabled"
+if [[ "$(grep -Fc 'argocd.argoproj.io/sync-options: Replace=true' "$enabled")" -ne 2 ]]; then
+  echo "expected both default Wiki.js migration Jobs to use Argo CD replacement syncs" >&2
+  exit 1
+fi
 grep -Fq "'tokenURL', 'http://authentik-server.services.svc.cluster.local/application/o/token/'" "$enabled"
 grep -Fq 'app.kubernetes.io/component: server' "$enabled"
 grep -Fq 'port: 9000' "$enabled"
 
 if grep -Fq 'kind: Job' "$enabled" && grep -Fq 'wikijs-access-policy-' "$enabled"; then
   echo "identity-specific Wiki.js access policy rendered without private values" >&2
+  exit 1
+fi
+
+helm template wikijs "$chart_dir" --namespace services \
+  --set wikijs.enabled=true \
+  --set accessPolicy.enabled=true \
+  --set accessPolicy.revision=test >"$access_policy_enabled"
+if [[ "$(grep -Fc 'argocd.argoproj.io/sync-options: Replace=true' "$access_policy_enabled")" -ne 3 ]]; then
+  echo "expected all three Wiki.js migration Jobs to use Argo CD replacement syncs" >&2
   exit 1
 fi
 grep -Fq 'kubernetes.io/metadata.name: persistence' "$enabled"
