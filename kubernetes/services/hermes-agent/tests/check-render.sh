@@ -10,11 +10,12 @@ disabled="$(mktemp)"
 numeric_ids="$(mktemp)"
 gateway_only="$(mktemp)"
 dashboard_rendered="$(mktemp)"
+oidc_dashboard_rendered="$(mktemp)"
 # Distinct fixed digests verify value propagation without coupling this test to
 # whichever release digests are currently pinned in values.yaml.
 test_plugin_digest="sha256:1111111111111111111111111111111111111111111111111111111111111111"
 test_gateway_digest="sha256:2222222222222222222222222222222222222222222222222222222222222222"
-trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids" "$gateway_only" "$dashboard_rendered"' EXIT INT TERM
+trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids" "$gateway_only" "$dashboard_rendered" "$oidc_dashboard_rendered"' EXIT INT TERM
 
 helm lint "$chart_dir"
 
@@ -35,6 +36,32 @@ if helm template hermes "$chart_dir" \
   echo "enabled profile rendered without Telegram IDs" >&2
   exit 1
 fi
+
+if helm template hermes "$chart_dir" \
+  --set 'profile.enabled=true' \
+  --set 'profile.name=admin' \
+  --set 'profile.kubernetes.scope=cluster' \
+  --set 'profile.runtimeSecretName=hermes-admin-runtime' \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'hermes.image.tag=v0.0.0' >"$invalid" 2>&1; then
+  echo "Hermes rendered with an image tag different from Chart.appVersion" >&2
+  exit 1
+fi
+grep -Fq 'hermes.image.tag must equal Chart.appVersion' "$invalid"
+
+if helm template hermes "$chart_dir" \
+  --set 'profile.enabled=true' \
+  --set 'profile.name=admin' \
+  --set 'profile.kubernetes.scope=cluster' \
+  --set 'profile.runtimeSecretName=hermes-admin-runtime' \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'hermes.image.digest=latest' >"$invalid" 2>&1; then
+  echo "Hermes rendered without an immutable image digest" >&2
+  exit 1
+fi
+grep -Fq 'hermes.image.digest must be an immutable sha256 digest' "$invalid"
 
 if helm template hermes "$chart_dir" \
   --set 'profile.enabled=true' \
@@ -94,6 +121,14 @@ awk '
 ' "$dashboard_rendered"
 grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_PASSWORD' "$dashboard_rendered"
 grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_SECRET' "$dashboard_rendered"
+grep -Fq 'hermes.nousresearch.com/gateway-owner: hermes-container' "$dashboard_rendered"
+grep -Fq 'hermes.nousresearch.com/dashboard-role: administration-observer' "$dashboard_rendered"
+if [ "$(grep -Fc 'mountPath: /opt/data/config.yaml' "$dashboard_rendered")" -ne 1 ]; then
+  echo "dashboard must receive exactly one GitOps-owned config.yaml mount" >&2
+  exit 1
+fi
+grep -B3 -A3 -F 'mountPath: /opt/data/config.yaml' "$dashboard_rendered" | grep -Fq 'readOnly: true'
+grep -B3 -A3 -F 'mountPath: /opt/data/SOUL.md' "$dashboard_rendered" | grep -Fq 'readOnly: true'
 if grep -Fq 'kind: IngressRoute' "$dashboard_rendered"; then
   echo "local basic-auth dashboard rendered a public ingress" >&2
   exit 1
@@ -113,6 +148,25 @@ helm template hermes-dashboard "$chart_dir" --namespace services \
 grep -Fq 'name: HERMES_DASHBOARD_OAUTH_CLIENT_ID' "$dashboard_rendered"
 grep -Fq 'name: hermes-admin-dashboard-auth' "$dashboard_rendered"
 grep -Fq 'match: Host(`hermes.example.com`)' "$dashboard_rendered"
+
+helm template hermes-dashboard-oidc "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/admin.yaml" \
+  --set 'profile.telegram.allowedUserIds[0]=123456789' \
+  --set 'profile.telegram.adminUserIds[0]=123456789' \
+  --set 'dashboard.enabled=true' \
+  --set 'dashboard.ingress.enabled=true' \
+  --set 'dashboard.ingress.create=true' \
+  --set 'dashboard.ingress.public=true' \
+  --set 'dashboard.auth.provider=oidc' \
+  --set 'dashboard.auth.secretName=hermes-admin-dashboard-oidc' \
+  --set 'dashboard.publicUrl=https://hermes.example.com' >"$oidc_dashboard_rendered"
+for name in HERMES_DASHBOARD_OIDC_ISSUER HERMES_DASHBOARD_OIDC_CLIENT_ID HERMES_DASHBOARD_OIDC_SCOPES HERMES_DASHBOARD_OIDC_CLIENT_SECRET; do
+  grep -Fq "name: $name" "$oidc_dashboard_rendered"
+done
+if [ "$(grep -Fc 'optional: true' "$oidc_dashboard_rendered")" -lt 2 ]; then
+  echo "optional OIDC scopes and client secret must not block public-client deployments" >&2
+  exit 1
+fi
 
 if helm template hermes "$chart_dir" \
   --set 'profile.enabled=true' \
@@ -169,11 +223,11 @@ if grep -Fq 'config-helper-credentials' "$gateway_only"; then
 fi
 # This render intentionally keeps the chart defaults, independently checking
 # that deployable production values remain immutable SHA-256 references.
-if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:latest@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:sha-bc04852304ae9d029ef134f05dd6f149331beb85@sha256:[0-9a-f]{64}$' "$gateway_only"; then
   echo 'default policy-gateway image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
-if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-approval-plugin:latest@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-approval-plugin:sha-e6f5dae37698661dd123833fe873faab667677ee@sha256:[0-9a-f]{64}$' "$gateway_only"; then
   echo 'default approval-plugin image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
@@ -269,7 +323,7 @@ grep -Fq 'tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token' "$admi
 
 grep -Fq 'namespace: rina-company' "$rendered"
 grep -Fq 'trust: full' "$rendered"
-grep -Fq '_config_version: 39' "$rendered"
+grep -Fq '_config_version: 51' "$rendered"
 grep -Fq 'checksum/hermes-config:' "$rendered"
 grep -Fq 'checksum/hermes-agent-profile:' "$rendered"
 grep -Fq 'The Wiki.js knowledge base is the canonical durable knowledge store.' "$rendered"
@@ -325,11 +379,29 @@ grep -Fq -- '- containerPort: 9090' "$admin_rendered"
 grep -Fq 'kind: PodMonitor' "$admin_rendered"
 grep -Fq 'app.kubernetes.io/name: prometheus' "$admin_rendered"
 grep -Fq 'HermesTelemetryDrops' "$admin_rendered"
+grep -Fq 'HermesCoderAuthenticationRequired' "$admin_rendered"
+grep -Fq 'state="needs_login"' "$admin_rendered"
+grep -Fq 'HermesCoderQuotaWaitProlonged' "$admin_rendered"
+grep -Fq 'state="waiting_for_quota"' "$admin_rendered"
 grep -Fq 'HermesLLMDailyBudgetExceeded' "$admin_rendered"
 grep -Fq 'HermesLLMMonthlyBudgetExceeded' "$admin_rendered"
 grep -Fq 'hermes_llm_cost_usd_total{profile="admin"}[24h])) > 2' "$admin_rendered"
 grep -Fq 'hermes_llm_cost_usd_total{profile="admin"}[30d])) > 15' "$admin_rendered"
-grep -Fq 'model_drift_guard: true' "$admin_rendered"
+if grep -Fq 'model_drift_guard:' "$admin_rendered"; then
+  echo 'removed Hermes cron.model_drift_guard key must not be rendered' >&2
+  exit 1
+fi
+if [ "$(grep -Fc 'image: nousresearch/hermes-agent:v0.22.5@sha256:9c5561579f3ffdf333401797094ac3a743738d6c25d40f4331c7bf77b694238d' "$admin_rendered")" -ne 3 ]; then
+  echo 'version check, bootstrap, and gateway must use the same pinned Hermes image' >&2
+  exit 1
+fi
+if [ "$(grep -Fc 'image: nousresearch/hermes-agent:v0.22.5@sha256:9c5561579f3ffdf333401797094ac3a743738d6c25d40f4331c7bf77b694238d' "$dashboard_rendered")" -ne 4 ]; then
+  echo 'enabled dashboard must use the same pinned Hermes image as all runtime containers' >&2
+  exit 1
+fi
+grep -Fq 'name: EXPECTED_HERMES_VERSION' "$admin_rendered"
+grep -Fq 'value: v0.22.5' "$admin_rendered"
+grep -Fq '/opt/hermes/.venv/bin/hermes --version' "$admin_rendered"
 grep -Fq 'default: "openrouter/auto"' "$admin_rendered"
 grep -A2 -F 'fallback_model:' "$admin_rendered" | grep -Fq 'model: "openai/gpt-5.6-luna"'
 if grep -Fq 'sort: price' "$admin_rendered"; then
@@ -383,8 +455,8 @@ if helm template hermes-rina "$chart_dir" --namespace services \
   exit 1
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
-grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:latest@$test_plugin_digest" "$admin_rendered"
-grep -Fq "image: ghcr.io/seungbemi/hermes-policy-gateway:latest@$test_gateway_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-e6f5dae37698661dd123833fe873faab667677ee@$test_plugin_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-policy-gateway:sha-bc04852304ae9d029ef134f05dd6f149331beb85@$test_gateway_digest" "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1

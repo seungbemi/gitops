@@ -1,5 +1,8 @@
 # Hermes Agent
 
+See [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for the evidence-based
+rollout state, current blockers, phase gates, and remaining product work.
+
 This reusable chart defines one Hermes security principal per Helm release. It
 is instantiated independently as `hermes-admin` and `hermes-rina` in the
 `services` namespace. Both releases are deliberately disabled until credentials,
@@ -32,7 +35,9 @@ provider variables required by Hermes:
 - Nous OAuth: `HERMES_DASHBOARD_OAUTH_CLIENT_ID`
 - Self-hosted OIDC: `HERMES_DASHBOARD_OIDC_ISSUER` and
   `HERMES_DASHBOARD_OIDC_CLIENT_ID` (optionally
-  `HERMES_DASHBOARD_OIDC_SCOPES`)
+  `HERMES_DASHBOARD_OIDC_SCOPES` and
+  `HERMES_DASHBOARD_OIDC_CLIENT_SECRET`; prefer Authentik authorization-code
+  with PKCE as a public client unless the provider policy requires a secret)
 - Local username/password: `HERMES_DASHBOARD_BASIC_AUTH_USERNAME`,
   `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD`, and
   `HERMES_DASHBOARD_BASIC_AUTH_SECRET`
@@ -43,6 +48,34 @@ provider. A missing Secret or key prevents the pod from becoming ready, and
 Hermes itself refuses a non-loopback bind when no auth provider registers.
 After rollout, verify `/api/status` reports `auth_required: true` and the
 expected provider before relying on the route.
+
+The sidecar dashboard is an **administration observer**, not the owner of the
+separately supervised Telegram gateway. Upstream dashboard gateway state is
+process-local and can therefore say `stopped` even while the `hermes`
+container's gateway is healthy. Kubernetes container readiness and policy
+gateway capability metrics are the authoritative operational signals. The pod
+is annotated with its expected release and these topology roles so dashboards
+and inventory tools can present that distinction.
+
+`config.yaml` and `SOUL.md` are mounted read-only into the dashboard container.
+The UI may inspect them, but attempts to edit those GitOps-owned files fail
+closed. Sessions and other rebuildable state remain writable on the profile
+PVC. Make configuration changes in Git and reconcile the release.
+
+## Release consistency
+
+`hermes.image` is the single image source for the runtime-version check,
+bootstrap, Telegram gateway, and dashboard. Its tag must match
+`Chart.appVersion` and its digest must be an immutable multi-architecture
+SHA-256 manifest. A lightweight init container checks the public
+`hermes --version` contract and prevents rollout if it does not match the
+expected tag.
+The rendered configuration schema version is pinned alongside the release.
+
+Before changing the pin, inspect the upstream release and manifest platforms,
+update `Chart.appVersion`, `hermes.image`, and `hermes.configVersion` together,
+then run `tests/check-render.sh`. Do not use `latest` or a per-architecture
+digest in production values.
 
 ## Security boundaries
 

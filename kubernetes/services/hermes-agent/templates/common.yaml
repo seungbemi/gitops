@@ -18,6 +18,9 @@ controllers:
       annotations:
         checksum/hermes-config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         checksum/hermes-agent-profile: {{ include (print $.Template.BasePath "/agent-profile.yaml") . | sha256sum }}
+        hermes.nousresearch.com/expected-version: {{ .Values.hermes.image.tag | quote }}
+        hermes.nousresearch.com/gateway-owner: "hermes-container"
+        hermes.nousresearch.com/dashboard-role: "administration-observer"
       labels:
         hermes-profile: {{ .Values.profile.name | quote }}
     containers:
@@ -46,6 +49,18 @@ controllers:
               secretKeyRef:
                 name: {{ .Values.dashboard.auth.secretName | quote }}
                 key: HERMES_DASHBOARD_OIDC_CLIENT_ID
+          - name: HERMES_DASHBOARD_OIDC_SCOPES
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dashboard.auth.secretName | quote }}
+                key: HERMES_DASHBOARD_OIDC_SCOPES
+                optional: true
+          - name: HERMES_DASHBOARD_OIDC_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.dashboard.auth.secretName | quote }}
+                key: HERMES_DASHBOARD_OIDC_CLIENT_SECRET
+                optional: true
           {{- else if eq .Values.dashboard.auth.provider "basic" }}
           - name: HERMES_DASHBOARD_BASIC_AUTH_USERNAME
             valueFrom:

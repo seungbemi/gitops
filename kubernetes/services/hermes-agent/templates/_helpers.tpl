@@ -22,6 +22,15 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- end -}}
 
 {{- define "hermes.validateProfile" -}}
+{{- if ne .Values.hermes.image.tag .Chart.AppVersion -}}
+{{- fail "hermes.image.tag must equal Chart.appVersion so bootstrap, gateway, and dashboard report one release" -}}
+{{- end -}}
+{{- if not (regexMatch "^sha256:[a-f0-9]{64}$" .Values.hermes.image.digest) -}}
+{{- fail "hermes.image.digest must be an immutable sha256 digest" -}}
+{{- end -}}
+{{- if lt (int .Values.hermes.configVersion) 12 -}}
+{{- fail "hermes.configVersion must be within Hermes' supported automatic-migration floor" -}}
+{{- end -}}
 {{- if not (has .Values.profile.name (list "admin" "rina")) -}}
 {{- fail "profile.name must be admin or rina when enabled" -}}
 {{- end -}}

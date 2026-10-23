@@ -53,6 +53,23 @@ spec:
             severity: warning
           annotations:
             summary: "Hermes dependency {{ `{{ $labels.service }}` }} is unavailable"
+        {{- if .Values.codexDelegation.enabled }}
+        - alert: HermesCoderAuthenticationRequired
+          expr: hermes_dependency_health{profile="{{ .Values.profile.name }}",service="coder",state="needs_login"} == 1
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes Codex delegation is paused because Coder authentication is required"
+            description: "Rotate or repair the Coder credential, then verify the delegation preflight before retrying jobs."
+        - alert: HermesCoderQuotaWaitProlonged
+          expr: hermes_dependency_health{profile="{{ .Values.profile.name }}",service="coder",state="waiting_for_quota"} == 1
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes Codex delegation has waited for quota for 30 minutes"
+        {{- end }}
         - alert: HermesGatewayHighErrorRatio
           expr: sum(rate(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}",status=~"5.."}[15m])) / sum(rate(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}"}[15m])) > 0.20 and sum(increase(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}"}[15m])) >= 10
           labels:
