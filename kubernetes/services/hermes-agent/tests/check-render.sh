@@ -338,7 +338,10 @@ if grep -Fq 'HERMES_GATEWAY_NO_SUPERVISE' "$rendered"; then
   echo 'Hermes must use the image-supported s6 gateway supervision path' >&2
   exit 1
 fi
-grep -Fq 'hermes gateway run --replace' "$admin_rendered"
+if [ "$(grep -Fc 'hermes_cli\.main.*gateway run --replace$' "$admin_rendered")" -ne 2 ]; then
+  echo 'Hermes liveness and readiness probes must match the v0.22.5 s6/Python shim' >&2
+  exit 1
+fi
 grep -Fq 'name: hermes-admin-environment' "$rendered"
 grep -Fq 'url: ${BROWSER_MCP_URL}' "$rendered"
 grep -Fq 'name: hermes-admin-runtime' "$admin_rendered"
