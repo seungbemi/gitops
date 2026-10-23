@@ -13,6 +13,17 @@ profile:
   kubernetes:
     scope: ""
 
+# One immutable image pin is shared by bootstrap, gateway, and dashboard. The
+# chart rejects a tag that differs from Chart.appVersion so these cooperating
+# processes cannot silently run different Hermes releases.
+hermes:
+  image: &hermesImage
+    repository: nousresearch/hermes-agent
+    tag: v0.22.5
+    digest: sha256:9c5561579f3ffdf333401797094ac3a743738d6c25d40f4331c7bf77b694238d
+    pullPolicy: IfNotPresent
+  configVersion: 51
+
 model:
   main: openai/gpt-5.6-luna
   auxiliary: google/gemini-2.5-flash
@@ -148,8 +159,8 @@ credentialGateway:
   enabled: false
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
-    tag: latest
-    digest: sha256:98df970398263b6b3fa970d5869bf64a32562b0a27a4202ccba89767bddcaeb2
+    tag: sha-bc04852304ae9d029ef134f05dd6f149331beb85
+    digest: sha256:57b6ef9f80df0f98b355fcb3dfb35a009ae6f979052a7ff07de6cc8a6625e502
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -179,8 +190,8 @@ credentialGateway:
 approvalPlugin:
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
-    tag: latest
-    digest: sha256:30331021b8483a9337249fe13b3d79f4705e3a0e42a2ab24511c71f225961f3b
+    tag: sha-e6f5dae37698661dd123833fe873faab667677ee
+    digest: sha256:b16b3e110764ef7ddf87ae4cfd88f3046c97bdb2c86fa51d3eca0cc089ad7738
 
 defaultPodOptions:
   automountServiceAccountToken: false
@@ -200,12 +211,34 @@ controllers:
         fsGroup: 10000
         fsGroupChangePolicy: OnRootMismatch
     initContainers:
+      verify-version:
+        image: *hermesImage
+        command: ["/bin/sh", "-ec"]
+        args:
+          - >-
+            actual="$(/opt/hermes/.venv/bin/hermes --version)";
+            printf '%s\n' "${actual}" | grep -Fq
+            "Hermes Agent ${EXPECTED_HERMES_VERSION}" || {
+            echo "Hermes CLI version does not match expected ${EXPECTED_HERMES_VERSION}: ${actual}" >&2;
+            exit 1; }
+        env:
+          - name: EXPECTED_HERMES_VERSION
+            value: '{{ .Values.hermes.image.tag }}'
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10000
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: 5m
+            memory: 16Mi
+          limits:
+            memory: 64Mi
       bootstrap-config:
-        image:
-          repository: nousresearch/hermes-agent
-          tag: v2026.9.24
-          digest: sha256:64923faeae267792bf9bf87fe3b4c4869e35004e360c7df01730ad801b74d524
-          pullPolicy: IfNotPresent
+        image: *hermesImage
         command: ["/bin/sh", "-c"]
         args:
           - >-
@@ -243,11 +276,7 @@ controllers:
             memory: 32Mi
     containers:
       hermes:
-        image:
-          repository: nousresearch/hermes-agent
-          tag: v2026.9.24
-          digest: sha256:64923faeae267792bf9bf87fe3b4c4869e35004e360c7df01730ad801b74d524
-          pullPolicy: IfNotPresent
+        image: *hermesImage
         args: ["gateway", "run"]
         env:
           - name: OPENROUTER_API_KEY
@@ -322,11 +351,7 @@ controllers:
             memory: 1Gi
       dashboard:
         enabled: false
-        image:
-          repository: nousresearch/hermes-agent
-          tag: v2026.9.24
-          digest: sha256:64923faeae267792bf9bf87fe3b4c4869e35004e360c7df01730ad801b74d524
-          pullPolicy: IfNotPresent
+        image: *hermesImage
         args: ["dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--skip-build"]
         env: []
         probes:
@@ -591,6 +616,12 @@ persistence:
           - path: /opt/bootstrap/config.yaml
             subPath: config.yaml
             readOnly: true
+        # The dashboard may inspect effective GitOps configuration, but its
+        # configuration editor cannot persist changes to the shared data PVC.
+        dashboard:
+          - path: /opt/data/config.yaml
+            subPath: config.yaml
+            readOnly: true
   agent-profile:
     type: configMap
     name: 'hermes-{{ .Values.profile.name }}-agent-profile'
@@ -601,6 +632,10 @@ persistence:
       main:
         bootstrap-config:
           - path: /opt/bootstrap/SOUL.md
+            subPath: SOUL.md
+            readOnly: true
+        dashboard:
+          - path: /opt/data/SOUL.md
             subPath: SOUL.md
             readOnly: true
   kubernetes-token:

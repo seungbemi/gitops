@@ -14,7 +14,14 @@ variable "namespace" {
 }
 
 variable "runner_image" {
-  type = string
+  type        = string
+  description = "Immutable Hermes Codex runner image reference."
+  default     = "ghcr.io/seungbemi/hermes-codex-runner:sha-bc04852304ae9d029ef134f05dd6f149331beb85@sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d"
+
+  validation {
+    condition     = can(regex("@sha256:[0-9a-f]{64}$", var.runner_image))
+    error_message = "runner_image must be pinned by sha256 digest."
+  }
 }
 
 variable "nfs_server" {

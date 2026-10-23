@@ -53,7 +53,10 @@ different sources require a new approval.
 
 The local module is nested inside `hermes-codex-runner/`, making that directory
 a self-contained upload archive. Point `coder templates push --directory`
-directly at it.
+directly at it. The root `runner_image` variable has an immutable default so a
+template push and subsequent workspace rebuild use the gateway-compatible
+runner. Treat a runner digest update and its policy-gateway protocol update as
+one rollout unit.
 
 The gateway creates a missing named workspace from this template, starts it
 before dispatch, and configures a one-day Coder TTL. It deliberately does not
