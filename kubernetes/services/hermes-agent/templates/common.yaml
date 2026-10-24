@@ -130,7 +130,7 @@ service:
     ports:
       http:
         port: {{ .Values.dashboard.port }}
-        targetPort: {{ .Values.dashboard.port }}
+        targetPort: {{ ternary .Values.dashboard.observer.port .Values.dashboard.port .Values.dashboard.observer.enabled }}
   browser:
     enabled: {{ .Values.browser.enabled }}
     forceRename: hermes-browser-{{ .Values.profile.name }}
