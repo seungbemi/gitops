@@ -69,6 +69,29 @@ spec:
             severity: warning
           annotations:
             summary: "Hermes Codex delegation has waited for quota for 30 minutes"
+        - alert: HermesTelegramOutboxStalled
+          expr: hermes_notification_outbox_oldest_age_seconds{profile="{{ .Values.profile.name }}"} > 300 or hermes_notification_outbox_pending{profile="{{ .Values.profile.name }}"} > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes Telegram notification outbox is stalled"
+            description: "The oldest pending notification is over five minutes old or more than ten notifications are queued."
+        - alert: HermesTelegramDeliveryFailure
+          expr: sum(increase(hermes_telegram_notifications_total{profile="{{ .Values.profile.name }}",outcome=~"rejected|unknown"}[15m])) > 0 or sum(increase(hermes_telegram_notifications_total{profile="{{ .Values.profile.name }}",outcome="retry"}[15m])) >= 3
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes Telegram notification delivery needs attention"
+            description: "A notification was permanently rejected, had an unknown durable outcome, or Telegram delivery retried at least three times."
+        - alert: HermesTelegramDeliverySLOBreach
+          expr: sum(increase(hermes_telegram_notifications_total{profile="{{ .Values.profile.name }}",outcome="success"}[24h])) / sum(increase(hermes_telegram_notifications_total{profile="{{ .Values.profile.name }}",outcome=~"success|rejected"}[24h])) < 0.99 and sum(increase(hermes_telegram_notifications_total{profile="{{ .Values.profile.name }}",outcome=~"success|rejected"}[24h])) >= 20
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes Telegram delivery is below the 99% SLO"
+            description: "Fewer than 99% of at least twenty terminal notification outcomes succeeded during the last 24 hours. Retries are measured separately."
         {{- if gt (int64 .Values.codexDelegation.coderTokenExpiresAtUnix) 0 }}
         - alert: HermesCoderTokenExpiring
           expr: vector(time()) > {{ sub (int64 .Values.codexDelegation.coderTokenExpiresAtUnix) 604800 }}

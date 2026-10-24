@@ -224,7 +224,7 @@ if grep -Fq 'config-helper-credentials' "$gateway_only"; then
 fi
 # This render intentionally keeps the chart defaults, independently checking
 # that deployable production values remain immutable SHA-256 references.
-if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:sha-5d39b374622dc14de850b4f07c7b9bf0b7ea52ec@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:sha-42e55b763fe4f5ae77c473b56ba48803916e5336@sha256:[0-9a-f]{64}$' "$gateway_only"; then
   echo 'default policy-gateway image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
@@ -393,6 +393,9 @@ grep -Fq 'HermesCoderAuthenticationRequired' "$admin_rendered"
 grep -Fq 'state="needs_login"' "$admin_rendered"
 grep -Fq 'HermesCoderQuotaWaitProlonged' "$admin_rendered"
 grep -Fq 'state="waiting_for_quota"' "$admin_rendered"
+grep -Fq 'HermesTelegramOutboxStalled' "$admin_rendered"
+grep -Fq 'HermesTelegramDeliveryFailure' "$admin_rendered"
+grep -Fq 'HermesTelegramDeliverySLOBreach' "$admin_rendered"
 grep -Fq 'HermesLLMDailyBudgetExceeded' "$admin_rendered"
 grep -Fq 'HermesLLMMonthlyBudgetExceeded' "$admin_rendered"
 grep -Fq 'hermes_llm_cost_usd_total{profile="admin"}[24h])) > 2' "$admin_rendered"
@@ -466,7 +469,7 @@ if helm template hermes-rina "$chart_dir" --namespace services \
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
 grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-fd695f309d1e23bf0b135088a73810f1b9567b7d@$test_plugin_digest" "$admin_rendered"
-grep -Fq "image: ghcr.io/seungbemi/hermes-policy-gateway:sha-5d39b374622dc14de850b4f07c7b9bf0b7ea52ec@$test_gateway_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-policy-gateway:sha-42e55b763fe4f5ae77c473b56ba48803916e5336@$test_gateway_digest" "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1
