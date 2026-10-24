@@ -35,9 +35,11 @@ do not mark a phase complete by inferring one from another.
   matched their encrypted source, PostgreSQL accepted the replacement role
   password, all gateway dependencies were healthy, and runner capabilities
   again reported Codex healthy with protocol version 0.154.0.
-- The dashboard is enabled on an internal route with basic authentication.
-  Authentik OIDC is chart-supported, but no Hermes OIDC client/secret is
-  provisioned yet.
+- The dashboard is protected by an Authentik public OIDC client using
+  authorization code plus S256 PKCE, a strict callback URI, and the Sebe-only
+  `Hermes Admins` application policy. Discovery, JWKS, unauthenticated redirect,
+  and an existing-session browser login all passed. Hermes reports only the
+  `self-hosted` provider, `auth_required: true`, and a healthy running gateway.
 
 ## Deployed foundation
 
@@ -51,8 +53,10 @@ do not mark a phase complete by inferring one from another.
   `cron.model_drift_guard` key is no longer rendered.
 - The dashboard is labelled as an administration observer; GitOps-owned
   `config.yaml` and `SOUL.md` are mounted read-only.
-- Optional Authentik OIDC scopes and client-secret wiring is available.
-- Alerts cover Coder `needs_login` and prolonged quota waits.
+- Authentik OIDC issuer, public client ID, and scopes are GitOps-owned. No
+  browser-client secret is created or stored.
+- Alerts cover Coder `needs_login`, prolonged quota waits, and token expiry.
+  Prometheus loaded and evaluated the expiry rule as healthy and inactive.
 
 ### Policy gateway and runner
 
@@ -91,18 +95,14 @@ do not mark a phase complete by inferring one from another.
 
 ## Remaining rollout order
 
-1. Verify the new seven-day Coder token-expiry alert is loaded by Prometheus,
-   then begin the P0 observation window.
+1. Continue the P0 observation window started on 2026-10-24. Any silent
+   failure, retry storm, or misleading health state resets the seven-day gate.
 2. Verify GitHub App access independently. The analysis jobs did
    not exercise repository resolution or publishing, and must not be treated
    as evidence that implementation delegation is ready.
-3. Provision an Authentik OIDC client and dashboard Secret, then replace basic
-   authentication in the private profile.
-4. Run an end-user Telegram smoke test for help, connector reads, delegation
+3. Run an end-user Telegram smoke test for help, connector reads, delegation
    preview, status, cancellation, and recovery notifications.
-5. Run the seven-day P0 observation window. Any silent failure, retry storm, or
-   misleading health state resets the gate.
-6. Run ten consecutive real P1 jobs, including login, quota, CI failure,
+4. Run ten consecutive real P1 jobs, including login, quota, CI failure,
    cancellation, restart/unknown-outcome, and deployment-verification cases.
 
 The MCP job-status response currently exposes state and failure metadata but
@@ -117,6 +117,10 @@ messages; status-only inspection is a usability gap to close during P1-D.
 - Queue position/limits, duplicate-job detection, repository mirror/cache,
   retention, fine-grained progress events, cost/token accounting, and the full
   independent end-to-end suite remain open.
+- The built-in dashboard still renders operational controls such as
+  `Restart Gateway`. Until a verified cross-container implementation exists,
+  these controls need to be hidden or clearly labelled unavailable; a correct
+  health indicator alone does not make a misleading control acceptable.
 - P2 still needs scripted and human usability runs for homelab diagnosis,
   Paperless retrieval, Home Assistant, Wiki updates, and coding delegation.
 - Rina isolation, typed Kubernetes mutations, authenticated browsing, email,
