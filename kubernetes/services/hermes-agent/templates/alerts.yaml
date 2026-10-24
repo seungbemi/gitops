@@ -69,6 +69,16 @@ spec:
             severity: warning
           annotations:
             summary: "Hermes Codex delegation has waited for quota for 30 minutes"
+        {{- if gt (int64 .Values.codexDelegation.coderTokenExpiresAtUnix) 0 }}
+        - alert: HermesCoderTokenExpiring
+          expr: time() > {{ sub (int64 .Values.codexDelegation.coderTokenExpiresAtUnix) 604800 }}
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes Coder token expires within seven days"
+            description: "Rotate the scoped Coder lifecycle token and update codexDelegation.coderTokenExpiresAtUnix before it expires."
+        {{- end }}
         {{- end }}
         - alert: HermesGatewayHighErrorRatio
           expr: sum(rate(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}",status=~"5.."}[15m])) / sum(rate(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}"}[15m])) > 0.20 and sum(increase(hermes_gateway_requests_total{profile="{{ .Values.profile.name }}"}[15m])) >= 10
