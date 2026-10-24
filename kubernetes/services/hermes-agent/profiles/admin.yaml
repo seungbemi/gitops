@@ -37,6 +37,9 @@ codexDelegation:
   # Enable only after the runner template and image, workspace TLS credentials,
   # and gateway scheduler acceptance tests are deployed.
   enabled: false
+  # Scoped token hermes-policy-gateway-2026-10-v2; expires
+  # 2026-11-23T12:16:40Z. Update this with every credential rotation.
+  coderTokenExpiresAtUnix: 1795436200
 
 configHelpers:
   # Activated only by the private profile after credentials are provisioned.

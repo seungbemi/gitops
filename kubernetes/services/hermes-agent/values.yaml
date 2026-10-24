@@ -110,6 +110,10 @@ paperless:
 codexDelegation:
   enabled: false
   mcpUrl: http://127.0.0.1:8090/delegation/mcp
+  # Unix expiry of the currently deployed Coder API token. Keep this in sync
+  # with every rotation so Prometheus warns seven days before authentication
+  # stops. Zero disables the expiry alert for profiles without delegation.
+  coderTokenExpiresAtUnix: 0
   # Add the private ingress/load-balancer CIDR when coder.url resolves inside
   # RFC1918 space. Public HTTPS is already covered by the baseline policy.
   coderEndpointCidrs: []

@@ -18,16 +18,23 @@ do not mark a phase complete by inferring one from another.
   direct `getMe` check succeeded for the configured bot, but delivery has not
   yet been measured for the seven-day P0 reliability window.
 - The policy gateway reports PostgreSQL, Wiki.js, Home Assistant, and Paperless
-  healthy. The Coder credential has been rotated and moved under encrypted
-  GitOps ownership. Its current seven-day expiry remains an operational risk;
-  a bounded 30-day administrator-token ceiling and scoped replacement token
-  are being rolled out before the reliability window starts.
+  healthy. The Coder credential and runner bearer are under encrypted GitOps
+  ownership. The active Coder token expires at 2026-11-23T12:16:40Z, is bounded
+  to 30 days, and has only `user:read`, `organization:read`, `template:read`,
+  and `workspace:*`. The superseded unrestricted token and a rejected scoped
+  candidate were expired after the replacement passed live permission checks.
 - The `sebe/hermes` Coder workspace is healthy and runs the exact pinned runner
   digest `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`.
   Runner API version 1, protocol version 0.154.0, and Codex subscription login
   all passed live capability checks. A bounded, read-only analysis job
   (`job_E_08m82WX-_4XvONN_M9jiZF`) completed through the full gateway, Coder,
   runner, and Codex path without an execution error.
+- After the coordinated Coder token, runner bearer, approval HMAC, and database
+  password rotation, a second bounded analysis job
+  (`job_nKKxdWwGPWf4xgGgl8IXU6h3`) completed successfully. Live Secret values
+  matched their encrypted source, PostgreSQL accepted the replacement role
+  password, all gateway dependencies were healthy, and runner capabilities
+  again reported Codex healthy with protocol version 0.154.0.
 - The dashboard is enabled on an internal route with basic authentication.
   Authentik OIDC is chart-supported, but no Hermes OIDC client/secret is
   provisioned yet.
@@ -84,10 +91,9 @@ do not mark a phase complete by inferring one from another.
 
 ## Remaining rollout order
 
-1. Roll out the bounded 30-day Coder administrator-token ceiling, replace the
-   current unrestricted seven-day token with a scoped token, and add expiry
-   monitoring before beginning the reliability window.
-2. Verify GitHub App access independently. The first read-only analysis job did
+1. Verify the new seven-day Coder token-expiry alert is loaded by Prometheus,
+   then begin the P0 observation window.
+2. Verify GitHub App access independently. The analysis jobs did
    not exercise repository resolution or publishing, and must not be treated
    as evidence that implementation delegation is ready.
 3. Provision an Authentik OIDC client and dashboard Secret, then replace basic

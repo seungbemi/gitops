@@ -321,6 +321,12 @@ grep -Fq 'name: hermes-codex-runner-hermes' "$admin_rendered"
 grep -Fq 'name: hermes-codex-runner-hermes-kubeconfig' "$admin_rendered"
 grep -Fq 'automountServiceAccountToken: false' "$admin_rendered"
 grep -Fq 'tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token' "$admin_rendered"
+grep -Fq 'alert: HermesCoderTokenExpiring' "$admin_rendered"
+grep -Fq 'expr: time() > 1794831400' "$admin_rendered"
+if grep -Fq 'alert: HermesCoderTokenExpiring' "$rina_rendered"; then
+  echo 'Coder token expiry alert must be rendered only for a configured delegation profile' >&2
+  exit 1
+fi
 
 grep -Fq 'namespace: rina-company' "$rendered"
 grep -Fq 'trust: full' "$rendered"
