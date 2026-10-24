@@ -74,7 +74,7 @@ do not mark a phase complete by inferring one from another.
   and cancellation controls.
 - Runner capabilities expose API/protocol compatibility and Codex login state.
 - Gateway image `sha-81df701733aabcd3d5d611fd00203e5053d43e43` is pinned
-  to digest `sha256:0002b6b68a98a6f1e82fe92d0135562cca4676e1c1d9638d84f06e775a60fc06`.
+  to digest `sha256:10e009b8e5e7f6f7c5cd6fbd784a662c4740ae04fe0551e99294b31c79df77fb`.
 - The matching runner image was published at digest
   `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`;
   the live Coder template/workspace now uses this exact digest and matches the
