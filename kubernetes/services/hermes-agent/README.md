@@ -50,12 +50,13 @@ After rollout, verify `/api/status` reports `auth_required: true` and the
 expected provider before relying on the route.
 
 The sidecar dashboard is an **administration observer**, not the owner of the
-separately supervised Telegram gateway. Upstream dashboard gateway state is
-process-local and can therefore say `stopped` even while the `hermes`
-container's gateway is healthy. Kubernetes container readiness and policy
-gateway capability metrics are the authoritative operational signals. The pod
-is annotated with its expected release and these topology roles so dashboards
-and inventory tools can present that distinction.
+separately supervised Telegram gateway. It probes the sibling container's
+loopback-only API health listener so gateway state remains accurate across the
+container PID boundary; it must not fall back to presenting process-local
+`stopped` state as authoritative. Kubernetes container readiness and policy
+gateway capability metrics remain the authoritative operational signals. The
+pod is annotated with its expected release and these topology roles so
+dashboards and inventory tools can present that distinction.
 
 `config.yaml` and `SOUL.md` are mounted read-only into the dashboard container.
 The UI may inspect them, but attempts to edit those GitOps-owned files fail

@@ -32,6 +32,13 @@ controllers:
             value: /opt/data
           - name: HERMES_DASHBOARD_PUBLIC_URL
             value: {{ .Values.dashboard.publicUrl | quote }}
+          # The Telegram gateway runs in the sibling hermes container.  Both
+          # containers share the Pod network, so use its loopback-only API
+          # health listener instead of process-local PID detection.  Without
+          # this, the dashboard incorrectly reports a healthy external
+          # gateway as stopped because it cannot see the sibling PID namespace.
+          - name: GATEWAY_HEALTH_URL
+            value: "http://127.0.0.1:8642"
           {{- if eq .Values.dashboard.auth.provider "nous" }}
           - name: HERMES_DASHBOARD_OAUTH_CLIENT_ID
             valueFrom:
