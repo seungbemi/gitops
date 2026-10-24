@@ -1,6 +1,6 @@
 # Hermes usable-product implementation status
 
-Last reviewed: 2026-10-23
+Last reviewed: 2026-10-24
 
 This file records evidence and phase gates. A local implementation, a merged
 change, a healthy rollout, and a passed reliability gate are different states;
@@ -8,21 +8,25 @@ do not mark a phase complete by inferring one from another.
 
 ## Current live baseline
 
-- Argo CD reports `hermes-admin` synced and healthy in `services`.
-- The live Hermes containers still run `v2026.9.24`; the `v0.22.5` upgrade in
-  this chart has not been rolled out as of this review.
-- Recent policy-gateway logs show an expired Coder credential returning HTTP
-  401 every ten seconds. Rotate the credential before delegation acceptance
-  testing. The new gateway implementation classifies this as `needs_login` and
-  closes the active attempt instead of retrying indefinitely, but that behavior
-  is not live yet.
-- Recent Hermes logs show intermittent Telegram path fallback events. Delivery
-  has not yet been measured for the seven-day P0 reliability window.
+- Argo CD reports `hermes-admin` synced and healthy in `services`; the live
+  Deployment is fully ready with no container restarts.
+- The live Hermes gateway and dashboard run pinned release `v0.22.5`. The
+  dashboard reports config schema 51, requires authentication, cannot update
+  GitOps-owned configuration, and now probes the sibling gateway through its
+  loopback health listener instead of falsely reporting it as stopped.
+- Telegram connected successfully after one bounded DNS fallback attempt. A
+  direct `getMe` check succeeded for the configured bot, but delivery has not
+  yet been measured for the seven-day P0 reliability window.
+- The policy gateway reports PostgreSQL, Wiki.js, Home Assistant, and Paperless
+  healthy. The expired Coder credential is classified as `needs_login` without
+  the previous ten-second HTTP 401 retry storm. Delegation remains deliberately
+  unavailable until that credential is rotated and the Coder template/workspace
+  is rebuilt with the matching runner image.
 - The dashboard is enabled on an internal route with basic authentication.
   Authentik OIDC is chart-supported, but no Hermes OIDC client/secret is
   provisioned yet.
 
-## Implemented, awaiting GitOps merge and rollout
+## Deployed foundation
 
 ### GitOps chart
 
@@ -72,18 +76,21 @@ do not mark a phase complete by inferring one from another.
 - Approval plugin: all 35 unit tests pass.
 - GitOps: Helm lint and `tests/check-render.sh` pass.
 
-## Required rollout order
+## Remaining rollout order
 
-1. Rotate the Coder credential and validate it without exposing the token.
-2. Merge and publish the policy-gateway, runner, and approval-plugin images.
-3. Replace their GitOps image digests with the published immutable digests.
-4. Provision an Authentik OIDC client and dashboard Secret, then replace basic
+1. Rotate the Coder credential and runner bearer credential, move the currently
+   manually managed delegation Secret under encrypted GitOps ownership, and
+   validate both without exposing token values.
+2. Push the updated `hermes-codex-runner` Coder template, rebuild the `hermes`
+   workspace, and verify runner protocol, Codex login, GitHub App access, and
+   the pinned runner digest before accepting a job.
+3. Provision an Authentik OIDC client and dashboard Secret, then replace basic
    authentication in the private profile.
-5. Canary the Hermes `v0.22.5` chart and verify the runtime version, dashboard
-   auth, Telegram delivery, dependency health, job controls, and rollback.
-6. Run the seven-day P0 observation window. Any silent failure, retry storm, or
+4. Run an end-user Telegram smoke test for help, connector reads, delegation
+   preview, status, cancellation, and recovery notifications.
+5. Run the seven-day P0 observation window. Any silent failure, retry storm, or
    misleading health state resets the gate.
-7. Run ten consecutive real P1 jobs, including login, quota, CI failure,
+6. Run ten consecutive real P1 jobs, including login, quota, CI failure,
    cancellation, restart/unknown-outcome, and deployment-verification cases.
 
 ## Remaining product work after P0/P1 rollout
