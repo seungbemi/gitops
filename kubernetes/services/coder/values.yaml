@@ -31,6 +31,12 @@ coder:
         value: Authentik
       - name: CODER_DISABLE_PASSWORD_AUTH
         value: "true"
+      # The Hermes lifecycle client uses a scoped API token owned by the only
+      # Coder administrator. Coder otherwise caps administrator tokens at
+      # seven days, which is shorter than the P0 observation window. Keep this
+      # bounded and rotate the token before its 30-day expiry.
+      - name: CODER_MAX_ADMIN_TOKEN_LIFETIME
+        value: "720h"
     service:
       enable: true
       type: ClusterIP
