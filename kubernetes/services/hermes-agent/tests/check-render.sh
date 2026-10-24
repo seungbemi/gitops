@@ -113,6 +113,7 @@ helm template hermes-dashboard-local "$chart_dir" --namespace services \
   --set 'dashboard.auth.secretName=hermes-admin-dashboard-auth' >"$dashboard_rendered"
 grep -Fq 'name: HERMES_DASHBOARD_BASIC_AUTH_USERNAME' "$dashboard_rendered"
 grep -A1 -F 'name: HERMES_HOME' "$dashboard_rendered" | grep -Fq 'value: /opt/data'
+grep -A1 -F 'name: GATEWAY_HEALTH_URL' "$dashboard_rendered" | grep -Fq 'value: http://127.0.0.1:8642'
 awk '
   /name: dashboard$/ { in_dashboard = 1 }
   in_dashboard && /mountPath: \/opt\/data$/ { mounted = 1 }
