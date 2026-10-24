@@ -72,9 +72,11 @@ do not mark a phase complete by inferring one from another.
   transient failures use bounded backoff without replaying an unknown attempt.
 - Telegram notifications and loopback endpoints provide durable status, retry,
   and cancellation controls.
+- `codex_get_job` now returns the latest durable Codex result, so a refreshed
+  status view shows the actual outcome instead of only a terminal state.
 - Runner capabilities expose API/protocol compatibility and Codex login state.
-- Gateway image `sha-81df701733aabcd3d5d611fd00203e5053d43e43` is pinned
-  to digest `sha256:10e009b8e5e7f6f7c5cd6fbd784a662c4740ae04fe0551e99294b31c79df77fb`.
+- Gateway image `sha-5d39b374622dc14de850b4f07c7b9bf0b7ea52ec` is pinned
+  to digest `sha256:8ae381a1276cc640612550fa115636b9600b7a6a5c5045bdc45c062a1a0be73a`.
 - The matching runner image was published at digest
   `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`;
   the live Coder template/workspace now uses this exact digest and matches the
@@ -88,14 +90,15 @@ do not mark a phase complete by inferring one from another.
 - Concurrent controls for the same job/operation/question are serialized.
 - Exact implementation preview cards queue work only after an authorized user
   approves; denials and expired previews create no job.
+- Job status cards render the latest durable result with bounded, escaped text.
 - Existing bot commands are preserved when installing the Hermes menu.
-- Plugin image `sha-893d028a62b81596da902b8314d2a3f0932978bb` is pinned to
-  digest `sha256:82589c35a31545322b8e7b01395609725213a6e052c9b31c6182fe8f06f10283`.
+- Plugin image `sha-fd695f309d1e23bf0b135088a73810f1b9567b7d` is pinned to
+  digest `sha256:a0fa21096730afadf638c12501b46b23dba512e8eb6468b1c65fe25af36fa5ed`.
 
 ## Verification completed locally
 
-- Policy gateway: `go test ./...` passes, including integration tests that bind
-  temporary loopback ports.
+- Policy gateway: `go test ./...` passes, including PostgreSQL tests for the
+  confirmation transaction and durable result visibility.
 - Approval plugin: all 37 unit tests pass.
 - GitOps: Helm lint and `tests/check-render.sh` pass.
 
