@@ -71,7 +71,7 @@ spec:
             summary: "Hermes Codex delegation has waited for quota for 30 minutes"
         {{- if gt (int64 .Values.codexDelegation.coderTokenExpiresAtUnix) 0 }}
         - alert: HermesCoderTokenExpiring
-          expr: time() > {{ sub (int64 .Values.codexDelegation.coderTokenExpiresAtUnix) 604800 }}
+          expr: vector(time()) > {{ sub (int64 .Values.codexDelegation.coderTokenExpiresAtUnix) 604800 }}
           for: 5m
           labels:
             severity: warning
