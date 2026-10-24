@@ -75,8 +75,12 @@ do not mark a phase complete by inferring one from another.
 - `codex_get_job` now returns the latest durable Codex result, so a refreshed
   status view shows the actual outcome instead of only a terminal state.
 - Runner capabilities expose API/protocol compatibility and Codex login state.
-- Gateway image `sha-5d39b374622dc14de850b4f07c7b9bf0b7ea52ec` is pinned
-  to digest `sha256:8ae381a1276cc640612550fa115636b9600b7a6a5c5045bdc45c062a1a0be73a`.
+- Telegram notification delivery now records success, retry, rejected, and
+  unknown outcomes, attempt and end-to-end latency, pending outbox depth, and
+  oldest pending age. Alerts cover stalled outboxes, persistent failures, and
+  a measured delivery ratio below 99% once the sample is meaningful.
+- Gateway image `sha-42e55b763fe4f5ae77c473b56ba48803916e5336` is pinned
+  to digest `sha256:b9e46bf558f0dd352458f9e84d1532e8c6e191d58aa9b8eccaf9a594cd0a13f4`.
 - The matching runner image was published at digest
   `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`;
   the live Coder template/workspace now uses this exact digest and matches the
