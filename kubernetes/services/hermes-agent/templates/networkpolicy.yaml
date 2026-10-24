@@ -20,7 +20,7 @@ spec:
             matchLabels:
               app.kubernetes.io/name: traefik
       ports:
-        - { protocol: TCP, port: {{ .Values.dashboard.port }} }
+        - { protocol: TCP, port: {{ ternary .Values.dashboard.observer.port .Values.dashboard.port .Values.dashboard.observer.enabled }} }
     {{- end }}
     {{- if .Values.credentialGateway.enabled }}
     - from:

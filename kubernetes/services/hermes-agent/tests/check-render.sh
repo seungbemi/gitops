@@ -224,11 +224,11 @@ if grep -Fq 'config-helper-credentials' "$gateway_only"; then
 fi
 # This render intentionally keeps the chart defaults, independently checking
 # that deployable production values remain immutable SHA-256 references.
-if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:sha-bc04852304ae9d029ef134f05dd6f149331beb85@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:sha-81df701733aabcd3d5d611fd00203e5053d43e43@sha256:[0-9a-f]{64}$' "$gateway_only"; then
   echo 'default policy-gateway image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
-if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-approval-plugin:sha-e6f5dae37698661dd123833fe873faab667677ee@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-approval-plugin:sha-893d028a62b81596da902b8314d2a3f0932978bb@sha256:[0-9a-f]{64}$' "$gateway_only"; then
   echo 'default approval-plugin image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
@@ -465,8 +465,8 @@ if helm template hermes-rina "$chart_dir" --namespace services \
   exit 1
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
-grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-e6f5dae37698661dd123833fe873faab667677ee@$test_plugin_digest" "$admin_rendered"
-grep -Fq "image: ghcr.io/seungbemi/hermes-policy-gateway:sha-bc04852304ae9d029ef134f05dd6f149331beb85@$test_gateway_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-893d028a62b81596da902b8314d2a3f0932978bb@$test_plugin_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-policy-gateway:sha-81df701733aabcd3d5d611fd00203e5053d43e43@$test_gateway_digest" "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
   exit 1

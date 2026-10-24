@@ -61,7 +61,11 @@ do not mark a phase complete by inferring one from another.
 ### Policy gateway and runner
 
 - Implementation jobs resolve their starting revision to an exact GitHub
-  commit before the durable job is inserted.
+  commit before an expiring durable preview is shown. No implementation job is
+  inserted until the authorized Telegram callback consumes that exact contract.
+- The preview records objective, acceptance criteria, repository, paths,
+  operations, execution budget, and backend/model/reasoning policy. Broad `*`
+  scope is explicitly warned and replay cannot create a duplicate job.
 - Coder, runner protocol, and Codex login preflights are classified as
   authentication, quota, transient, or permanent failures.
 - Authentication failures pause the affected job in `needs_login`; quota and
@@ -69,8 +73,8 @@ do not mark a phase complete by inferring one from another.
 - Telegram notifications and loopback endpoints provide durable status, retry,
   and cancellation controls.
 - Runner capabilities expose API/protocol compatibility and Codex login state.
-- Gateway image `sha-bc04852304ae9d029ef134f05dd6f149331beb85` is pinned
-  to digest `sha256:57b6ef9f80df0f98b355fcb3dfb35a009ae6f979052a7ff07de6cc8a6625e502`.
+- Gateway image `sha-81df701733aabcd3d5d611fd00203e5053d43e43` is pinned
+  to digest `sha256:0002b6b68a98a6f1e82fe92d0135562cca4676e1c1d9638d84f06e775a60fc06`.
 - The matching runner image was published at digest
   `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`;
   the live Coder template/workspace now uses this exact digest and matches the
@@ -82,15 +86,17 @@ do not mark a phase complete by inferring one from another.
 - Durable Codex cards provide status, retry, cancel, exact operation approval,
   question answering, and validated GitHub pull-request links.
 - Concurrent controls for the same job/operation/question are serialized.
+- Exact implementation preview cards queue work only after an authorized user
+  approves; denials and expired previews create no job.
 - Existing bot commands are preserved when installing the Hermes menu.
-- Plugin image `sha-e6f5dae37698661dd123833fe873faab667677ee` is pinned to
-  digest `sha256:b16b3e110764ef7ddf87ae4cfd88f3046c97bdb2c86fa51d3eca0cc089ad7738`.
+- Plugin image `sha-893d028a62b81596da902b8314d2a3f0932978bb` is pinned to
+  digest `sha256:82589c35a31545322b8e7b01395609725213a6e052c9b31c6182fe8f06f10283`.
 
 ## Verification completed locally
 
 - Policy gateway: `go test ./...` passes, including integration tests that bind
   temporary loopback ports.
-- Approval plugin: all 35 unit tests pass.
+- Approval plugin: all 37 unit tests pass.
 - GitOps: Helm lint and `tests/check-render.sh` pass.
 
 ## Remaining rollout order
@@ -111,16 +117,15 @@ messages; status-only inspection is a usability gap to close during P1-D.
 
 ## Remaining product work after P0/P1 rollout
 
-- Hard-enforced implementation-job confirmation previews and immutable
-  backend/model/reasoning policy fields remain to be added. Prompt guidance is
-  not an adequate authorization boundary.
 - Queue position/limits, duplicate-job detection, repository mirror/cache,
   retention, fine-grained progress events, cost/token accounting, and the full
   independent end-to-end suite remain open.
 - The built-in dashboard still renders operational controls such as
-  `Restart Gateway`. Until a verified cross-container implementation exists,
-  these controls need to be hidden or clearly labelled unavailable; a correct
-  health indicator alone does not make a misleading control acceptable.
+  `Restart Gateway` in upstream mode. The admin profile now enables the
+  policy-gateway observer proxy, which redirects unsafe administration pages,
+  rejects mutating HTTP methods server-side, removes operational controls, and
+  displays a GitOps ownership banner. This remains subject to live UI smoke
+  verification after rollout.
 - P2 still needs scripted and human usability runs for homelab diagnosis,
   Paperless retrieval, Home Assistant, Wiki updates, and coding delegation.
 - Rina isolation, typed Kubernetes mutations, authenticated browsing, email,

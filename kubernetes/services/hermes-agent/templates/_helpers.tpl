@@ -54,6 +54,8 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if and .Values.dashboard.ingress.enabled (not (regexMatch "^https://[^/]+/?$" .Values.dashboard.publicUrl)) -}}{{- fail "dashboard.publicUrl must be an origin-only https URL when dashboard ingress is enabled" -}}{{- end -}}
 {{- if not .Values.dashboard.ingress.entryPoint -}}{{- fail "dashboard.ingress.entryPoint is required when the dashboard is enabled" -}}{{- end -}}
 {{- if not .Values.dashboard.ingress.clusterIssuer -}}{{- fail "dashboard.ingress.clusterIssuer is required when the dashboard is enabled" -}}{{- end -}}
+{{- if and .Values.dashboard.observer.enabled (not .Values.credentialGateway.enabled) -}}{{- fail "dashboard observer mode requires the policy gateway" -}}{{- end -}}
+{{- if and .Values.dashboard.observer.enabled (eq (int .Values.dashboard.observer.port) (int .Values.dashboard.port)) -}}{{- fail "dashboard observer port must differ from the upstream dashboard port" -}}{{- end -}}
 {{- end -}}
 {{- if eq (len .Values.profile.telegram.allowedUserIds) 0 -}}
 {{- fail "profile.telegram.allowedUserIds must contain numeric Telegram user IDs" -}}

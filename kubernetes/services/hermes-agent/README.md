@@ -58,6 +58,13 @@ gateway capability metrics remain the authoritative operational signals. The
 pod is annotated with its expected release and these topology roles so
 dashboards and inventory tools can present that distinction.
 
+For GitOps-owned deployments, enable `dashboard.observer.enabled`. The public
+Service then targets the policy gateway's read-only reverse proxy instead of
+the upstream dashboard directly. Unsafe administration pages are removed,
+mutating HTTP methods are rejected server-side, and the UI displays an explicit
+observer banner. The upstream dashboard remains reachable only inside the pod
+for health checks and OIDC/session handling.
+
 `config.yaml` and `SOUL.md` are mounted read-only into the dashboard container.
 The UI may inspect them, but attempts to edit those GitOps-owned files fail
 closed. Sessions and other rebuildable state remain writable on the profile

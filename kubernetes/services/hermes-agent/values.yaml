@@ -61,6 +61,11 @@ agent:
 dashboard:
   enabled: false
   port: 9119
+  observer:
+    # Serve the upstream dashboard through the policy gateway's fail-closed
+    # read-only proxy. GitOps is the only configuration/write path.
+    enabled: false
+    port: 9120
   publicUrl: ""
   auth:
     # basic is allowed only while ingress is disabled. Public ingress requires
@@ -163,8 +168,8 @@ credentialGateway:
   enabled: false
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
-    tag: sha-bc04852304ae9d029ef134f05dd6f149331beb85
-    digest: sha256:57b6ef9f80df0f98b355fcb3dfb35a009ae6f979052a7ff07de6cc8a6625e502
+    tag: sha-81df701733aabcd3d5d611fd00203e5053d43e43
+    digest: sha256:0002b6b68a98a6f1e82fe92d0135562cca4676e1c1d9638d84f06e775a60fc06
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -194,8 +199,8 @@ credentialGateway:
 approvalPlugin:
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
-    tag: sha-e6f5dae37698661dd123833fe873faab667677ee
-    digest: sha256:b16b3e110764ef7ddf87ae4cfd88f3046c97bdb2c86fa51d3eca0cc089ad7738
+    tag: sha-893d028a62b81596da902b8314d2a3f0932978bb
+    digest: sha256:82589c35a31545322b8e7b01395609725213a6e052c9b31c6182fe8f06f10283
 
 defaultPodOptions:
   automountServiceAccountToken: false
@@ -433,6 +438,10 @@ controllers:
             value: 0.0.0.0:8081
           - name: METRICS_ADDR
             value: 0.0.0.0:9090
+          - name: DASHBOARD_OBSERVER_ADDR
+            value: '{{ ternary (printf "0.0.0.0:%v" .Values.dashboard.observer.port) "" .Values.dashboard.observer.enabled }}'
+          - name: DASHBOARD_UPSTREAM_URL
+            value: '{{ ternary (printf "http://127.0.0.1:%v" .Values.dashboard.port) "" .Values.dashboard.observer.enabled }}'
           - name: WIKIJS_GRAPHQL_URL
             value: '{{ .Values.credentialGateway.wikiGraphqlUrl }}'
           - name: WIKI_AUTHORIZATION
@@ -574,7 +583,7 @@ service:
     ports:
       http:
         port: 9119
-        targetPort: 9119
+        targetPort: '{{ ternary .Values.dashboard.observer.port .Values.dashboard.port .Values.dashboard.observer.enabled }}'
   browser:
     controller: browser
     ports:
