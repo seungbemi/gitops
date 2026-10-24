@@ -53,10 +53,20 @@ different sources require a new approval.
 
 The local module is nested inside `hermes-codex-runner/`, making that directory
 a self-contained upload archive. Point `coder templates push --directory`
-directly at it. The root `runner_image` variable has an immutable default so a
-template push and subsequent workspace rebuild use the gateway-compatible
-runner. Treat a runner digest update and its policy-gateway protocol update as
-one rollout unit.
+directly at it. The root `runner_image` variable has an immutable default, but
+Coder reuses the active template version's stored variable values during a
+push. Always pass the intended immutable image explicitly, for example:
+
+```sh
+coder templates push hermes-codex-runner \
+  --directory coder-template/codex/hermes-codex-runner \
+  --variable runner_image=ghcr.io/example/runner:tag@sha256:digest
+```
+
+After rebuilding the workspace, verify the live runner and control-agent
+Deployment images contain that exact digest. Do not treat a successful template
+push as proof that the stored variable changed. Treat a runner digest update
+and its policy-gateway protocol update as one rollout unit.
 
 The gateway creates a missing named workspace from this template, starts it
 before dispatch, and configures a one-day Coder TTL. It deliberately does not

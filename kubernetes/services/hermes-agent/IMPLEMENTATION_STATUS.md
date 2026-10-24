@@ -18,10 +18,16 @@ do not mark a phase complete by inferring one from another.
   direct `getMe` check succeeded for the configured bot, but delivery has not
   yet been measured for the seven-day P0 reliability window.
 - The policy gateway reports PostgreSQL, Wiki.js, Home Assistant, and Paperless
-  healthy. The expired Coder credential is classified as `needs_login` without
-  the previous ten-second HTTP 401 retry storm. Delegation remains deliberately
-  unavailable until that credential is rotated and the Coder template/workspace
-  is rebuilt with the matching runner image.
+  healthy. The Coder credential has been rotated and moved under encrypted
+  GitOps ownership. Its current seven-day expiry remains an operational risk;
+  a bounded 30-day administrator-token ceiling and scoped replacement token
+  are being rolled out before the reliability window starts.
+- The `sebe/hermes` Coder workspace is healthy and runs the exact pinned runner
+  digest `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`.
+  Runner API version 1, protocol version 0.154.0, and Codex subscription login
+  all passed live capability checks. A bounded, read-only analysis job
+  (`job_E_08m82WX-_4XvONN_M9jiZF`) completed through the full gateway, Coder,
+  runner, and Codex path without an execution error.
 - The dashboard is enabled on an internal route with basic authentication.
   Authentik OIDC is chart-supported, but no Hermes OIDC client/secret is
   provisioned yet.
@@ -56,7 +62,7 @@ do not mark a phase complete by inferring one from another.
   to digest `sha256:57b6ef9f80df0f98b355fcb3dfb35a009ae6f979052a7ff07de6cc8a6625e502`.
 - The matching runner image was published at digest
   `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`;
-  update the Coder template/workspace before enabling jobs against the new
+  the live Coder template/workspace now uses this exact digest and matches the
   gateway protocol.
 
 ### Telegram plugin
@@ -78,12 +84,12 @@ do not mark a phase complete by inferring one from another.
 
 ## Remaining rollout order
 
-1. Rotate the Coder credential and runner bearer credential, move the currently
-   manually managed delegation Secret under encrypted GitOps ownership, and
-   validate both without exposing token values.
-2. Push the updated `hermes-codex-runner` Coder template, rebuild the `hermes`
-   workspace, and verify runner protocol, Codex login, GitHub App access, and
-   the pinned runner digest before accepting a job.
+1. Roll out the bounded 30-day Coder administrator-token ceiling, replace the
+   current unrestricted seven-day token with a scoped token, and add expiry
+   monitoring before beginning the reliability window.
+2. Verify GitHub App access independently. The first read-only analysis job did
+   not exercise repository resolution or publishing, and must not be treated
+   as evidence that implementation delegation is ready.
 3. Provision an Authentik OIDC client and dashboard Secret, then replace basic
    authentication in the private profile.
 4. Run an end-user Telegram smoke test for help, connector reads, delegation
@@ -92,6 +98,10 @@ do not mark a phase complete by inferring one from another.
    misleading health state resets the gate.
 6. Run ten consecutive real P1 jobs, including login, quota, CI failure,
    cancellation, restart/unknown-outcome, and deployment-verification cases.
+
+The MCP job-status response currently exposes state and failure metadata but
+not the completed assistant result body. Telegram retains the durable job
+messages; status-only inspection is a usability gap to close during P1-D.
 
 ## Remaining product work after P0/P1 rollout
 
