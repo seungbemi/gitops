@@ -94,16 +94,18 @@ do not mark a phase complete by inferring one from another.
 - Concurrent controls for the same job/operation/question are serialized.
 - Exact implementation preview cards queue work only after an authorized user
   approves; denials and expired previews create no job.
+- Implementation rejection uses explicit `Do not queue` / `Implementation not
+  queued` wording so dismissal cannot be mistaken for cancelling running work.
 - Job status cards render the latest durable result with bounded, escaped text.
 - Existing bot commands are preserved when installing the Hermes menu.
-- Plugin image `sha-fd695f309d1e23bf0b135088a73810f1b9567b7d` is pinned to
-  digest `sha256:a0fa21096730afadf638c12501b46b23dba512e8eb6468b1c65fe25af36fa5ed`.
+- Plugin image `sha-e17abf11082b179bcf1a99abba3cf6630c1f4050` is pinned to
+  digest `sha256:7f247b3cd414a00e8ddbea43b255ae129884d8c8deb4ff3af68f225dc1dccf8d`.
 
 ## Verification completed locally
 
 - Policy gateway: `go test ./...` passes, including PostgreSQL tests for the
   confirmation transaction and durable result visibility.
-- Approval plugin: all 37 unit tests pass.
+- Approval plugin: all 38 unit tests pass.
 - GitOps: Helm lint and `tests/check-render.sh` pass.
 
 ## Remaining rollout order
