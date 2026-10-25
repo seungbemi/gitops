@@ -1,0 +1,56 @@
+profile:
+  enabled: true
+  name: rina
+  runtimeSecretName: hermes-rina-runtime
+  telegram:
+    allowedUserIds: [222222222, 123456789]
+    adminUserIds: [222222222, 123456789]
+  kubernetes:
+    scope: rina-company
+
+credentialGateway:
+  enabled: true
+  wikiSecretName: hermes-rina-knowledge
+  approvalSecretName: hermes-rina-approval
+  imagePullSecretName: hermes-rina-gateway-registry
+  wikiGraphqlUrl: http://wiki.internal/graphql
+  wikiAuthorization:
+    memberId: rina
+    allowedOperations: [list, search, get]
+  github:
+    enabled: true
+    secretName: hermes-rina-github-publisher
+
+codexDelegation:
+  enabled: true
+  credentialsSecretName: hermes-rina-codex-runner
+  authorization:
+    requester: telegram:222222222
+    coder:
+      url: https://coder.internal
+      organization: seungbemi
+      user: me
+      runnerNamespace: services
+    targets:
+      - name: rina-company
+        template: hermes-codex-runner
+        workspace: hermes-rina
+        runnerTokenFile: /var/run/hermes-codex/runner-token
+        runnerCaFile: /var/run/hermes-codex/runner-ca.crt
+        repository: seungbemi/rina-company
+        allowedPaths: [.github, .gitignore, Dockerfile, README.md, cmd, go.mod, go.sum, internal]
+        allowedOperations: [edit, test, create_pr, auto_merge, install_tool]
+        modes: [analysis, implementation]
+        requiredChecks: [test]
+        approvalPolicy: always
+      - name: rina-company-deploy
+        template: hermes-codex-runner
+        workspace: hermes-rina
+        runnerTokenFile: /var/run/hermes-codex/runner-token
+        runnerCaFile: /var/run/hermes-codex/runner-ca.crt
+        repository: seungbemi/gitops
+        allowedPaths: [kubernetes/services/rina-company/release-version.txt]
+        allowedOperations: [edit, test, create_pr, auto_merge, verify_deployment]
+        modes: [analysis, implementation]
+        requiredChecks: [Hermes validation]
+        approvalPolicy: always

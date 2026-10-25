@@ -79,7 +79,6 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessPublicUrl) -}}{{- fail "credentialGateway.paperlessPublicUrl is required when enabled" -}}{{- end -}}
 {{- if and .Values.paperless.enabled (not .Values.credentialGateway.paperlessSecretName) -}}{{- fail "credentialGateway.paperlessSecretName is required when enabled" -}}{{- end -}}
 {{- if .Values.codexDelegation.enabled -}}
-{{- if ne .Values.profile.name "admin" -}}{{- fail "Codex delegation may be enabled only for the admin profile during rollout" -}}{{- end -}}
 {{- if not .Values.credentialGateway.enabled -}}{{- fail "codexDelegation.enabled requires credentialGateway.enabled" -}}{{- end -}}
 {{- if not .Values.codexDelegation.mcpUrl -}}{{- fail "codexDelegation.mcpUrl is required when enabled" -}}{{- end -}}
 {{- if not .Values.codexDelegation.credentialsSecretName -}}{{- fail "codexDelegation.credentialsSecretName is required when enabled" -}}{{- end -}}
@@ -90,11 +89,38 @@ hermes-profile: {{ .Values.profile.name | quote }}
 {{- if not .Values.codexDelegation.authorization.coder.user -}}{{- fail "codexDelegation.authorization.coder.user is required when enabled" -}}{{- end -}}
 {{- if not .Values.codexDelegation.authorization.coder.runnerNamespace -}}{{- fail "codexDelegation.authorization.coder.runnerNamespace is required when enabled" -}}{{- end -}}
 {{- if eq (len .Values.codexDelegation.authorization.targets) 0 -}}{{- fail "codexDelegation.authorization.targets must not be empty when enabled" -}}{{- end -}}
+{{- if eq .Values.profile.name "rina" -}}
+{{- $requesterAllowed := false -}}
+{{- range $userID := .Values.profile.telegram.allowedUserIds -}}
+{{- if eq $.Values.codexDelegation.authorization.requester (printf "telegram:%s" (include "hermes.telegramId" $userID)) -}}{{- $requesterAllowed = true -}}{{- end -}}
+{{- end -}}
+{{- if not $requesterAllowed -}}{{- fail "Rina Codex requester must match an allowed Telegram user ID" -}}{{- end -}}
+{{- end -}}
 {{- range $target := .Values.codexDelegation.authorization.targets -}}
 {{- if has "implementation" $target.modes -}}
 {{- if not $.Values.credentialGateway.github.enabled -}}{{- fail "implementation Codex targets require credentialGateway.github.enabled" -}}{{- end -}}
 {{- if not $target.repository -}}{{- fail "implementation Codex targets require repository" -}}{{- end -}}
 {{- if eq (len $target.allowedPaths) 0 -}}{{- fail "implementation Codex targets require allowedPaths" -}}{{- end -}}
+{{- if eq $.Values.profile.name "rina" -}}
+{{- if ne $target.approvalPolicy "always" -}}{{- fail "Rina Codex targets require approvalPolicy=always" -}}{{- end -}}
+{{- if eq $target.name "rina-company" -}}
+{{- if ne $target.repository "seungbemi/rina-company" -}}{{- fail "Rina source target must use seungbemi/rina-company" -}}{{- end -}}
+{{- range $path := $target.allowedPaths -}}
+{{- if not (has $path (list ".github" ".gitignore" "Dockerfile" "README.md" "cmd" "go.mod" "go.sum" "internal")) -}}{{- fail "Rina source target contains an unauthorized path" -}}{{- end -}}
+{{- end -}}
+{{- range $operation := $target.allowedOperations -}}
+{{- if not (has $operation (list "edit" "test" "create_pr" "auto_merge" "install_tool")) -}}{{- fail "Rina source target contains an unauthorized operation" -}}{{- end -}}
+{{- end -}}
+{{- else if eq $target.name "rina-company-deploy" -}}
+{{- if ne $target.repository "seungbemi/gitops" -}}{{- fail "Rina deploy target must use seungbemi/gitops" -}}{{- end -}}
+{{- if or (ne (len $target.allowedPaths) 1) (ne (index $target.allowedPaths 0) "kubernetes/services/rina-company/release-version.txt") -}}{{- fail "Rina deploy target must be restricted to the Rina Company release version file" -}}{{- end -}}
+{{- range $operation := $target.allowedOperations -}}
+{{- if not (has $operation (list "edit" "test" "create_pr" "auto_merge" "verify_deployment")) -}}{{- fail "Rina deploy target contains an unauthorized operation" -}}{{- end -}}
+{{- end -}}
+{{- else -}}
+{{- fail "Rina Codex implementation targets must be rina-company or rina-company-deploy" -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

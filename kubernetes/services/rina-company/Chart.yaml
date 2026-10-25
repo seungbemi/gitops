@@ -2,9 +2,8 @@ apiVersion: v2
 description: Rina Company web service
 name: rina-company
 version: 1.0.0
-# https://github.com/seungbemi/rina-company/pkgs/container/rina-company
-# renovate: image=ghcr.io/seungbemi/rina-company
-appVersion: 1.8.8
+# The deployed application version is intentionally isolated in
+# release-version.txt so the Rina deployment target cannot modify chart logic.
 
 dependencies:
   - name: common

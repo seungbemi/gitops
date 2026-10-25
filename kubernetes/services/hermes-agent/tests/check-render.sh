@@ -11,11 +11,12 @@ numeric_ids="$(mktemp)"
 gateway_only="$(mktemp)"
 dashboard_rendered="$(mktemp)"
 oidc_dashboard_rendered="$(mktemp)"
+rina_delegation_rendered="$(mktemp)"
 # Distinct fixed digests verify value propagation without coupling this test to
 # whichever release digests are currently pinned in values.yaml.
 test_plugin_digest="sha256:1111111111111111111111111111111111111111111111111111111111111111"
 test_gateway_digest="sha256:2222222222222222222222222222222222222222222222222222222222222222"
-trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids" "$gateway_only" "$dashboard_rendered" "$oidc_dashboard_rendered"' EXIT INT TERM
+trap 'rm -f -- "$rendered" "$admin_rendered" "$rina_rendered" "$invalid" "$disabled" "$numeric_ids" "$gateway_only" "$dashboard_rendered" "$oidc_dashboard_rendered" "$rina_delegation_rendered"' EXIT INT TERM
 
 helm lint "$chart_dir"
 
@@ -305,6 +306,41 @@ helm template hermes-rina "$chart_dir" --namespace services \
   --set 'credentialGateway.imagePullSecretName=hermes-rina-gateway-registry' \
   --set 'credentialGateway.wikiGraphqlUrl=http://wiki.internal/graphql' \
   >"$rina_rendered"
+
+helm template hermes-rina-delegation "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/rina.yaml" \
+  --values "$chart_dir/tests/rina-delegation-values.yaml" \
+  --set "approvalPlugin.image.digest=$test_plugin_digest" \
+  --set "credentialGateway.image.digest=$test_gateway_digest" \
+  >"$rina_delegation_rendered"
+grep -Fq '"name":"rina-company"' "$rina_delegation_rendered"
+grep -Fq '"name":"rina-company-deploy"' "$rina_delegation_rendered"
+grep -Fq '"allowedPaths":["kubernetes/services/rina-company/release-version.txt"]' "$rina_delegation_rendered"
+grep -Fq '"requester":"telegram:222222222"' "$rina_delegation_rendered"
+
+if helm template hermes-rina-delegation "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/rina.yaml" \
+  --values "$chart_dir/tests/rina-delegation-values.yaml" \
+  --set "approvalPlugin.image.digest=$test_plugin_digest" \
+  --set "credentialGateway.image.digest=$test_gateway_digest" \
+  --set 'codexDelegation.authorization.targets[1].allowedPaths[0]=kubernetes' \
+  >"$invalid" 2>&1; then
+  echo 'Rina delegation rendered with broad GitOps access' >&2
+  exit 1
+fi
+grep -Fq 'Rina deploy target must be restricted to the Rina Company release version file' "$invalid"
+
+if helm template hermes-rina-delegation "$chart_dir" --namespace services \
+  --values "$chart_dir/profiles/rina.yaml" \
+  --values "$chart_dir/tests/rina-delegation-values.yaml" \
+  --set "approvalPlugin.image.digest=$test_plugin_digest" \
+  --set "credentialGateway.image.digest=$test_gateway_digest" \
+  --set 'codexDelegation.authorization.requester=telegram:999999999' \
+  >"$invalid" 2>&1; then
+  echo 'Rina delegation rendered for an unrelated Telegram identity' >&2
+  exit 1
+fi
+grep -Fq 'Rina Codex requester must match an allowed Telegram user ID' "$invalid"
 
 cat "$admin_rendered" "$rina_rendered" >"$rendered"
 
