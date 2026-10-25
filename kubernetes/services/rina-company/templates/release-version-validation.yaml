@@ -1,0 +1,4 @@
+{{- $releaseVersion := .Files.Get "release-version.txt" | trim -}}
+{{- if not (regexMatch "^[0-9]+\\.[0-9]+\\.[0-9]+$" $releaseVersion) -}}
+{{- fail "release-version.txt must contain exactly one semantic release version" -}}
+{{- end -}}

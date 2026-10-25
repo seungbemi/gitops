@@ -15,7 +15,7 @@ controllers:
       main:
         image:
           repository: ghcr.io/seungbemi/rina-company
-          tag: "{{ .Chart.AppVersion }}"
+          tag: '{{ .Files.Get "release-version.txt" | trim }}'
           pullPolicy: IfNotPresent
         env:
           TZ: "Europe/Helsinki"
