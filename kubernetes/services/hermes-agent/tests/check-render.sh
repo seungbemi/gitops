@@ -470,8 +470,12 @@ if grep -Fq 'sort: price' "$admin_rendered"; then
 fi
 grep -Fq 'name: HERMES_AUTO_ROUTING_POLICY_ENABLED' "$admin_rendered"
 grep -A1 -F 'name: HERMES_AUTO_ROUTING_POLICY_ENABLED' "$admin_rendered" | grep -Fq 'value: "true"'
-grep -A1 -F 'name: HERMES_ROUTING_COST_TIER' "$admin_rendered" | grep -Fq 'value: medium'
+grep -A1 -F 'name: HERMES_ROUTING_COST_TIER' "$admin_rendered" | grep -Fq 'value: low'
 grep -A1 -F 'name: HERMES_ROUTING_ALLOWED_MODELS' "$admin_rendered" | grep -Fq 'openai/gpt-5.6-luna'
+if grep -A1 -F 'name: HERMES_ROUTING_ALLOWED_MODELS' "$admin_rendered" | grep -Fq 'openai/gpt-5.6-luna-pro'; then
+  echo 'Luna Pro must require explicit model selection' >&2
+  exit 1
+fi
 grep -A1 -F 'name: HERMES_ROUTING_MAX_PROMPT_USD_PER_MILLION' "$admin_rendered" | grep -Fq 'value: "3"'
 grep -A1 -F 'name: HERMES_ROUTING_MAX_COMPLETION_USD_PER_MILLION' "$admin_rendered" | grep -Fq 'value: "15"'
 if sed -n '/disabled_toolsets:/,/platform_toolsets:/p' "$admin_rendered" | grep -Fq -- '- cronjob'; then

@@ -219,13 +219,15 @@ counts are exposed through the policy gateway. Prompts and responses are not.
 The configured $2 daily and $15 rolling 30-day budgets are alert thresholds;
 they do not reject LLM requests after the thresholds are crossed.
 
-The admin profile applies `medium` Auto Router cost tier, a controlled exact
-model allowlist, and provider price ceilings of $3/M input and $15/M output
-tokens. Provider endpoints must support every requested parameter and deny
-data collection. Do not set `provider_routing.sort: price`: that disables
-OpenRouter's reliability-aware load balancing. The approval plugin adds these
-controls through Hermes's LLM request middleware and captures content-free
-router metadata through execution middleware.
+The admin profile applies the cost-efficient `low` Auto Router tier, a
+controlled exact model allowlist, and provider price ceilings of $3/M input
+and $15/M output tokens. Luna Pro is excluded from automatic selection after
+the measured canary showed disproportionate cost, but remains available via
+the explicit `/model` picker. Provider endpoints must support every requested
+parameter and deny data collection. Do not set `provider_routing.sort: price`:
+that disables OpenRouter's reliability-aware load balancing. The approval
+plugin adds these controls through Hermes's LLM request middleware and captures
+content-free router metadata through execution middleware.
 
 The automatic pool excludes premium Sonnet after the initial canary selected
 it for ordinary browsing. Administrators can still choose it explicitly with
