@@ -120,9 +120,9 @@ do not mark a phase complete by inferring one from another.
 4. Run ten consecutive real P1 jobs, including login, quota, CI failure,
    cancellation, restart/unknown-outcome, and deployment-verification cases.
 
-The MCP job-status response currently exposes state and failure metadata but
-not the completed assistant result body. Telegram retains the durable job
-messages; status-only inspection is a usability gap to close during P1-D.
+The MCP `codex_get_job` response exposes the latest durable Codex result
+alongside state and failure metadata. Telegram job status cards render that
+result with bounded, escaped text.
 
 ## Remaining product work after P0/P1 rollout
 
