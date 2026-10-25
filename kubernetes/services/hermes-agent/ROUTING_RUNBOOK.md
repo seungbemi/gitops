@@ -4,7 +4,7 @@
 
 The admin agent sends `openrouter/auto` requests through policy middleware:
 
-- cost tier: `medium`
+- cost tier: `low`
 - allowed models: the exact IDs under `model.routing.allowedModels`
 - provider policy: all request parameters required, data collection denied
 - price ceilings: $3/M prompt tokens and $15/M completion tokens
@@ -17,6 +17,12 @@ initial canary repeatedly selected it for ordinary browsing. It remains
 available through Hermes's explicit `/model` picker when a task warrants the
 additional cost. Web discovery uses Hermes's dedicated `web_search` tool and
 its result cache; it does not require a model-native paid search feature.
+
+Luna Pro is also excluded from the automatic pool. The October cost review
+showed that it handled a minority of successful requests while accounting for
+most daily model cost. It remains available explicitly for a single difficult
+turn or session. The automatic pool stays on the `low` band and can select
+regular Luna, GPT-5 mini, or Gemini Flash according to task fit.
 
 The allowlist is deliberately exact. Review a new model with the evaluation
 suite before adding it; never replace exact IDs with provider-family wildcards.
