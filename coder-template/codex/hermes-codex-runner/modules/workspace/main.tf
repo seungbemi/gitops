@@ -193,7 +193,19 @@ resource "kubernetes_deployment_v1" "runner" {
           name    = "prepare-state"
           image   = var.runner_image
           command = ["/bin/sh", "-c"]
-          args    = ["install -d -m 0700 /state/home /state/home/.local/hermes-tools /state/runner-state /state/jobs"]
+          args = [<<-EOT
+            set -eu
+            install -d -m 0700 /state/home /state/home/.local/hermes-tools /state/runner-state /state/jobs
+
+            # Go is an image-owned SDK. Remove the obsolete single-binary shim
+            # and make login shells prefer the complete immutable toolchain.
+            rm -f /state/home/.local/hermes-tools/bin/go /state/home/.local/hermes-tools/records/go.json
+            profile=/state/home/.profile
+            if ! grep -q '^export PATH="/usr/local/go/bin:' "$profile" 2>/dev/null; then
+              printf '%s\n' 'export PATH="/usr/local/go/bin:/home/coder/.local/hermes-tools/bin:/home/coder/.local/bin:$PATH"' >> "$profile"
+            fi
+          EOT
+          ]
           security_context {
             allow_privilege_escalation = false
             read_only_root_filesystem  = true
