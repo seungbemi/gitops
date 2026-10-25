@@ -24,7 +24,7 @@ do not mark a phase complete by inferring one from another.
   and `workspace:*`. The superseded unrestricted token and a rejected scoped
   candidate were expired after the replacement passed live permission checks.
 - The `sebe/hermes` Coder workspace is healthy and runs the exact pinned runner
-  digest `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`.
+  digest `sha256:c2698c3f753ceeaed14a1f4145d7d2d4377e481973dcd9f92013647d0c52a1d9`.
   Runner API version 1, protocol version 0.154.0, and Codex subscription login
   all passed live capability checks. A bounded, read-only analysis job
   (`job_E_08m82WX-_4XvONN_M9jiZF`) completed through the full gateway, Coder,
@@ -79,10 +79,10 @@ do not mark a phase complete by inferring one from another.
   unknown outcomes, attempt and end-to-end latency, pending outbox depth, and
   oldest pending age. Alerts cover stalled outboxes, persistent failures, and
   a measured delivery ratio below 99% once the sample is meaningful.
-- Gateway image `sha-42e55b763fe4f5ae77c473b56ba48803916e5336` is pinned
-  to digest `sha256:b9e46bf558f0dd352458f9e84d1532e8c6e191d58aa9b8eccaf9a594cd0a13f4`.
+- Gateway image `sha-c2a78bb030fd88bdaf58eadf8f5fe1ed790d60a0` is pinned
+  to digest `sha256:cb619273bdb419634f8a259db0f5eefa133955701cf0aef26ee37678272db74b`.
 - The matching runner image was published at digest
-  `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`;
+  `sha256:c2698c3f753ceeaed14a1f4145d7d2d4377e481973dcd9f92013647d0c52a1d9`;
   the live Coder template/workspace now uses this exact digest and matches the
   gateway protocol.
 
