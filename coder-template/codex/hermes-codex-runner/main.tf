@@ -16,7 +16,7 @@ variable "namespace" {
 variable "runner_image" {
   type        = string
   description = "Immutable Hermes Codex runner image reference."
-  default     = "ghcr.io/seungbemi/hermes-codex-runner:sha-c2a78bb030fd88bdaf58eadf8f5fe1ed790d60a0@sha256:c2698c3f753ceeaed14a1f4145d7d2d4377e481973dcd9f92013647d0c52a1d9"
+  default     = "ghcr.io/seungbemi/hermes-codex-runner:sha-be9f19bbab689ba1ecd2d8b3b98c8e0f47f708c7@sha256:65fb1767141cd97ab985c8384323807b1ae28c2b35f2a83e6a87670ae60132c0"
 
   validation {
     condition     = can(regex("@sha256:[0-9a-f]{64}$", var.runner_image))
