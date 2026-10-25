@@ -23,8 +23,8 @@ do not mark a phase complete by inferring one from another.
   to 30 days, and has only `user:read`, `organization:read`, `template:read`,
   and `workspace:*`. The superseded unrestricted token and a rejected scoped
   candidate were expired after the replacement passed live permission checks.
-- The `sebe/hermes` Coder workspace is healthy and runs the exact pinned runner
-  digest `sha256:c2698c3f753ceeaed14a1f4145d7d2d4377e481973dcd9f92013647d0c52a1d9`.
+- The `sebe/hermes` Coder workspace is healthy and currently runs runner digest
+  `sha256:3188d113316a63d027c6d31c36110bee6cb933df7fa88d8c7efd303064bd6f2d`.
   Runner API version 1, protocol version 0.154.0, and Codex subscription login
   all passed live capability checks. A bounded, read-only analysis job
   (`job_E_08m82WX-_4XvONN_M9jiZF`) completed through the full gateway, Coder,
@@ -83,8 +83,9 @@ do not mark a phase complete by inferring one from another.
   to digest `sha256:cb619273bdb419634f8a259db0f5eefa133955701cf0aef26ee37678272db74b`.
 - The matching runner image was published at digest
   `sha256:c2698c3f753ceeaed14a1f4145d7d2d4377e481973dcd9f92013647d0c52a1d9`;
-  the live Coder template/workspace now uses this exact digest and matches the
-  gateway protocol.
+  the GitOps template default is pinned to it, but publishing that template
+  version and rebuilding the live workspace remain operator rollout steps. The
+  current runner remains protocol-compatible with the gateway.
 
 ### Telegram plugin
 
