@@ -257,6 +257,8 @@ helm template hermes-admin "$chart_dir" --namespace services \
   --set 'codexDelegation.authorization.coder.url=https://coder.internal' \
   --set 'codexDelegation.authorization.coder.user=admin' \
   --set 'codexDelegation.coderEndpointCidrs[0]=10.20.30.40/32' \
+  --set 'kubernetes.apiEndpointCidrs[0]=172.20.0.108/32' \
+  --set 'kubernetes.apiEndpointPort=6443' \
   --set 'codexDelegation.authorization.targets[0].name=analysis' \
   --set 'codexDelegation.authorization.targets[0].template=hermes-codex-runner' \
   --set 'codexDelegation.authorization.targets[0].workspace=hermes' \
@@ -319,6 +321,15 @@ if [ "$(grep -Fc 'resources: ["pods/log"]' "$admin_rendered")" -ne 1 ] || grep -
 fi
 grep -Fq 'name: hermes-codex-runner-hermes' "$admin_rendered"
 grep -Fq 'name: hermes-codex-runner-hermes-kubeconfig' "$admin_rendered"
+grep -Fq 'name: hermes-admin-codex-runner-kubernetes-api' "$admin_rendered"
+grep -Fq 'app.kubernetes.io/name: codex-runner' "$admin_rendered"
+grep -Fq 'app.kubernetes.io/part-of: hermes-delegation' "$admin_rendered"
+grep -Fq 'cidr: "172.20.0.108/32"' "$admin_rendered"
+grep -Fq 'port: 6443' "$admin_rendered"
+if grep -Fq 'name: hermes-rina-codex-runner-kubernetes-api' "$rina_rendered"; then
+  echo 'Codex runner API policy must render only when delegation is enabled' >&2
+  exit 1
+fi
 grep -Fq 'automountServiceAccountToken: false' "$admin_rendered"
 grep -Fq 'tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token' "$admin_rendered"
 grep -Fq 'alert: HermesCoderTokenExpiring' "$admin_rendered"

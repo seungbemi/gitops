@@ -38,4 +38,40 @@ spec:
         - protocol: TCP
           port: {{ .Values.kubernetes.apiEndpointPort }}
     {{- end }}
+{{- if .Values.codexDelegation.enabled }}
+---
+# Coder owns the runner's primary default-deny policy. This additive policy is
+# GitOps-owned so clusters whose CNI evaluates egress after Service DNAT can
+# allow only the configured Kubernetes API service and control-plane endpoints
+# without requiring a live workspace patch or template rebuild.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hermes-{{ .Values.profile.name }}-codex-runner-kubernetes-api
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: codex-runner
+      app.kubernetes.io/part-of: hermes-delegation
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.kubernetes.apiServiceCidr | quote }}
+      ports:
+        - protocol: TCP
+          port: 443
+    {{- if .Values.kubernetes.apiEndpointCidrs }}
+    - to:
+        {{- range .Values.kubernetes.apiEndpointCidrs }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+        {{- end }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.kubernetes.apiEndpointPort }}
+    {{- end }}
+{{- end }}
 {{- end }}
