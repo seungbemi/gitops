@@ -224,7 +224,7 @@ if grep -Fq 'config-helper-credentials' "$gateway_only"; then
 fi
 # This render intentionally keeps the chart defaults, independently checking
 # that deployable production values remain immutable SHA-256 references.
-if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:sha-9814ecc26b4dcbd1bdcd44bebaccc0c85ce37d5d@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:sha-48debef18045fb7f83e059e3f6a3c32ef59fed95@sha256:[0-9a-f]{64}$' "$gateway_only"; then
   echo 'default policy-gateway image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
