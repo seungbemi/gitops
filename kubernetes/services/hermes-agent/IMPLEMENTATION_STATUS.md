@@ -79,8 +79,8 @@ do not mark a phase complete by inferring one from another.
   unknown outcomes, attempt and end-to-end latency, pending outbox depth, and
   oldest pending age. Alerts cover stalled outboxes, persistent failures, and
   a measured delivery ratio below 99% once the sample is meaningful.
-- Gateway image `sha-9814ecc26b4dcbd1bdcd44bebaccc0c85ce37d5d` is pinned
-  to digest `sha256:4a7e2706458b38feb386f880aaa99598abebbe6df58eaba9f46bc9b4d5933167`.
+- Gateway image `sha-48debef18045fb7f83e059e3f6a3c32ef59fed95` is pinned
+  to digest `sha256:3d4e89d4fa6d1b72ad8f174808fec05c4fda4797e82e40070dbe60e016f104f9`.
 - The matching runner image was published at digest
   `sha256:c2698c3f753ceeaed14a1f4145d7d2d4377e481973dcd9f92013647d0c52a1d9`;
   the GitOps template default is pinned to it, but publishing that template
