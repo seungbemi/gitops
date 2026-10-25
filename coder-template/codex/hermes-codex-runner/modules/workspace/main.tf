@@ -233,8 +233,11 @@ resource "kubernetes_deployment_v1" "runner" {
             value = "/runner-kubeconfig/config"
           }
           env {
-            name  = "PATH"
-            value = "/home/coder/.local/hermes-tools/bin:/home/coder/.local/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            name = "PATH"
+            # Image-owned toolchains must precede persisted standalone tools. A
+            # stale user-installed `go` shim must never shadow the complete Go
+            # SDK shipped in the immutable runner image.
+            value = "/usr/local/go/bin:/home/coder/.local/hermes-tools/bin:/home/coder/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
           }
           env {
             name  = "RUNNER_TLS_CERT_FILE"
