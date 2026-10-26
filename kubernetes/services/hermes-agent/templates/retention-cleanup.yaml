@@ -1,0 +1,100 @@
+{{- if and .Values.profile.enabled .Values.codexDelegation.enabled .Values.codexDelegation.retentionCleanup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hermes-{{ .Values.profile.name }}-retention
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: hermes-retention
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    hermes-profile: {{ .Values.profile.name | quote }}
+spec:
+  schedule: {{ .Values.codexDelegation.retentionCleanup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: {{ .Values.codexDelegation.retentionCleanup.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.codexDelegation.retentionCleanup.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.codexDelegation.retentionCleanup.backoffLimit }}
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: hermes-retention
+            app.kubernetes.io/instance: {{ .Release.Name }}
+            hermes-profile: {{ .Values.profile.name | quote }}
+        spec:
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          restartPolicy: Never
+          {{- if .Values.credentialGateway.imagePullSecretName }}
+          imagePullSecrets:
+            - name: {{ .Values.credentialGateway.imagePullSecretName }}
+          {{- end }}
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: cleanup
+              image: "{{ .Values.credentialGateway.image.repository }}:{{ .Values.credentialGateway.image.tag }}@{{ .Values.credentialGateway.image.digest }}"
+              imagePullPolicy: {{ .Values.credentialGateway.image.pullPolicy }}
+              args: ["retention-cleanup"]
+              env:
+                - name: PROFILE
+                  value: {{ .Values.profile.name | quote }}
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.credentialGateway.approvalSecretName | quote }}
+                      key: DATABASE_URL
+                - name: CODEX_DELEGATION
+                  value: {{ toJson .Values.codexDelegation.authorization | quote }}
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 65532
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests:
+                  cpu: 5m
+                  memory: 16Mi
+                limits:
+                  memory: 64Mi
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hermes-{{ .Values.profile.name }}-retention
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: hermes-retention
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      hermes-profile: {{ .Values.profile.name | quote }}
+  policyTypes: [Ingress, Egress]
+  ingress: []
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: persistence
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: postgresql
+      ports:
+        - { protocol: TCP, port: 5432 }
+{{- end }}

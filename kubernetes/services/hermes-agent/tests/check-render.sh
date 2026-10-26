@@ -536,6 +536,15 @@ grep -Fq 'cidr: "10.96.0.1/32"' "$admin_rendered"
 grep -Fq 'kubernetes.io/metadata.name: persistence' "$admin_rendered"
 grep -Fq 'app.kubernetes.io/name: postgresql' "$admin_rendered"
 grep -Fq 'port: 5432' "$admin_rendered"
+grep -Fq 'kind: CronJob' "$admin_rendered"
+grep -Fq 'name: hermes-admin-retention' "$admin_rendered"
+grep -Fq 'args: ["retention-cleanup"]' "$admin_rendered"
+grep -Fq 'concurrencyPolicy: Forbid' "$admin_rendered"
+grep -Fq '"retention":{"deliveredOutboxDays":7,"dryRun":false,"jobDays":30,"proposalDays":7}' "$admin_rendered"
+if grep -Fq 'name: hermes-rina-retention' "$rina_rendered"; then
+  echo 'retention CronJob must render only when delegation is enabled' >&2
+  exit 1
+fi
 grep -Fq 'hermes-profile: admin' "$admin_rendered"
 grep -Fq 'hermes-profile: rina' "$rina_rendered"
 
