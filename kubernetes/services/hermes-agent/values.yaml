@@ -116,6 +116,14 @@ paperless:
 codexDelegation:
   enabled: false
   mcpUrl: http://127.0.0.1:8090/delegation/mcp
+  retentionCleanup:
+    enabled: true
+    # Kubernetes owns scheduling, retries, overlap prevention, and short job
+    # history. The gateway image only performs one bounded cleanup pass.
+    schedule: "17 3 * * *"
+    backoffLimit: 2
+    successfulJobsHistoryLimit: 3
+    failedJobsHistoryLimit: 3
   # Unix expiry of the currently deployed Coder API token. Keep this in sync
   # with every rotation so Prometheus warns seven days before authentication
   # stops. Zero disables the expiry alert for profiles without delegation.
@@ -128,6 +136,13 @@ codexDelegation:
     requester: ""
     activeTurnSeconds: 3600
     jobBudgetSeconds: 28800
+    retention:
+      # One month is the maximum. Ephemeral proposals and delivered
+      # notifications intentionally keep their existing shorter lifetime.
+      jobDays: 30
+      proposalDays: 7
+      deliveredOutboxDays: 7
+      dryRun: false
     coder:
       url: ""
       sessionTokenFile: /var/run/hermes-codex/coder-token
@@ -169,8 +184,8 @@ credentialGateway:
   enabled: false
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
-    tag: sha-15d460027d44316fdf35681e7bfa04dd851d8fea
-    digest: sha256:7e4fef5259c31972cf69189ac3a476a696ae5b76cbac2586e57db62b7604cf50
+    tag: sha-b34a94a30711992ad8a0c65cb042ea9119151260
+    digest: sha256:bd78994db5d6be83818552eb62fb694386e6451cb165cb8c39fc438eb0577cb2
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
