@@ -370,8 +370,18 @@ grep -Fq 'automountServiceAccountToken: false' "$admin_rendered"
 grep -Fq 'tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token' "$admin_rendered"
 grep -Fq 'alert: HermesCoderTokenExpiring' "$admin_rendered"
 grep -Fq 'expr: vector(time()) > 1794831400' "$admin_rendered"
+grep -Fq 'alert: HermesRetentionCleanupMissedSchedule' "$admin_rendered"
+grep -Fq 'cronjob="hermes-admin-retention"' "$admin_rendered"
+grep -Fq 'kube_cronjob_next_schedule_time{namespace="services"' "$admin_rendered"
+grep -Fq 'kube_cronjob_spec_suspend{namespace="services"' "$admin_rendered"
+grep -Fq ') > 3600 and on (namespace, cronjob)' "$admin_rendered"
+grep -Fq 'for: 15m' "$admin_rendered"
 if grep -Fq 'alert: HermesCoderTokenExpiring' "$rina_rendered"; then
   echo 'Coder token expiry alert must be rendered only for a configured delegation profile' >&2
+  exit 1
+fi
+if grep -Fq 'alert: HermesRetentionCleanupMissedSchedule' "$rina_rendered"; then
+  echo 'retention missed-schedule alert must render only with delegation retention' >&2
   exit 1
 fi
 
@@ -540,6 +550,7 @@ grep -Fq 'kind: CronJob' "$admin_rendered"
 grep -Fq 'name: hermes-admin-retention' "$admin_rendered"
 grep -Fq 'args: ["retention-cleanup"]' "$admin_rendered"
 grep -Fq 'concurrencyPolicy: Forbid' "$admin_rendered"
+grep -Fq 'startingDeadlineSeconds: 3600' "$admin_rendered"
 grep -Fq '"retention":{"deliveredOutboxDays":7,"dryRun":false,"jobDays":30,"proposalDays":7}' "$admin_rendered"
 grep -Fq 'name: RUNNER_JOB_ROOT' "$admin_rendered"
 grep -Fq 'value: "/workspace/jobs"' "$admin_rendered"
