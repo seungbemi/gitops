@@ -1,4 +1,7 @@
 {{- if and .Values.profile.enabled .Values.codexDelegation.enabled .Values.codexDelegation.retentionCleanup.enabled }}
+{{- if lt (int64 .Values.codexDelegation.retentionCleanup.startingDeadlineSeconds) 1 }}
+{{- fail "codexDelegation.retentionCleanup.startingDeadlineSeconds must be positive" }}
+{{- end }}
 {{- if .Values.codexDelegation.retentionCleanup.workspace.enabled }}
 {{- if ne .Values.codexDelegation.retentionCleanup.workspace.mountPath "/workspace/jobs" }}
 {{- fail "codexDelegation.retentionCleanup.workspace.mountPath must be /workspace/jobs" }}
@@ -22,7 +25,7 @@ metadata:
 spec:
   schedule: {{ .Values.codexDelegation.retentionCleanup.schedule | quote }}
   concurrencyPolicy: Forbid
-  startingDeadlineSeconds: 3600
+  startingDeadlineSeconds: {{ .Values.codexDelegation.retentionCleanup.startingDeadlineSeconds }}
   successfulJobsHistoryLimit: {{ .Values.codexDelegation.retentionCleanup.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.codexDelegation.retentionCleanup.failedJobsHistoryLimit }}
   jobTemplate:

@@ -121,6 +121,9 @@ codexDelegation:
     # Kubernetes owns scheduling, retries, overlap prevention, and short job
     # history. The gateway image only performs one bounded cleanup pass.
     schedule: "17 3 * * *"
+    # A missed schedule becomes actionable after the controller's allowed
+    # catch-up window. Keep the CronJob and Prometheus alert on one value.
+    startingDeadlineSeconds: 3600
     backoffLimit: 2
     successfulJobsHistoryLimit: 3
     failedJobsHistoryLimit: 3
