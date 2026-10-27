@@ -541,6 +541,18 @@ grep -Fq 'name: hermes-admin-retention' "$admin_rendered"
 grep -Fq 'args: ["retention-cleanup"]' "$admin_rendered"
 grep -Fq 'concurrencyPolicy: Forbid' "$admin_rendered"
 grep -Fq '"retention":{"deliveredOutboxDays":7,"dryRun":false,"jobDays":30,"proposalDays":7}' "$admin_rendered"
+grep -Fq 'name: RUNNER_JOB_ROOT' "$admin_rendered"
+grep -Fq 'value: "/workspace/jobs"' "$admin_rendered"
+grep -Fq 'server: "diskstation.local"' "$admin_rendered"
+grep -Fq 'path: "/volume1/LTS/coder/caffeine/.hermes-codex-runner/hermes/jobs"' "$admin_rendered"
+grep -Fq 'mountPath: "/workspace/jobs"' "$admin_rendered"
+grep -Fq 'runAsUser: 10000' "$admin_rendered"
+grep -Fq 'runAsGroup: 10000' "$admin_rendered"
+grep -Fq 'fsGroup: 10000' "$admin_rendered"
+if grep -A90 'name: hermes-admin-retention' "$admin_rendered" | grep -Eq '/home/coder|hermes-tools|/runner-state|/usr/local/go'; then
+  echo 'retention CronJob must mount only the isolated jobs export' >&2
+  exit 1
+fi
 if grep -Fq 'name: hermes-rina-retention' "$rina_rendered"; then
   echo 'retention CronJob must render only when delegation is enabled' >&2
   exit 1

@@ -1,4 +1,15 @@
 {{- if and .Values.profile.enabled .Values.codexDelegation.enabled .Values.codexDelegation.retentionCleanup.enabled }}
+{{- if .Values.codexDelegation.retentionCleanup.workspace.enabled }}
+{{- if ne .Values.codexDelegation.retentionCleanup.workspace.mountPath "/workspace/jobs" }}
+{{- fail "codexDelegation.retentionCleanup.workspace.mountPath must be /workspace/jobs" }}
+{{- end }}
+{{- if not .Values.codexDelegation.retentionCleanup.workspace.nfsServer }}
+{{- fail "codexDelegation.retentionCleanup.workspace.nfsServer is required" }}
+{{- end }}
+{{- if not (hasSuffix "/jobs" .Values.codexDelegation.retentionCleanup.workspace.nfsPath) }}
+{{- fail "codexDelegation.retentionCleanup.workspace.nfsPath must be the isolated jobs export" }}
+{{- end }}
+{{- end }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -33,6 +44,11 @@ spec:
             - name: {{ .Values.credentialGateway.imagePullSecretName }}
           {{- end }}
           securityContext:
+            runAsNonRoot: true
+            runAsUser: 10000
+            runAsGroup: 10000
+            fsGroup: 10000
+            fsGroupChangePolicy: OnRootMismatch
             seccompProfile:
               type: RuntimeDefault
           containers:
@@ -50,19 +66,36 @@ spec:
                       key: DATABASE_URL
                 - name: CODEX_DELEGATION
                   value: {{ toJson .Values.codexDelegation.authorization | quote }}
+                {{- if .Values.codexDelegation.retentionCleanup.workspace.enabled }}
+                - name: RUNNER_JOB_ROOT
+                  value: {{ .Values.codexDelegation.retentionCleanup.workspace.mountPath | quote }}
+                {{- end }}
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
                 runAsNonRoot: true
-                runAsUser: 65532
+                runAsUser: 10000
+                runAsGroup: 10000
                 capabilities:
                   drop: ["ALL"]
+              {{- if .Values.codexDelegation.retentionCleanup.workspace.enabled }}
+              volumeMounts:
+                - name: runner-jobs
+                  mountPath: {{ .Values.codexDelegation.retentionCleanup.workspace.mountPath | quote }}
+              {{- end }}
               resources:
                 requests:
                   cpu: 5m
                   memory: 16Mi
                 limits:
                   memory: 64Mi
+          {{- if .Values.codexDelegation.retentionCleanup.workspace.enabled }}
+          volumes:
+            - name: runner-jobs
+              nfs:
+                server: {{ .Values.codexDelegation.retentionCleanup.workspace.nfsServer | quote }}
+                path: {{ .Values.codexDelegation.retentionCleanup.workspace.nfsPath | quote }}
+          {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
