@@ -124,6 +124,14 @@ codexDelegation:
     backoffLimit: 2
     successfulJobsHistoryLimit: 3
     failedJobsHistoryLimit: 3
+    workspace:
+      # Keep disabled unless a profile declares its exact runner jobs export.
+      # The cleanup pod must never mount the runner home, tools, SDK, state,
+      # mirrors, or the parent workspace directory.
+      enabled: false
+      nfsServer: ""
+      nfsPath: ""
+      mountPath: /workspace/jobs
   # Unix expiry of the currently deployed Coder API token. Keep this in sync
   # with every rotation so Prometheus warns seven days before authentication
   # stops. Zero disables the expiry alert for profiles without delegation.
@@ -184,8 +192,8 @@ credentialGateway:
   enabled: false
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
-    tag: sha-25dacb0ebf5fb253ba5479afd706de744aadb1f9
-    digest: sha256:4ce33b97fdaff25e103e75cb65c5c809b85bee662cedce085d33dd36076880b6
+    tag: sha-1167b934f18af21d08ff444bb9ba23edc4c4e016
+    digest: sha256:ea42e98becc3f85949dfdb76d6581425a01e31e389f23c8996f5844cf25c557f
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
