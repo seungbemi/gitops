@@ -145,6 +145,10 @@ codexDelegation:
   credentialsSecretName: ""
   authorization:
     requester: ""
+    # One Codex account executes one job at a time. Bound the durable backlog
+    # so delayed work remains understandable and operator-recoverable.
+    queueDomain: codex-account
+    queueMaxActiveJobs: 10
     activeTurnSeconds: 3600
     jobBudgetSeconds: 28800
     retention:
@@ -195,8 +199,8 @@ credentialGateway:
   enabled: false
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
-    tag: sha-1167b934f18af21d08ff444bb9ba23edc4c4e016
-    digest: sha256:ea42e98becc3f85949dfdb76d6581425a01e31e389f23c8996f5844cf25c557f
+    tag: sha-e6ca29baaa3d0ffcb0e00f5963957675898d047b
+    digest: sha256:56eee7b192e6a06efa539fde08b33d313f58099dee09f30aa2392f21725e21d3
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
