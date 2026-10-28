@@ -195,7 +195,7 @@ resource "kubernetes_deployment_v1" "runner" {
           command = ["/bin/sh", "-c"]
           args = [<<-EOT
             set -eu
-            install -d -m 0700 /state/home /state/home/.local/hermes-tools /state/runner-state /state/jobs
+            install -d -m 0700 /state/home /state/home/.local/hermes-tools /state/runner-state /state/jobs /state/mirrors
 
             # Go is an image-owned SDK. Remove the obsolete single-binary shim
             # and make login shells prefer the complete immutable toolchain.
@@ -231,6 +231,18 @@ resource "kubernetes_deployment_v1" "runner" {
           env {
             name  = "RUNNER_WORKSPACE_ROOT"
             value = "/workspace/jobs"
+          }
+          env {
+            name  = "RUNNER_REPOSITORY_CACHE_ROOT"
+            value = "/workspace/mirrors"
+          }
+          env {
+            name  = "RUNNER_REPOSITORY_CACHE_MAX_BYTES"
+            value = "8589934592"
+          }
+          env {
+            name  = "RUNNER_REPOSITORY_CACHE_MAX_REPOSITORIES"
+            value = "16"
           }
           env {
             name  = "RUNNER_TOOL_ROOT"
@@ -310,6 +322,11 @@ resource "kubernetes_deployment_v1" "runner" {
             name       = "state"
             mount_path = "/workspace/jobs"
             sub_path   = "jobs"
+          }
+          volume_mount {
+            name       = "state"
+            mount_path = "/workspace/mirrors"
+            sub_path   = "mirrors"
           }
           volume_mount {
             name       = "runner-tmp"

@@ -562,7 +562,7 @@ grep -Fq 'mountPath: "/workspace/jobs"' "$admin_rendered"
 grep -Fq 'runAsUser: 10000' "$admin_rendered"
 grep -Fq 'runAsGroup: 10000' "$admin_rendered"
 grep -Fq 'fsGroup: 10000' "$admin_rendered"
-if grep -A90 'name: hermes-admin-retention' "$admin_rendered" | grep -Eq '/home/coder|hermes-tools|/runner-state|/usr/local/go'; then
+if grep -A90 'name: hermes-admin-retention' "$admin_rendered" | grep -Eq '/home/coder|hermes-tools|/runner-state|/workspace/mirrors|/usr/local/go'; then
   echo 'retention CronJob must mount only the isolated jobs export' >&2
   exit 1
 fi

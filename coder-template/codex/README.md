@@ -16,7 +16,10 @@ Provision the separate `hermes-codex-runner-registry` docker-registry Secret so
 the namespace can pull that private image; Terraform references only its name.
 
 The module mounts a dedicated per-workspace NFS path and uses distinct
-subdirectories for the Codex home, runner control state, and job files. The
+subdirectories for the Codex home, runner control state, job files, and a
+bounded repository mirror cache. The mirror cache is mounted only at
+`/workspace/mirrors`; every job receives a dissociated checkout under
+`/workspace/jobs`, and the retention CronJob sees only the jobs subdirectory. The
 path must exist on the NFS server, be owned by UID/GID 10000, and be derived
 from a template containing exactly one `{workspace}` placeholder. Only the
 runner Pod sees this mount; never point it at a human Coder home or shared
