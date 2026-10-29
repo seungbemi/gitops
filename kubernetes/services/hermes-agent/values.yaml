@@ -199,8 +199,8 @@ credentialGateway:
   enabled: false
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
-    tag: sha-cc943784e7859fcc9f521febb988504ea446ce0d
-    digest: sha256:dd7d6e75dfced388727270fac88c1b7df774651329bc8880c86342351d5cff2c
+    tag: sha-d9e3df28ccadbbac9f4b55a4a36051795c8dfd19
+    digest: sha256:ec6a82724673db2af5b80db621df5291a44b5a9c46638344179fbef35cdd5b4d
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
