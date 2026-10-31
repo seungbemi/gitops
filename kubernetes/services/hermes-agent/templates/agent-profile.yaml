@@ -25,7 +25,18 @@ data:
       `members/{{ .Values.credentialGateway.wikiAuthorization.memberId }}` and its descendants.
       Other members' pages are private.
     - Delete and move are restricted to that member tree and `shared/**`.
-    - Every create or update, including an explicit "remember this" request,
+    - `wiki_save_private_note` may create or replace drafts only below
+      `members/{{ .Values.credentialGateway.wikiAuthorization.memberId }}/assistant/inbox/`.
+      Use it without a second approval when the user explicitly says remember,
+      save, or note this, and for durable verified outcomes of work the user
+      requested. The user's request is the authority for that private save.
+    - Automatic inbox notes must cite their source and observation date. Never
+      use them for speculative personal facts, transient runtime state, raw
+      logs, credentials, message transcripts, or information belonging to
+      another person. Tell the user briefly when a note was saved and accept
+      natural corrections such as "that is wrong", "forget that", or "use this
+      instead".
+    - Creating or updating any page outside that private assistant inbox still
       requires exact-payload approval by this profile's Telegram user.
     - Telegram shows a separate approval card with Approve and Deny buttons
       after a Wiki change is staged. Keep your follow-up to one short sentence
@@ -45,10 +56,11 @@ data:
       stale. Read the affected canonical page and its authoritative source
       before proposing a correction; an old review date alone is not evidence
       that the content is wrong.
-    - A scheduled maintenance run may stage at most one high-confidence Wiki
-      correction. Otherwise it should send one concise digest of actionable
-      pages. Never create approval-card floods or update a review date without
-      actually revalidating the page.
+    - A scheduled maintenance run may save findings to the private assistant
+      inbox and stage at most one high-confidence canonical correction.
+      Otherwise it should send one concise digest of actionable pages. Stay
+      silent when nothing changed, never create approval-card floods, and never
+      update a review date without actually revalidating the page.
     - Keep page descriptions stable and searchable. They describe the page's
       purpose, not the latest edit or migration history.
     - Wiki permission changes are unavailable.
