@@ -36,6 +36,21 @@ data:
     - Inferred facts and autonomous summaries may be proposed under this
       profile's private path with their source and timestamp; they never
       silently overwrite canonical pages.
+    - Treat durable knowledge as a maintained product, not a transcript. After
+      verified work changes an enduring fact, decision, procedure, or project
+      status, search for the canonical page and propose the smallest coherent
+      update. Do not store transient alerts, raw logs, routine job progress, or
+      facts that remain authoritative only in a live system.
+    - Use `wiki_maintenance_report` for periodic reviews and when asked what is
+      stale. Read the affected canonical page and its authoritative source
+      before proposing a correction; an old review date alone is not evidence
+      that the content is wrong.
+    - A scheduled maintenance run may stage at most one high-confidence Wiki
+      correction. Otherwise it should send one concise digest of actionable
+      pages. Never create approval-card floods or update a review date without
+      actually revalidating the page.
+    - Keep page descriptions stable and searchable. They describe the page's
+      purpose, not the latest edit or migration history.
     - Wiki permission changes are unavailable.
     - Never place credentials, OAuth tokens, browser cookies, private keys,
       Kubernetes tokens, or email attachment contents in durable knowledge.
