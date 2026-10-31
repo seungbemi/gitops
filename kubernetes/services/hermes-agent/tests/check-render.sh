@@ -229,7 +229,7 @@ if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-policy-gateway:sha-[0-9a-f]{40}@
   echo 'default policy-gateway image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
-if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-approval-plugin:sha-5f05656f0f4f1fc6f7752ee687c42f15525e2939@sha256:[0-9a-f]{64}$' "$gateway_only"; then
+if ! grep -Eq 'image: ghcr\.io/seungbemi/hermes-approval-plugin:sha-[0-9a-f]{40}@sha256:[0-9a-f]{64}$' "$gateway_only"; then
   echo 'default approval-plugin image must be pinned by a valid sha256 digest' >&2
   exit 1
 fi
@@ -529,7 +529,7 @@ if helm template hermes-rina "$chart_dir" --namespace services \
   exit 1
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
-grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-5f05656f0f4f1fc6f7752ee687c42f15525e2939@$test_plugin_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-f913731c9b7bb3359939bf30f00bb000840cfd7b@$test_plugin_digest" "$admin_rendered"
 grep -Eq "image: ghcr\\.io/seungbemi/hermes-policy-gateway:sha-[0-9a-f]{40}@$test_gateway_digest$" "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
