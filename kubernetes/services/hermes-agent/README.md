@@ -189,6 +189,15 @@ not infer that old content is wrong and never changes a page. The agent profile
 uses this report to support periodic maintenance while limiting a scheduled run
 to one exact, approval-gated correction proposal.
 
+Hermes may also save a draft directly under the active member's private
+`assistant/inbox` tree. The gateway derives that path from the authenticated
+profile and accepts only a single lowercase slug, so the tool cannot address a
+shared, canonical, or different member page. Direct saves are limited to
+explicit remember/save requests and verified durable task outcomes; each save
+uses the existing durable action record as an audit trail. Publishing or
+overwriting canonical knowledge, and every delete or move, remains separately
+approval-gated.
+
 The approval UI has its own private `seungbemi/hermes-approval-plugin`
 repository and tested OCI image. This chart only pins that immutable image and
 installs it into Hermes during pod initialization. The policy-gateway repository
