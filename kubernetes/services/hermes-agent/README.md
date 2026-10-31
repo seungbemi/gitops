@@ -182,6 +182,13 @@ smoke testing covers health endpoints, Wiki read, Home Assistant read,
 Paperless search/read/download, and one exact-payload approved update. An
 unknown mutation result requires direct inspection before another write.
 
+The knowledge MCP also exposes a bounded read-only maintenance report. It
+checks only pages visible to the active profile, reads at most 100 page bodies,
+and reports missing status/review metadata plus overdue review dates. It does
+not infer that old content is wrong and never changes a page. The agent profile
+uses this report to support periodic maintenance while limiting a scheduled run
+to one exact, approval-gated correction proposal.
+
 The approval UI has its own private `seungbemi/hermes-approval-plugin`
 repository and tested OCI image. This chart only pins that immutable image and
 installs it into Hermes during pod initialization. The policy-gateway repository
