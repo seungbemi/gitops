@@ -16,7 +16,7 @@ credentialGateway:
   wikiGraphqlUrl: http://wiki.internal/graphql
   wikiAuthorization:
     memberId: rina
-    allowedOperations: [list, search, get]
+    allowedOperations: [list, search, get, create, update, delete, move]
   github:
     enabled: true
     secretName: hermes-rina-github-publisher
