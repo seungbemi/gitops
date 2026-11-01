@@ -53,6 +53,21 @@ spec:
             severity: warning
           annotations:
             summary: "Hermes dependency {{ `{{ $labels.service }}` }} is unavailable"
+        - alert: HermesTurnDeliveryStalled
+          expr: hermes_turn_delivery_oldest_age_seconds{profile="{{ .Values.profile.name }}"} > 300 or hermes_turn_delivery_pending{profile="{{ .Values.profile.name }}"} > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes turn delivery is stalled"
+            description: "A durable Telegram card batch has waited over five minutes or more than ten batches are queued."
+        - alert: HermesTurnDeliveryFailure
+          expr: sum(increase(hermes_turn_deliveries_total{profile="{{ .Values.profile.name }}",outcome=~"failed|unknown"}[15m])) > 0 or sum(increase(hermes_turn_deliveries_total{profile="{{ .Values.profile.name }}",outcome="retry"}[15m])) >= 3
+          labels:
+            severity: warning
+          annotations:
+            summary: "Hermes turn delivery needs attention"
+            description: "A durable card batch failed, had an unknown post-send outcome, or retried at least three times."
         {{- if .Values.codexDelegation.enabled }}
         - alert: HermesCoderAuthenticationRequired
           expr: hermes_dependency_health{profile="{{ .Values.profile.name }}",service="coder",state="needs_login"} == 1

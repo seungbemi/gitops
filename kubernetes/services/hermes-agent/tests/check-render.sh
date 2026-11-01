@@ -219,6 +219,10 @@ if grep -Fq 'codex-runner-credentials' "$gateway_only"; then
   echo 'disabled Codex credentials rendered into the gateway pod' >&2
   exit 1
 fi
+grep -Fq 'alert: HermesTurnDeliveryStalled' "$gateway_only"
+grep -Fq 'hermes_turn_deliveries_total' "$gateway_only"
+grep -A4 -F 'telegram:' "$gateway_only" | grep -Fq 'streaming: false'
+grep -A5 -F 'telegram:' "$gateway_only" | grep -Fq 'interim_assistant_messages: false'
 if grep -Fq 'config-helper-credentials' "$gateway_only"; then
   echo 'disabled configuration-helper credentials rendered into the gateway pod' >&2
   exit 1
@@ -534,7 +538,7 @@ if helm template hermes-rina "$chart_dir" --namespace services \
   exit 1
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
-grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-2b9bce637e7de25e49e8b0991daf280036db6b14@$test_plugin_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-cc304132c7fe3a5d462b5d705cc16e881f290274@$test_plugin_digest" "$admin_rendered"
 grep -Eq "image: ghcr\\.io/seungbemi/hermes-policy-gateway:sha-[0-9a-f]{40}@$test_gateway_digest$" "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
