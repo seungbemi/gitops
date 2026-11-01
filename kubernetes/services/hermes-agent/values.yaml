@@ -230,8 +230,8 @@ credentialGateway:
 approvalPlugin:
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
-    tag: sha-a91e984aeca57fe8b842e4f54b4097483d9dc88e
-    digest: sha256:93fc7b83b0119920f865f221bc44a324e11f9d34b2995b34543ff11fd67b7413
+    tag: sha-eb84652d3243971075bbd0da99d01fd2715da7ed
+    digest: sha256:f77e1a59ff0cd2329599407606f040cbf85366610285e1938047fb8ea867db05
 
 defaultPodOptions:
   automountServiceAccountToken: false
