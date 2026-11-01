@@ -199,8 +199,8 @@ credentialGateway:
   enabled: false
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
-    tag: sha-4bb6630b20333c4e142a3056288277c749229dec
-    digest: sha256:2bd062c1b246a61d2143ea0e93cb586a5e3152587d2b2d9599a5085758273fd7
+    tag: sha-3d6827acab42e726bd862f27ca2666fe1cf191eb
+    digest: sha256:4c6fd6bbb4dfca0b9889f3b6269bce04d77a87f066501ce271e61ab12df3eb37
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -230,8 +230,8 @@ credentialGateway:
 approvalPlugin:
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
-    tag: sha-2b9bce637e7de25e49e8b0991daf280036db6b14
-    digest: sha256:fce713b29d597004fb08faf4701396b8acd63ae0080dccfc42fc7e0c2b81fdb4
+    tag: sha-cc304132c7fe3a5d462b5d705cc16e881f290274
+    digest: sha256:c0b9d04f007af3e1d4a0ce18c9f8a5f89a2d0b64e52b1b69842c6336532ebf3b
 
 defaultPodOptions:
   automountServiceAccountToken: false

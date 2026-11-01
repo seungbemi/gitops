@@ -94,6 +94,14 @@ data:
       misfire_grace_minutes: {{ .Values.scheduling.misfireGraceMinutes }}
     security:
       redact_secrets: true
+    # Card-owning tool turns cannot declare response ownership before Hermes
+    # starts progressive delivery. Keep Telegram final-only so plugin output
+    # transforms run before any model text becomes user-visible.
+    display:
+      platforms:
+        telegram:
+          streaming: false
+          interim_assistant_messages: false
     plugins:
       {{- if .Values.credentialGateway.enabled }}
       enabled:
