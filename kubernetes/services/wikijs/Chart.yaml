@@ -4,7 +4,7 @@ description: Human-facing knowledge base used as the canonical Hermes memory sto
 type: application
 version: 1.0.0
 # renovate: image=ghcr.io/requarks/wiki
-appVersion: 2.5.317
+appVersion: 3.0.1
 
 dependencies:
   - name: common
