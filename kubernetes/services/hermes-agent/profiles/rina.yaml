@@ -16,6 +16,9 @@ browser:
   enabled: false
 
 knowledgeBase:
+  # Prepared for the same private inbox/review/promote flow as admin. Enabling
+  # the profile still requires Rina's exact Telegram identity and isolated
+  # Wiki credentials; the gateway derives members/rina and cannot read Sebe.
   enabled: false
 
 credentialGateway:

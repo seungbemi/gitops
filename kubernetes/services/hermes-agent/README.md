@@ -198,6 +198,15 @@ uses the existing durable action record as an audit trail. Publishing or
 overwriting canonical knowledge, and every delete or move, remains separately
 approval-gated.
 
+`wiki_list_private_notes` returns bounded summaries only from the active
+profile's assistant inbox. Telegram renders each note with Keep, Correct,
+Promote, and Discard actions. Keep is a no-op; the other buttons request an
+explicit reply so Hermes retains the user's intent and target. Corrections can
+replace only the same private draft. Promotion and discard continue through
+the existing exact-action approval path. This contract is profile-generic:
+when Rina is activated with create/update/delete permissions, her tools derive
+`members/rina/assistant/inbox/` and cannot address Sebe's notes.
+
 The approval UI has its own private `seungbemi/hermes-approval-plugin`
 repository and tested OCI image. This chart only pins that immutable image and
 installs it into Hermes during pod initialization. The policy-gateway repository

@@ -36,6 +36,14 @@ data:
       another person. Tell the user briefly when a note was saved and accept
       natural corrections such as "that is wrong", "forget that", or "use this
       instead".
+    - For "show my saved notes" or equivalent, call
+      `wiki_list_private_notes`. Telegram owns the resulting Keep, Correct,
+      Promote, and Discard cards; do not repeat their content in another
+      message. Keep makes no change. Correct replaces only the same private
+      draft through `wiki_save_private_note`. Promote reads the draft, searches
+      for the canonical destination, and stages one exact create or update for
+      approval. Discard stages deletion of only that private draft for approval.
+      Do not remove a promoted draft until canonical publication succeeded.
     - Creating or updating any page outside that private assistant inbox still
       requires exact-payload approval by this profile's Telegram user.
     - Telegram shows a separate approval card with Approve and Deny buttons

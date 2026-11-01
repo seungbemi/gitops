@@ -317,6 +317,11 @@ grep -Fq '"name":"rina-company"' "$rina_delegation_rendered"
 grep -Fq '"name":"rina-company-deploy"' "$rina_delegation_rendered"
 grep -Fq '"allowedPaths":["kubernetes/services/rina-company/release-version.txt"]' "$rina_delegation_rendered"
 grep -Fq '"requester":"telegram:222222222"' "$rina_delegation_rendered"
+grep -Fq 'members/rina/assistant/inbox/' "$rina_delegation_rendered"
+if grep -Fq 'members/sebe/assistant/inbox/' "$rina_delegation_rendered"; then
+  echo 'Rina profile rendered Sebe private inbox policy' >&2
+  exit 1
+fi
 
 if helm template hermes-rina-delegation "$chart_dir" --namespace services \
   --values "$chart_dir/profiles/rina.yaml" \
