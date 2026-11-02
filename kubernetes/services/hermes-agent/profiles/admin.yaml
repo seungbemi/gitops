@@ -18,6 +18,11 @@ model:
   routing:
     enabled: true
 
+approvalPlugin:
+  # Temporary content-free canary. This prevents card delivery and records only
+  # identity presence/match signals until the pinned worker contract is proven.
+  deliveryIdentityShadow: true
+
 webSearch:
   enabled: true
 

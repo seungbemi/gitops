@@ -199,8 +199,8 @@ credentialGateway:
   enabled: false
   image:
     repository: ghcr.io/seungbemi/hermes-policy-gateway
-    tag: sha-3d6827acab42e726bd862f27ca2666fe1cf191eb
-    digest: sha256:4c6fd6bbb4dfca0b9889f3b6269bce04d77a87f066501ce271e61ab12df3eb37
+    tag: sha-4f0a3991c8805390d132bd826d9aeb110f745d61
+    digest: sha256:0805bffbb52821c484000f778bb0c8c5648ecb90ea37f85a181826ac1d507aa1
   wikiSecretName: ""
   approvalSecretName: ""
   imagePullSecretName: ""
@@ -228,10 +228,13 @@ credentialGateway:
     secretName: unused
 
 approvalPlugin:
+  # Observational canary: records only identity presence/match booleans and
+  # disables card delivery. Enable per profile only while diagnosing hooks.
+  deliveryIdentityShadow: false
   image:
     repository: ghcr.io/seungbemi/hermes-approval-plugin
-    tag: sha-e5222c3567f4a7eb9399b3c7751247a539ff4c59
-    digest: sha256:d6e3f78dc36df68146c8465ca937967126aff5d3882e97108f08ec41dfd0e146
+    tag: sha-123e748614867039620fb04ea4c056968c0aa0ae
+    digest: sha256:798aa9663bd0ef531844bc1f9f5addae8ac2b3591bd64fb880b224e335fd1c80
 
 defaultPodOptions:
   automountServiceAccountToken: false
@@ -345,6 +348,8 @@ controllers:
             value: '{{ .Values.model.routing.maxPriceUSDPerMillion.completion }}'
           - name: HERMES_ROUTING_METADATA_ENABLED
             value: '{{ .Values.model.routing.metadataEnabled }}'
+          - name: HERMES_DELIVERY_IDENTITY_SHADOW
+            value: '{{ .Values.approvalPlugin.deliveryIdentityShadow }}'
           - name: TZ
             value: Europe/Helsinki
         envFrom:
