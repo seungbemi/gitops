@@ -75,8 +75,3 @@ credentialGateway:
   paperlessAuthorization:
     enabled: false
     allowedOperations: [search_documents, get_document, get_document_content, list_tags, list_correspondents, list_document_types, download_document, upload_document, update_document, delete_document]
-
-approvalPlugin:
-  # Short-lived, content-free stage canary. Remove immediately after one
-  # explicit saved-notes inbox turn captures parser/payload booleans.
-  deliveryIdentityShadow: true
