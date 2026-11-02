@@ -489,7 +489,7 @@ if grep -Fq 'sort: price' "$admin_rendered"; then
 fi
 grep -Fq 'name: HERMES_AUTO_ROUTING_POLICY_ENABLED' "$admin_rendered"
 grep -A1 -F 'name: HERMES_AUTO_ROUTING_POLICY_ENABLED' "$admin_rendered" | grep -Fq 'value: "true"'
-grep -A1 -F 'name: HERMES_DELIVERY_IDENTITY_SHADOW' "$admin_rendered" | grep -Fq 'value: "true"'
+grep -A1 -F 'name: HERMES_DELIVERY_IDENTITY_SHADOW' "$admin_rendered" | grep -Fq 'value: "false"'
 grep -A1 -F 'name: HERMES_ROUTING_COST_TIER' "$admin_rendered" | grep -Fq 'value: low'
 grep -A1 -F 'name: HERMES_ROUTING_ALLOWED_MODELS' "$admin_rendered" | grep -Fq 'openai/gpt-5.6-luna'
 if grep -A1 -F 'name: HERMES_ROUTING_ALLOWED_MODELS' "$admin_rendered" | grep -Fq 'openai/gpt-5.6-luna-pro'; then
