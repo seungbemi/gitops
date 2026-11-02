@@ -489,7 +489,7 @@ if grep -Fq 'sort: price' "$admin_rendered"; then
 fi
 grep -Fq 'name: HERMES_AUTO_ROUTING_POLICY_ENABLED' "$admin_rendered"
 grep -A1 -F 'name: HERMES_AUTO_ROUTING_POLICY_ENABLED' "$admin_rendered" | grep -Fq 'value: "true"'
-grep -A1 -F 'name: HERMES_DELIVERY_IDENTITY_SHADOW' "$admin_rendered" | grep -Fq 'value: "false"'
+grep -A1 -F 'name: HERMES_DELIVERY_IDENTITY_SHADOW' "$admin_rendered" | grep -Fq 'value: "true"'
 grep -A1 -F 'name: HERMES_ROUTING_COST_TIER' "$admin_rendered" | grep -Fq 'value: low'
 grep -A1 -F 'name: HERMES_ROUTING_ALLOWED_MODELS' "$admin_rendered" | grep -Fq 'openai/gpt-5.6-luna'
 if grep -A1 -F 'name: HERMES_ROUTING_ALLOWED_MODELS' "$admin_rendered" | grep -Fq 'openai/gpt-5.6-luna-pro'; then
@@ -539,7 +539,7 @@ if helm template hermes-rina "$chart_dir" --namespace services \
   exit 1
 fi
 grep -Fq 'name: hermes-admin-gateway-registry' "$admin_rendered"
-grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-123e748614867039620fb04ea4c056968c0aa0ae@$test_plugin_digest" "$admin_rendered"
+grep -Fq "image: ghcr.io/seungbemi/hermes-approval-plugin:sha-97256a031f3691cd8e28fa4a398b87cbb5b06a6a@$test_plugin_digest" "$admin_rendered"
 grep -Eq "image: ghcr\\.io/seungbemi/hermes-policy-gateway:sha-[0-9a-f]{40}@$test_gateway_digest$" "$admin_rendered"
 if grep -Fq 'kind: ConfigMap' "$admin_rendered" && grep -Fq 'name: hermes-admin-approval-plugin' "$admin_rendered"; then
   echo "approval plugin must be installed from its pinned image, not duplicated in a ConfigMap" >&2
