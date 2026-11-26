@@ -168,7 +168,7 @@ argo-cd:
             mountPath: /sops-age-runtime
     extraContainers:
       - name: cmp-sops-helm
-        image: quay.io/argoproj/argocd:v3.5.7@sha256:16df57da6f223808d204cd94c67c929b931fa01670b91b0b3a2298c4647de0db
+        image: quay.io/argoproj/argocd:v3.6.3@sha256:f2e45010dbd6aeff01b845d212b436b2d8e7f44d90d437274906c2ab21e59e0d
         imagePullPolicy: IfNotPresent
         command: [/var/run/argocd/argocd-cmp-server]
         env:
